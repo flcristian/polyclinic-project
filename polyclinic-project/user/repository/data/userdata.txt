@@ -1,0 +1,2 @@
+﻿0/Marian/marian@email.com/0712345678/Doctor
+1/Paul/paul@email.com/0787654321/Pacient

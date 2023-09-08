@@ -1,0 +1,5 @@
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.csproj.AssemblyReference.cache
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.GeneratedMSBuildEditorConfig.editorconfig
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.AssemblyInfoInputs.cache
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.AssemblyInfo.cs
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.csproj.CoreCompileInputs.cache
