@@ -3,3 +3,13 @@ D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0
 D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.AssemblyInfoInputs.cache
 D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.AssemblyInfo.cs
 D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.csproj.CoreCompileInputs.cache
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\bin\Debug\net6.0\polyclinic-project.exe
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\bin\Debug\net6.0\polyclinic-project.deps.json
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\bin\Debug\net6.0\polyclinic-project.runtimeconfig.json
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\bin\Debug\net6.0\polyclinic-project.dll
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\bin\Debug\net6.0\polyclinic-project.pdb
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.dll
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\refint\polyclinic-project.dll
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.pdb
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\polyclinic-project.genruntimeconfig.cache
+D:\mycode\csharp\projects\polyclinic-project\polyclinic-project\obj\Debug\net6.0\ref\polyclinic-project.dll

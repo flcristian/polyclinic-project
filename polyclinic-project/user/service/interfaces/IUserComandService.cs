@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace polyclinic_project.user.service
+namespace polyclinic_project.user.service.interfaces
 {
     public interface IUserComandService
     {
