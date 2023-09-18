@@ -12,7 +12,21 @@ namespace polyclinic_project.user.service
 {
     public class UserQueryService : IUserQueryService
     {
-        private IRepository<User> _userRepository = UserRepositorySingleton.Instance;
+        private IRepository<User> _userRepository;
+
+        // Constructors
+
+        public UserQueryService(IRepository<User> userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public UserQueryService()
+        {
+            _userRepository = UserRepositorySingleton.Instance;
+        }
+
+        // Methods
 
         public User FindById(int id)
         {
@@ -21,12 +35,12 @@ namespace polyclinic_project.user.service
 
         public User FindByEmail(String email)
         {
-            return _userRepository.GetList().FirstOrDefault(i => i.GetEmail() == email);
+            return _userRepository.GetList().First(i => i.GetEmail() == email);
         }
 
         public User FindByPhone(String phone)
         {
-            return _userRepository.GetList().FirstOrDefault(i => i.GetPhone() == phone);
+            return _userRepository.GetList().First(i => i.GetPhone() == phone);
         }
 
         public int GetCount()

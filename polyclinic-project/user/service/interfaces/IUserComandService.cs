@@ -9,14 +9,14 @@ namespace polyclinic_project.user.service.interfaces
 {
     public interface IUserComandService
     {
-        bool Add(User user);
+        void Add(User user);
 
-        bool Remove(User user);
+        void Remove(User user);
 
-        bool RemoveById(int id);
+        void RemoveById(int id);
 
-        bool ClearList();
+        void ClearList();
 
-        int EditById(int id, User user);
+        void EditById(int id, User user);
     }
 }
