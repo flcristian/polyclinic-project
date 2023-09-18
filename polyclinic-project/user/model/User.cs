@@ -124,7 +124,7 @@ namespace polyclinic_project.user.model
             return desc;
         }
 
-        public override int GetHashCode()
+        public override Int32 GetHashCode()
         {
             return (int)Math.Pow(_id, _email.Length / 2) + _name.Length * 3;
         }

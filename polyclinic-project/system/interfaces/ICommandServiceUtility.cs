@@ -1,4 +1,5 @@
-﻿using polyclinic_project.user.model;
+﻿using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using System;
 using System.Collections.Generic;
@@ -10,63 +11,57 @@ namespace polyclinic_project.system.interfaces
 {
     public interface ICommandServiceUtility<T> where T : IHasId
     {
-        public static bool Add(IRepository<T> repository, T item)
+        public static void Add(IRepository<T> repository, T item)
         {
-            if (repository.GetList().Any(i => i.GetId() == item.GetId()))
+            if (repository.GetList().Any(i => i.Equals(item)))
             {
-                return false;
+                throw new ItemAlreadyExists($"{item} already exists.");
             }
 
             repository.GetList().Add(item);
-            return true;
         }
 
-        public static bool Remove(IRepository<T> repository, T item)
+        public static void Remove(IRepository<T> repository, T item)
         {
             if (!repository.GetList().Any(i => i.Equals(item)))
             {
-                return false;
+                throw new ItemDoesNotExist($"{item} does not exist or can not be found.");
             }
 
             repository.GetList().Remove(item);
-            return true;
         }
 
-        public static bool RemoveById(IRepository<T> repository, int id)
+        public static void RemoveById(IRepository<T> repository, int id)
         {
-            //todo:handle with exceptions
 
             T? item = repository.GetList().FirstOrDefault(i => i.GetId() == id);
 
             if (item == null)
             {
-                return false;
+                throw new NoItemWithThatId($"There is no item with Id {id}");
             }
 
             repository.GetList().Remove(item);
-            return true;
         }
 
-        public static bool ClearList(IRepository<T> repository)
+        public static void ClearList(IRepository<T> repository)
         {
             if (!repository.GetList().Any())
             {
-                return false;
+                throw new ListAlreadyEmpty("This repository already has an empty list.");
             }
 
             repository.GetList().Clear();
-            return true;
         }
 
-        public static int EditById(IRepository<T> repository, int id, T item)
+        public static void EditById(IRepository<T> repository, int id, T item)
         {
             T? found = repository.GetList().FirstOrDefault(i => i.GetId() == id);
 
-            if (found == null) { return -1; }
-            if (item.Equals(found)) { return 0; }
+            if (found == null) { throw new NoItemWithThatId($"There is no item with Id {id}"); }
+            if (item.Equals(found)) { throw new ItemNotModified($"No need to edit item since it was not modified"); }
 
             repository.GetList()[repository.GetList().IndexOf(found)] = item;
-            return 1;
         }
     }
 }

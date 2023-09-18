@@ -14,31 +14,29 @@ namespace polyclinic_project.user.service
     {
         private IRepository<User> _userRepository = UserRepositorySingleton.Instance;
 
-        public bool Add(User user)
+        public void Add(User user)
         {
-            return ICommandServiceUtility<User>.Add(_userRepository, user);
+            ICommandServiceUtility<User>.Add(_userRepository, user);
         }
 
-        public bool Remove(User user)
+        public void Remove(User user)
         {
-            return ICommandServiceUtility<User>.Remove(_userRepository, user);
+            ICommandServiceUtility<User>.Remove(_userRepository, user);
         }
 
-        public bool RemoveById(int id)
+        public void RemoveById(int id)
         {
-            //todo:handle with exceptions
-
-            return ICommandServiceUtility<User>.RemoveById(_userRepository, id);
+            ICommandServiceUtility<User>.RemoveById(_userRepository, id);
         }
 
-        public bool ClearList()
+        public void ClearList()
         {
-            return ICommandServiceUtility<User>.ClearList(_userRepository);
+            ICommandServiceUtility<User>.ClearList(_userRepository);
         }
 
-        public int EditById(int id, User user)
+        public void EditById(int id, User user)
         {
-            return ICommandServiceUtility<User>.EditById(_userRepository, id, user);
+            ICommandServiceUtility<User>.EditById(_userRepository, id, user);
         }
     }
 }
