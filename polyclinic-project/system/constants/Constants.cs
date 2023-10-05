@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace polyclinic_project.system.constants
 {
-    public static class Constants
+    public class Constants
     {
-        public const String STANDARD_DATE_FORMAT = "dd.MM.yyyy HH:mm";
-
-        #region PATHS
-        public const String USER_DATA_PATH = "D:\\mycode\\csharp\\projects\\polyclinic-project\\polyclinic-project\\user\\repository\\data\\users.txt";
-        public const String APPOINTMENT_DATA_PATH = "D:\\mycode\\csharp\\projects\\polyclinic-project\\polyclinic-project\\appointment\\repository\\data\\appointments.txt";
-        #endregion  
+        public static readonly string STANDARD_DATE_FORMAT = "dd-MM-yyyy HH:mm";
     }
 }

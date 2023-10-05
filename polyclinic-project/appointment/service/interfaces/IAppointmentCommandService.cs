@@ -9,14 +9,14 @@ namespace polyclinic_project.appointment.service.interfaces
 {
     public interface IAppointmentCommandService
     {
-        void Add(Appointment user);
+        void Add(Appointment appointment);
 
-        void Remove(Appointment user);
+        void Delete(Appointment appointment);
 
-        void RemoveById(int id);
+        void DeleteById(int id);
 
         void ClearList();
 
-        void EditById(int id, Appointment user);
+        void Update(Appointment appointment);
     }
 }

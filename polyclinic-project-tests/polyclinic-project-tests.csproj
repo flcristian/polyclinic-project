@@ -26,4 +26,8 @@
     <ProjectReference Include="..\polyclinic-project\polyclinic-project.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tests\services\" />
+  </ItemGroup>
+
 </Project>

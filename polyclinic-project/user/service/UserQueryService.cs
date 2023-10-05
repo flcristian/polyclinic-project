@@ -1,6 +1,7 @@
 ﻿using polyclinic_project.system.interfaces;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
+using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service.interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,40 +13,26 @@ namespace polyclinic_project.user.service
 {
     public class UserQueryService : IUserQueryService
     {
-        private IRepository<User> _userRepository;
+        private IUserRepository _repository = UserRepositorySingleton.Instance;
 
-        // Constructors
-
-        public UserQueryService(IRepository<User> userRepository)
+        public User FindByEmail(string email)
         {
-            _userRepository = userRepository;
+            throw new NotImplementedException();
         }
-
-        public UserQueryService()
-        {
-            _userRepository = UserRepositorySingleton.Instance;
-        }
-
-        // Methods
 
         public User FindById(int id)
         {
-            return IQueryServiceUtility<User>.FindById(_userRepository, id);
+            throw new NotImplementedException();
         }
 
-        public User FindByEmail(String email)
+        public User FindByPhone(string phone)
         {
-            return _userRepository.GetList().First(i => i.GetEmail() == email);
-        }
-
-        public User FindByPhone(String phone)
-        {
-            return _userRepository.GetList().First(i => i.GetPhone() == phone);
+            throw new NotImplementedException();
         }
 
         public int GetCount()
         {
-            return IQueryServiceUtility<User>.GetCount(_userRepository);
+            throw new NotImplementedException();
         }
     }
 }

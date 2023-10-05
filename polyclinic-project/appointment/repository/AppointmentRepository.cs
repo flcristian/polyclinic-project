@@ -1,45 +1,107 @@
 ﻿using polyclinic_project.appointment.model;
-using polyclinic_project.system.interfaces;
-using polyclinic_project.user.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using polyclinic_project.appointment.repository.interfaces;
+using polyclinic_project.system.data;
+using Microsoft.Extensions.Configuration;
+using polyclinic_project.system.interfaces.exceptions;
 
 namespace polyclinic_project.appointment.repository
 {
-    public class AppointmentRepository : IRepository<Appointment>
+    public class AppointmentRepository : IAppointmentRepository
     {
         private List<Appointment> _list;
-        private String _path;
+        private string _connectionString;
+        private DataAccess _dataAccess;
 
-        // Constants
-
-        public AppointmentRepository(String path)
+        public AppointmentRepository()
         {
+            _dataAccess = new DataAccess();
+            _connectionString = GetConnection();
+
             _list = new List<Appointment>();
-            _path = path;
+            Load();
         }
 
-        public AppointmentRepository(List<Appointment> list, String path)
+        private void Load()
         {
-            _list = list;
-            _path = path;
+            List<Appointment> list = GetList();
+
+            foreach (Appointment appointment in list)
+            {
+                _list.Add(appointment);
+            }
         }
 
-        // Accessors
+        #region IMPLEMENTATION
 
-        public void LoadData()
+        public void Add(Appointment appointment)
         {
-            _list = IDataRepository<Appointment>.LoadData(_path, new AppointmentFactory());
+            string sql = "insert into appointment(id, startDate, endDate) values(@id, @startDate, @endDate)";
+
+            _dataAccess.SaveData(sql, new { id = appointment.GetId(), startDate = appointment.GetStartDate(),  endDate = appointment.GetEndDate() }, _connectionString);
         }
 
-        public void SaveData()
+        public void Delete(int id)
         {
-            IDataRepository<Appointment>.SaveData(_path, _list);
+            string sql = "delete from appointment where id = @id";
+
+            _dataAccess.SaveData(sql, new { id }, _connectionString);
         }
 
-        public List<Appointment> GetList() { return _list; }
+        public void Update(Appointment appointment)
+        {
+            string sql = "update appointment set startDate = @startDate, endDate = @endDate where id = @id";
+
+            _dataAccess.SaveData(sql, new { id = appointment.GetId(), startDate = appointment.GetStartDate(), endDate = appointment.GetEndDate() }, _connectionString);
+        }
+
+        public Appointment FindById(int id)
+        {
+            string sql = "select * from appointment where id = @id";
+
+            List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
+            if (result.Count() == 0) throw new ItemDoesNotExist("Appointment does not exist");
+            return result[0];
+        }
+
+        public Appointment FindByDate(DateTime date)
+        {
+            string sql = "select * from appointment where startDate < date and endDate > date";
+
+            List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
+            if (result.Count() == 0) throw new ItemDoesNotExist("Appointment does not exist");
+            return result[0];
+        }
+        
+        public List<Appointment> GetList()
+        {
+            string sql = "select * from appointment";
+
+            return _dataAccess.LoadData<Appointment, dynamic>(sql, new { }, _connectionString).ToList();
+        }
+
+        public int GetCount()
+        {
+            string sql = "select count(id) from appointment";
+
+            return _dataAccess.LoadData<int, dynamic>(sql, new { }, _connectionString)[0];
+        }
+
+        public void Clear()
+        {
+            string sql = "delete from appointment";
+
+            _dataAccess.SaveData(sql, new { }, _connectionString);
+        }
+
+        #endregion
+
+        // GETTING CONNECTION STRING
+        private string GetConnection()
+        {
+            string c = Directory.GetCurrentDirectory();
+            IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(c).AddJsonFile("appsettings.json").Build();
+            string connectionString = configuration.GetConnectionString("Default")!;
+            return connectionString;
+        }
     }
 }

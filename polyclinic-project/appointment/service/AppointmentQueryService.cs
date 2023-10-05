@@ -1,8 +1,10 @@
 ﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.repository;
+using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces;
+using polyclinic_project.user.repository.interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,11 +16,11 @@ namespace polyclinic_project.appointment.service
 {
     public class AppointmentQueryService : IAppointmentQueryService
     {
-        private IRepository<Appointment> _repository;
+        private IAppointmentRepository _repository;
 
         // Constructors
 
-        public AppointmentQueryService(IRepository<Appointment> repository)
+        public AppointmentQueryService(IAppointmentRepository repository)
         {
             _repository = repository;
         }
@@ -32,23 +34,23 @@ namespace polyclinic_project.appointment.service
 
         public Appointment FindById(int id)
         {
-            return IQueryServiceUtility<Appointment>.FindById(_repository, id);
+            return _repository.FindById(id);
         }
 
         public Appointment FindByDate(DateTime date)
         {
-            return _repository.GetList().First(i => i.GetStartDate() <= date && i.GetEndDate() >= date);
+            return _repository.FindByDate(date);
+        }
+
+        public int GetCount()
+        {
+            throw new NotImplementedException();
         }
 
         public Appointment FindByDate(String date)
         {
             DateTime parsed = DateTime.ParseExact(date, Constants.STANDARD_DATE_FORMAT, CultureInfo.InvariantCulture);
             return _repository.GetList().First(i => i.GetStartDate() <= parsed && i.GetEndDate() >= parsed);
-        }
-
-        public int GetCount()
-        {
-            return IQueryServiceUtility<Appointment>.GetCount(_repository);
         }
     }
 }

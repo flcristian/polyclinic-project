@@ -1,6 +1,5 @@
 ﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
-using polyclinic_project.system.constants;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using System.Globalization;

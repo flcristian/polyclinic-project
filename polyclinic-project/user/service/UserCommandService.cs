@@ -1,6 +1,7 @@
 ﻿using polyclinic_project.system.interfaces;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
+using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service.interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,31 +13,31 @@ namespace polyclinic_project.user.service
 {
     public class UserCommandService : IUserComandService
     {
-        private IRepository<User> _userRepository = UserRepositorySingleton.Instance;
+        private IUserRepository _repository = UserRepositorySingleton.Instance;
 
         public void Add(User user)
         {
-            ICommandServiceUtility<User>.Add(_userRepository, user);
-        }
-
-        public void Remove(User user)
-        {
-            ICommandServiceUtility<User>.Remove(_userRepository, user);
-        }
-
-        public void RemoveById(int id)
-        {
-            ICommandServiceUtility<User>.RemoveById(_userRepository, id);
+            throw new NotImplementedException();
         }
 
         public void ClearList()
         {
-            ICommandServiceUtility<User>.ClearList(_userRepository);
+            throw new NotImplementedException();
         }
 
         public void EditById(int id, User user)
         {
-            ICommandServiceUtility<User>.EditById(_userRepository, id, user);
+            throw new NotImplementedException();
+        }
+
+        public void Remove(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveById(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
