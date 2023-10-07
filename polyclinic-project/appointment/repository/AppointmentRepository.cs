@@ -57,7 +57,7 @@ namespace polyclinic_project.appointment.repository
 
             List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
             if (result.Count == 0) 
-                throw new ItemDoesNotExist("Appointment does not exist");
+                throw new ItemDoesNotExist("No appointment with that id exists");
             return result[0];
         }
 
@@ -68,7 +68,7 @@ namespace polyclinic_project.appointment.repository
 
             List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
             if (result.Count == 0) 
-                throw new ItemDoesNotExist("Appointment does not exist");
+                throw new ItemDoesNotExist("No appointment is scheduled in that date");
             return result[0];
         }
         

@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace polyclinic_project.appointment.model
 {
-    public class Appointment : IAppointmentBuilder, IPrototype<Appointment>, IComparable<Appointment>
+    public class Appointment : IAppointmentBuilder, IPrototype<Appointment>
     {
         private int id;
         private DateTime startDate;
@@ -120,11 +120,6 @@ namespace polyclinic_project.appointment.model
         public override Int32 GetHashCode()
         {
             return (int)Math.Pow(this.startDate.Day, this.startDate.Minute) * (int)Math.PI - this.endDate.Minute * this.endDate.Hour;
-        }
-
-        public Int32 CompareTo(Appointment? appointment)
-        {
-            return 0;
         }
 
         public Appointment Clone()

@@ -1,0 +1,127 @@
+﻿using Microsoft.Extensions.Configuration;
+using polyclinic_project.system.data;
+using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user_appointment.model;
+using polyclinic_project.user_appointment.repository.interfaces;
+
+namespace polyclinic_project.user_appointment.repository;
+
+public class UserAppointmentRepository : IUserAppointmentRepository
+{
+    private string _connectionString;
+    private DataAccess _dataAccess;
+    
+    #region CONSTRUCTORS
+
+    public UserAppointmentRepository()
+    {
+        _connectionString = GetConnection();
+        _dataAccess = new DataAccess();
+    }
+
+    public UserAppointmentRepository(string connectionString)
+    {
+        _connectionString = connectionString;
+        _dataAccess = new DataAccess();
+    }
+    
+    #endregion
+    
+    #region PUBLIC_METHODS
+    
+    public void Add(UserAppointment userAppointment)
+    {
+        string sql = "insert into userAppointment values(@id,@pacientId,@doctorId,@appointmentId)";
+        
+        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
+    }
+
+    public void Delete(int id)
+    {
+        string sql = "delete from userAppoint where id = @id";
+
+        _dataAccess.SaveData(sql, new { id }, _connectionString);
+    }
+
+    public void Update(UserAppointment userAppointment)
+    {
+        string sql = "update userAppointment set pacientId = @pacientId, doctorId = @doctorId, appointmentId = @appointmentId where id = @id";
+        
+        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
+    }
+
+    public UserAppointment FindById(int id)
+    {
+        string sql = "select * from userAppointment where id = @id";
+
+        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { id }, _connectionString);
+        if (result.Count == 0)
+            throw new ItemDoesNotExist("No user appointment with that id exists");
+        return result[0];
+    }
+
+    public List<UserAppointment> FindByPacientId(int pacientId)
+    {
+        string sql = "select * from userAppointment where pacientId = @pacientId";
+        
+        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { pacientId }, _connectionString);
+        if (result.Count == 0)
+            throw new ItemDoesNotExist("Pacient has no appointments scheduled");
+        return result;
+    }
+
+    public List<UserAppointment> FindByDoctorId(int doctorId)
+    {
+        string sql = "select * from userAppointment where doctorId = @doctorId";
+        
+        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { doctorId }, _connectionString);
+        if (result.Count == 0)
+            throw new ItemDoesNotExist("Doctor has no appointments scheduled");
+        return result;
+    }
+
+    public UserAppointment FindByAppointmentId(int appointmentId)
+    {
+        string sql = "select * from userAppointment where appointmentId = @appointmentId";
+        
+        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { appointmentId }, _connectionString);
+        if (result.Count == 0)
+            throw new ItemAlreadyExists("Appointment does not exist or is not linked to any user appointments");
+        return result[0];
+    }
+
+    public List<UserAppointment> GetList()
+    {
+        string sql = "select * from userAppointment";
+
+        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { }, _connectionString);
+    }
+
+    public int GetCount()
+    {
+        string sql = "select count(id) from userAppointment";
+
+        return _dataAccess.LoadData<int, dynamic>(sql, new { }, _connectionString)[0];
+    }
+
+    public void Clear()
+    {
+        string sql = "delete from userAppointment";
+
+        _dataAccess.SaveData(sql, new { }, _connectionString);
+    }
+    
+    #endregion
+    
+    #region PRIVATE_METHODS
+
+    private string GetConnection()
+    {
+        string c = Directory.GetCurrentDirectory();
+        IConfigurationRoot configuration = new ConfigurationBuilder().SetBasePath(c).AddJsonFile("appsettings.json").Build();
+        string connectionString = configuration.GetConnectionString("Default")!;
+        return connectionString;
+    }
+    
+    #endregion
+}

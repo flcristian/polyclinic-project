@@ -26,4 +26,12 @@
     <ProjectReference Include="..\polyclinic-project\polyclinic-project.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="bin\Debug\net6.0\appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Tests\TestUserAppointment\service\" />
+  </ItemGroup>
+
 </Project>

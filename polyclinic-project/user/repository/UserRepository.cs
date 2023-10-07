@@ -55,7 +55,7 @@ namespace polyclinic_project.user.repository
 
             List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { id }, _connectionString);
             if (result.Count == 0) 
-                throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
+                throw new ItemDoesNotExist("No user with that id exists");
             return result[0];
         }
 
@@ -65,7 +65,7 @@ namespace polyclinic_project.user.repository
 
             List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { email }, _connectionString);
             if (result.Count == 0) 
-                throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
+                throw new ItemDoesNotExist("No user with that id exists");
             return result[0];
         }
 
@@ -75,7 +75,7 @@ namespace polyclinic_project.user.repository
 
             List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { phone }, _connectionString);
             if (result.Count == 0) 
-                throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
+                throw new ItemDoesNotExist("No user with that id exists");
             return result[0];
         }
 

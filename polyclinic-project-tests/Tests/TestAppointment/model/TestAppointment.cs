@@ -6,6 +6,7 @@ using polyclinic_project.appointment.model;
 
 namespace polyclinic_project_tests.Tests.TestAppointment
 {
+    [Collection("Appointment")]
     public class TestAppointment
     {
         [Fact]
