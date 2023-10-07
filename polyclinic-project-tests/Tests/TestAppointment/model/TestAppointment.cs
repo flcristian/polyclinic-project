@@ -1,10 +1,10 @@
 ﻿using polyclinic_project.appointment.model.interfaces;
-using polyclinic_project.appointment.model;
 using System.Globalization;
 using polyclinic_project.system.constants;
 using polyclinic_project.appointment.model.comparators;
+using polyclinic_project.appointment.model;
 
-namespace polyclinic_project_tests.Tests.TestAppointment.model
+namespace polyclinic_project_tests.Tests.TestAppointment
 {
     public class TestAppointment
     {

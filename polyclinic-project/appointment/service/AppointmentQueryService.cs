@@ -3,14 +3,7 @@ using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
-using polyclinic_project.system.interfaces;
-using polyclinic_project.user.repository.interfaces;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polyclinic_project.appointment.service
 {
@@ -18,7 +11,7 @@ namespace polyclinic_project.appointment.service
     {
         private IAppointmentRepository _repository;
 
-        // Constructors
+        #region CONSTRUCTORS
         
         public AppointmentQueryService(IAppointmentRepository repository)
         {
@@ -29,8 +22,10 @@ namespace polyclinic_project.appointment.service
         {
             _repository = AppointmentRepositorySingleton.Instance;
         }
+        
+        #endregion
 
-        // Methods
+        #region PUBLIC_METHODS
 
         public Appointment FindById(int id)
         {
@@ -49,8 +44,9 @@ namespace polyclinic_project.appointment.service
 
         public Appointment FindByDate(String date)
         {
-            DateTime parsed = DateTime.ParseExact(date, Constants.STANDARD_DATE_FORMAT, CultureInfo.InvariantCulture);
-            return _repository.GetList().First(i => i.GetStartDate() <= parsed && i.GetEndDate() >= parsed);
+            return _repository.FindByDate(DateTime.ParseExact(date, Constants.SQL_DATE_FORMAT, CultureInfo.InvariantCulture));
         }
+        
+        #endregion
     }
 }

@@ -10,6 +10,8 @@ namespace polyclinic_project.appointment.service
     {
         private IAppointmentRepository _repository;
 
+        #region CONSTRUCTORS
+        
         public AppointmentCommandService()
         {
             _repository = AppointmentRepositorySingleton.Instance;
@@ -19,9 +21,16 @@ namespace polyclinic_project.appointment.service
         {
             _repository = repository;
         }
+        
+        #endregion
 
+        #region PUBLIC_METHODS
+        
         public void Add(Appointment appointment)
         {
+            if (appointment.GetStartDate() >= appointment.GetEndDate())
+                throw new InvalidAppointmentSchedule("Start date can't be after or the same with the end date");
+            
             Appointment id = null!, startDate = null!, endDate = null!;
             try { id = _repository.FindById(appointment.GetId()); }
             catch(ItemDoesNotExist ex) { }
@@ -32,9 +41,12 @@ namespace polyclinic_project.appointment.service
             try { endDate = _repository.FindByDate(appointment.GetEndDate()); }
             catch(ItemDoesNotExist ex) { }
 
-            if (id != null) throw new ItemAlreadyExists("Id is already used");
-            if (startDate != null) throw new ItemAlreadyExists("Another appointment is scheduled in that date");
-            if (endDate != null) throw new ItemAlreadyExists("Another appointment is scheduled in that date");
+            if (id != null) 
+                throw new ItemAlreadyExists("Id is already used");
+            if (startDate != null) 
+                throw new ItemAlreadyExists("Another appointment is scheduled in that date");
+            if (endDate != null) 
+                throw new ItemAlreadyExists("Another appointment is scheduled in that date");
             _repository.Add(appointment);
         }
 
@@ -46,7 +58,8 @@ namespace polyclinic_project.appointment.service
         public void Update(Appointment appointment)
         {
             Appointment check = _repository.FindById(appointment.GetId());
-            if(check.Equals(appointment)) throw new ItemNotModified("Appointment was not modified, it doesn't require to be updated");
+            if(check.Equals(appointment)) 
+                throw new ItemNotModified("Appointment was not modified, it doesn't require to be updated");
             _repository.Update(appointment);
         }
 
@@ -61,5 +74,7 @@ namespace polyclinic_project.appointment.service
             _repository.FindById(id);
             _repository.Delete(id);
         }
+        
+        #endregion
     }
 }

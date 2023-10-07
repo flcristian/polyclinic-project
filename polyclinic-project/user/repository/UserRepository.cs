@@ -1,46 +1,32 @@
 ﻿using Microsoft.Extensions.Configuration;
-using MySqlX.XDevAPI.Common;
 using polyclinic_project.system.data;
 using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace polyclinic_project.user.repository
 {
     public class UserRepository : IUserRepository
     {
-        private List<User> _list;
-        private String _connectionString;
+        private string _connectionString;
         private DataAccess _dataAccess;
 
-        // Constructors
+        #region CONSTRUCTORS
 
         public UserRepository()
         {
             _dataAccess = new DataAccess();
             _connectionString = GetConnection();
-
-            _list = new List<User>();
-            Load();
         }
 
-        // Methods
-
-        private void Load() {
-            List<User> list = GetList();
-
-            foreach(User user in list)
-            {
-                _list.Add(user);
-            }
+        public UserRepository(string connectionString)
+        {
+            _dataAccess = new DataAccess();
+            _connectionString = connectionString;
         }
+        
+        #endregion
 
-        #region IMPLEMENTATION
+        #region PUBLIC_METHODS
 
         public void Add(User user)
         {
@@ -68,7 +54,8 @@ namespace polyclinic_project.user.repository
             string sql = "select * from user where id=@id";
 
             List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { id }, _connectionString);
-            if (result.Count() == 0) throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
+            if (result.Count == 0) 
+                throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
             return result[0];
         }
 
@@ -77,7 +64,8 @@ namespace polyclinic_project.user.repository
             string sql = "select * from user where email=@email";
 
             List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { email }, _connectionString);
-            if (result.Count() == 0) throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
+            if (result.Count == 0) 
+                throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
             return result[0];
         }
 
@@ -86,7 +74,8 @@ namespace polyclinic_project.user.repository
             string sql = "select * from user where phone=@phone";
 
             List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { phone }, _connectionString);
-            if (result.Count() == 0) throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
+            if (result.Count == 0) 
+                throw new ItemDoesNotExist("User does not exist"); // TO ADD EXCEPTIONS
             return result[0];
         }
 
@@ -113,7 +102,8 @@ namespace polyclinic_project.user.repository
 
         #endregion
 
-        // GETTING CONNECTION STRING
+        #region PRIVATE_METHODS
+
         private string GetConnection()
         {
             string c = Directory.GetCurrentDirectory();
@@ -121,5 +111,7 @@ namespace polyclinic_project.user.repository
             string connectionString = configuration.GetConnectionString("Default")!;
             return connectionString;
         }
+        
+        #endregion
     }
 }

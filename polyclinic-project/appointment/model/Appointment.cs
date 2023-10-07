@@ -100,7 +100,7 @@ namespace polyclinic_project.appointment.model
         {
             Appointment appointment = obj as Appointment;
 
-            if(appointment.startDate > this.endDate || appointment.endDate < this.startDate)
+            if(appointment.startDate >= this.endDate || appointment.endDate <= this.startDate)
             {
                 return false;
             }

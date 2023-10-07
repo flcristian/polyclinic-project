@@ -8,9 +8,10 @@ using polyclinic_project.system.constants;
 
 namespace polyclinic_project_tests.Tests.TestAppointment.repository;
 
+[Collection("Tests")]
 public class TestAppointmentRepository
 {
-    private IAppointmentRepository _repository = new AppointmentRepository(ITestConnectionString.GetConnection()); 
+    private IAppointmentRepository _repository = new AppointmentRepository(ITestConnectionString.GetConnection("AppointmentRepository")); 
     
     [Fact]
     public void TestAdd_AddsAppointment()
@@ -59,18 +60,18 @@ public class TestAppointmentRepository
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        Appointment updated = IAppointmentBuilder.BuildAppointment()
+        Appointment update = IAppointmentBuilder.BuildAppointment()
             .Id(1)
             .StartDate("06.10.2023 13:10")
             .EndDate("06.10.2023 13:30");
         _repository.Add(appointment);
         
         // Act
-        _repository.Update(updated);
+        _repository.Update(update);
         
         // Assert
-        Assert.Contains(updated, _repository.GetList());
-        Assert.Equal(updated, _repository.FindById(appointment.GetId()));
+        Assert.Contains(update, _repository.GetList());
+        Assert.Equal(update, _repository.FindById(appointment.GetId()));
         
         // Cleaning up
         _repository.Clear();
@@ -176,7 +177,6 @@ public class TestAppointmentRepository
             .Id(2)
             .StartDate("06.10.2023 13:10")
             .EndDate("06.10.2023 13:30");
-        List<Appointment> list = new List<Appointment> { appointment, another };
         _repository.Add(appointment);
         _repository.Add(another);
         

@@ -1,38 +1,50 @@
-﻿using polyclinic_project.system.interfaces;
-using polyclinic_project.user.model;
+﻿using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polyclinic_project.user.service
 {
     public class UserQueryService : IUserQueryService
     {
-        private IUserRepository _repository = UserRepositorySingleton.Instance;
+        private IUserRepository _repository;
 
+        #region CONSTRUCTORS
+        
+        public UserQueryService()
+        {
+            _repository = UserRepositorySingleton.Instance;
+        }
+
+        public UserQueryService(IUserRepository repository)
+        {
+            _repository = repository;
+        }
+        
+        #endregion
+        
+        #region PUBLIC_METHODS
+        
         public User FindByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _repository.FindByEmail(email);
         }
 
         public User FindById(int id)
         {
-            throw new NotImplementedException();
+            return _repository.FindById(id);
         }
 
         public User FindByPhone(string phone)
         {
-            throw new NotImplementedException();
+            return _repository.FindByPhone(phone);
         }
 
         public int GetCount()
         {
-            throw new NotImplementedException();
+            return _repository.GetCount();
         }
+        
+        #endregion
     }
 }

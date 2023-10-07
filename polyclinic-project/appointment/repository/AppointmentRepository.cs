@@ -2,35 +2,33 @@
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.system.data;
 using Microsoft.Extensions.Configuration;
+using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
 
 namespace polyclinic_project.appointment.repository
 {
     public class AppointmentRepository : IAppointmentRepository
     {
-        private List<Appointment> _list;
         private string _connectionString;
         private DataAccess _dataAccess;
 
+        #region CONSTRUCTORS
+        
         public AppointmentRepository()
         {
             _dataAccess = new DataAccess();
             _connectionString = GetConnection();
-
-            _list = new List<Appointment>();
-            Load();
         }
 
         public AppointmentRepository(String connectionString)
         {
             _dataAccess = new DataAccess();
             _connectionString = connectionString;
-
-            _list = new List<Appointment>();
-            Load();
         }
+        
+        #endregion
 
-        #region IMPLEMENTATION
+        #region PUBLIC_METHODS
 
         public void Add(Appointment appointment)
         {
@@ -58,16 +56,19 @@ namespace polyclinic_project.appointment.repository
             string sql = "select * from appointment where id = @id";
 
             List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
-            if (result.Count() == 0) throw new ItemDoesNotExist("Appointment does not exist");
+            if (result.Count == 0) 
+                throw new ItemDoesNotExist("Appointment does not exist");
             return result[0];
         }
 
         public Appointment FindByDate(DateTime date)
         {
-            string sql = "select * from appointment where startDate < @date and endDate > @date";
+            string dateString = $"'{date.ToString(Constants.SQL_DATE_FORMAT)}'";
+            string sql = $"select * from appointment where startDate <= {dateString} and endDate >= {dateString}";
 
             List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
-            if (result.Count() == 0) throw new ItemDoesNotExist("Appointment does not exist");
+            if (result.Count == 0) 
+                throw new ItemDoesNotExist("Appointment does not exist");
             return result[0];
         }
         
@@ -95,18 +96,7 @@ namespace polyclinic_project.appointment.repository
         #endregion
         
         #region PRIVATE_METHODS
-        
-        private void Load()
-        {
-            List<Appointment> list = GetList();
 
-            foreach (Appointment appointment in list)
-            {
-                _list.Add(appointment);
-            }
-        }
-        
-        // GETTING CONNECTION STRING
         private string GetConnection()
         {
             string c = Directory.GetCurrentDirectory();
