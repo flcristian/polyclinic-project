@@ -8,6 +8,6 @@ namespace polyclinic_project.system.constants
 {
     public class Constants
     {
-        public static readonly string STANDARD_DATE_FORMAT = "dd-MM-yyyy HH:mm";
+        public static readonly string STANDARD_DATE_FORMAT = "dd.MM.yyyy HH:mm";
     }
 }

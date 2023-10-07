@@ -1,15 +1,9 @@
 ﻿using polyclinic_project.system.interfaces;
 using polyclinic_project.user.model.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polyclinic_project.user.model
 {
-    public class User : IUserBuilder, IPrototype<User>, IComparable<User>, IHasId
+    public class User : IUserBuilder, IPrototype<User>, IComparable<User>
     {
         private Int32 id;
         private String name;
@@ -155,6 +149,6 @@ namespace polyclinic_project.user.model
             return $"{this.id}/{this.name}/{this.email}/{this.phone}/{this.type.GetString()}\n";
         }
 
-        #endregion
+        #endregion  
     }
 }

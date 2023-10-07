@@ -19,7 +19,7 @@ namespace polyclinic_project.appointment.service
         private IAppointmentRepository _repository;
 
         // Constructors
-
+        
         public AppointmentQueryService(IAppointmentRepository repository)
         {
             _repository = repository;
@@ -44,7 +44,7 @@ namespace polyclinic_project.appointment.service
 
         public int GetCount()
         {
-            throw new NotImplementedException();
+            return _repository.GetCount();
         }
 
         public Appointment FindByDate(String date)

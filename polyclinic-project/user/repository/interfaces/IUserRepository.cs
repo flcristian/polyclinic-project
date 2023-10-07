@@ -12,9 +12,9 @@ namespace polyclinic_project.user.repository.interfaces
         void Add(User user);
         void Delete(int id);
         void Update(User user);
-        User GetById(int id);
-        User GetByEmail(String email);
-        User GetByPhone(String phone);
+        User FindById(int id);
+        User FindByEmail(String email);
+        User FindByPhone(String phone);
         List<User> GetList();
         int GetCount();
         void Clear();

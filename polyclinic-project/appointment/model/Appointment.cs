@@ -2,16 +2,11 @@
 using polyclinic_project.system.interfaces;
 using polyclinic_project.system.constants;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
 
 namespace polyclinic_project.appointment.model
 {
-    public class Appointment : IAppointmentBuilder, IPrototype<Appointment>, IComparable<Appointment>, IHasId
+    public class Appointment : IAppointmentBuilder, IPrototype<Appointment>, IComparable<Appointment>
     {
         private int id;
         private DateTime startDate;

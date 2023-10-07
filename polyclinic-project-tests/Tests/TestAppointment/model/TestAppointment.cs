@@ -1,15 +1,10 @@
 ﻿using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.model;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using polyclinic_project.system.constants;
 using polyclinic_project.appointment.model.comparators;
 
-namespace polyclinic_project_tests.Tests.models
+namespace polyclinic_project_tests.Tests.TestAppointment.model
 {
     public class TestAppointment
     {

@@ -21,14 +21,13 @@ namespace polyclinic_project.appointment.repository
             Load();
         }
 
-        private void Load()
+        public AppointmentRepository(String connectionString)
         {
-            List<Appointment> list = GetList();
+            _dataAccess = new DataAccess();
+            _connectionString = connectionString;
 
-            foreach (Appointment appointment in list)
-            {
-                _list.Add(appointment);
-            }
+            _list = new List<Appointment>();
+            Load();
         }
 
         #region IMPLEMENTATION
@@ -65,7 +64,7 @@ namespace polyclinic_project.appointment.repository
 
         public Appointment FindByDate(DateTime date)
         {
-            string sql = "select * from appointment where startDate < date and endDate > date";
+            string sql = "select * from appointment where startDate < @date and endDate > @date";
 
             List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
             if (result.Count() == 0) throw new ItemDoesNotExist("Appointment does not exist");
@@ -94,7 +93,19 @@ namespace polyclinic_project.appointment.repository
         }
 
         #endregion
+        
+        #region PRIVATE_METHODS
+        
+        private void Load()
+        {
+            List<Appointment> list = GetList();
 
+            foreach (Appointment appointment in list)
+            {
+                _list.Add(appointment);
+            }
+        }
+        
         // GETTING CONNECTION STRING
         private string GetConnection()
         {
@@ -103,5 +114,7 @@ namespace polyclinic_project.appointment.repository
             string connectionString = configuration.GetConnectionString("Default")!;
             return connectionString;
         }
+        
+        #endregion
     }
 }

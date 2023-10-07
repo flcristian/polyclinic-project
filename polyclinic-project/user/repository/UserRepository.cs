@@ -63,7 +63,7 @@ namespace polyclinic_project.user.repository
             _dataAccess.SaveData(sql, new { id = user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType() }, _connectionString);
         }
 
-        public User GetById(int id)
+        public User FindById(int id)
         {
             string sql = "select * from user where id=@id";
 
@@ -72,7 +72,7 @@ namespace polyclinic_project.user.repository
             return result[0];
         }
 
-        public User GetByEmail(string email)
+        public User FindByEmail(string email)
         {
             string sql = "select * from user where email=@email";
 
@@ -81,7 +81,7 @@ namespace polyclinic_project.user.repository
             return result[0];
         }
 
-        public User GetByPhone(string phone)
+        public User FindByPhone(string phone)
         {
             string sql = "select * from user where phone=@phone";
 

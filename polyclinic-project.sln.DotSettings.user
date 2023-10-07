@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f37dfac7_002D206e_002D4096_002Da579_002D67b219fc4d99/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from TestAppointment.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;53F47FEA-DE7F-4173-869E-D5C3175E54D7/d:Tests/d:TestAppointment/d:model/f:TestAppointment.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;53F47FEA-DE7F-4173-869E-D5C3175E54D7/d:Tests/d:TestAppointment/d:repository/f:TestAppointmentRepository.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;53F47FEA-DE7F-4173-869E-D5C3175E54D7/d:Tests/d:TestAppointment/d:service/f:TestAppointmentCommandService.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;/Or&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

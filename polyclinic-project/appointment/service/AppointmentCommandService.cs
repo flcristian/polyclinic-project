@@ -2,20 +2,23 @@
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
-using polyclinic_project.system.interfaces;
-using polyclinic_project.user.repository.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using polyclinic_project.system.interfaces.exceptions;
 
 namespace polyclinic_project.appointment.service
 {
     public class AppointmentCommandService : IAppointmentCommandService
     {
-        private IAppointmentRepository _repository = AppointmentRepositorySingleton.Instance;
+        private IAppointmentRepository _repository;
+
+        public AppointmentCommandService()
+        {
+            _repository = AppointmentRepositorySingleton.Instance;
+        }
+
+        public AppointmentCommandService(IAppointmentRepository repository)
+        {
+            _repository = repository;
+        }
 
         public void Add(Appointment appointment)
         {
