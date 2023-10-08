@@ -38,7 +38,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
     public void Delete(int id)
     {
-        string sql = "delete from userAppoint where id = @id";
+        string sql = "delete from userAppointment where id = @id";
 
         _dataAccess.SaveData(sql, new { id }, _connectionString);
     }
@@ -66,7 +66,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
         
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { pacientId }, _connectionString);
         if (result.Count == 0)
-            throw new ItemDoesNotExist("Pacient has no appointments scheduled");
+            throw new ItemsDoNotExist("Pacient has no appointments scheduled");
         return result;
     }
 
@@ -76,7 +76,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
         
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { doctorId }, _connectionString);
         if (result.Count == 0)
-            throw new ItemDoesNotExist("Doctor has no appointments scheduled");
+            throw new ItemsDoNotExist("Doctor has no appointments scheduled");
         return result;
     }
 
@@ -86,7 +86,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
         
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { appointmentId }, _connectionString);
         if (result.Count == 0)
-            throw new ItemAlreadyExists("Appointment does not exist or is not linked to any user appointments");
+            throw new ItemDoesNotExist("Appointment does not exist or is not linked to any user appointments");
         return result[0];
     }
 
