@@ -194,7 +194,7 @@ public class TestAppointmentCommandService
         
         // Assert
         Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(appointment.GetId()));
+        Assert.Equal(update, _repository.FindById(appointment.GetId())[0]);
         
         // Cleaning up
         _repository.Clear();

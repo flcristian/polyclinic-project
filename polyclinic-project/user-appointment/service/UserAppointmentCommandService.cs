@@ -42,11 +42,11 @@ public class UserAppointmentCommandService : IUserAppointmentCommandService
 
     public void Add(UserAppointment userAppointment)
     {
-        List<User> pacient = _userRepository.FindById(userAppointment.GetPacientId());
+        List<User> patient = _userRepository.FindById(userAppointment.GetPatientId());
         List<User> doctor = _userRepository.FindById(userAppointment.GetDoctorId());
         List<Appointment> appointment = _appointmentRepository.FindById(userAppointment.GetAppointmentId());
-        if (pacient.Count == 0)
-            throw new ItemDoesNotExist(Constants.PACIENT_DOES_NOT_EXIST);
+        if (patient.Count == 0)
+            throw new ItemDoesNotExist(Constants.PATIENT_DOES_NOT_EXIST);
         if (doctor.Count == 0)
             throw new ItemDoesNotExist(Constants.DOCTOR_DOES_NOT_EXIST);
         if (appointment.Count == 0)
@@ -54,29 +54,41 @@ public class UserAppointmentCommandService : IUserAppointmentCommandService
         if (doctor[0].GetType() != UserType.DOCTOR)
             throw new UserIsNotADoctor(Constants.USER_NOT_DOCTOR);
 
-        List<UserAppointment> check = _userAppointmentRepository.FindById(userAppointment.GetId());
-        if (check.Count > 0)
+        List<UserAppointment> id = _userAppointmentRepository.FindById(userAppointment.GetId());
+        if (id.Count > 0)
             throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
+        _userAppointmentRepository.Add(userAppointment);
     }
 
     public void ClearList()
     {
-        throw new NotImplementedException();
+        _userAppointmentRepository.Clear();
     }
 
     public void Delete(UserAppointment userAppointment)
     {
-        throw new NotImplementedException();
+        List<UserAppointment> check = _userAppointmentRepository.FindById(userAppointment.GetId());
+        if (check.Count == 0)
+            throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
+        _userAppointmentRepository.Delete(userAppointment.GetId());
     }
 
     public void DeleteById(int id)
     {
-        throw new NotImplementedException();
+        List<UserAppointment> check = _userAppointmentRepository.FindById(id);
+        if (check.Count == 0)
+            throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
+        _userAppointmentRepository.Delete(id);
     }
 
     public void Update(UserAppointment userAppointment)
     {
-        throw new NotImplementedException();
+        List<UserAppointment> check = _userAppointmentRepository.FindById(userAppointment.GetId());
+        if (check.Count == 0)
+            throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
+        if (check[0].Equals(userAppointment))
+            throw new ItemAlreadyExists(Constants.USER_APPOINTMENT_NOT_MODIFIED);
+        _userAppointmentRepository.Update(userAppointment);
     }
 
     #endregion

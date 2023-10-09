@@ -31,9 +31,9 @@ public class UserAppointmentRepository : IUserAppointmentRepository
     
     public void Add(UserAppointment userAppointment)
     {
-        string sql = "insert into user_appointment values(@id,@pacientId,@doctorId,@appointmentId)";
+        string sql = "insert into user_appointment values(@id,@patientId,@doctorId,@appointmentId)";
         
-        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
+        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), patientId = userAppointment.GetPatientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
     }
 
     public void Delete(int id)
@@ -45,9 +45,9 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
     public void Update(UserAppointment userAppointment)
     {
-        string sql = "update user_appointment set pacientId = @pacientId, doctorId = @doctorId, appointmentId = @appointmentId where id = @id";
+        string sql = "update user_appointment set patientId = @patientId, doctorId = @doctorId, appointmentId = @appointmentId where id = @id";
         
-        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
+        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), patientId = userAppointment.GetPatientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
     }
 
     public List<UserAppointment> FindById(int id)
@@ -57,11 +57,11 @@ public class UserAppointmentRepository : IUserAppointmentRepository
         return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { id }, _connectionString);
     }
 
-    public List<UserAppointment> FindByPacientId(int pacientId)
+    public List<UserAppointment> FindByPatientId(int patientId)
     {
-        string sql = "select * from user_appointment where pacientId = @pacientId";
+        string sql = "select * from user_appointment where patientId = @patientId";
         
-        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { pacientId }, _connectionString);
+        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { patientId }, _connectionString);
     }
 
     public List<UserAppointment> FindByDoctorId(int doctorId)

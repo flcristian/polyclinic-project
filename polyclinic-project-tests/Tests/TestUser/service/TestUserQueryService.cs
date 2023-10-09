@@ -24,7 +24,7 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Assert
         Assert.Throws<ItemDoesNotExist>(() => _service.FindById(user.GetId()));
@@ -42,7 +42,7 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -65,7 +65,7 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Assert
         Assert.Throws<ItemDoesNotExist>(() => _service.FindByEmail(user.GetEmail()));
@@ -83,7 +83,7 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -106,7 +106,7 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Assert
         Assert.Throws<ItemDoesNotExist>(() => _service.FindByPhone(user.GetPhone()));
@@ -124,7 +124,7 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -147,13 +147,13 @@ public class TestUserQueryService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User another = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+989133909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         _repository.Add(another);
         
