@@ -3,6 +3,7 @@ using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service.interfaces;
+using polyclinic_project.system.constants;
 
 namespace polyclinic_project.user.service
 {
@@ -28,23 +29,17 @@ namespace polyclinic_project.user.service
         
         public void Add(User user)
         {
-            User id = null!, email = null!, phone = null!;
-            
-            try { id = _repository.FindById(user.GetId()); }
-            catch(ItemDoesNotExist ex) { }
-            
-            try { email = _repository.FindByEmail(user.GetEmail()); }
-            catch(ItemDoesNotExist ex) { }
-            
-            try { phone = _repository.FindByPhone(user.GetPhone()); }
-            catch(ItemDoesNotExist ex) { }
+            List<User> id = null!, email = null!, phone = null!;
+            id = _repository.FindById(user.GetId());
+            email = _repository.FindByEmail(user.GetEmail());
+            phone = _repository.FindByPhone(user.GetPhone());
 
-            if (id != null) 
-                throw new ItemAlreadyExists("Id is already used");
-            if (email != null)
-                throw new ItemAlreadyExists("Email is already used");
-            if (phone != null)
-                throw new ItemAlreadyExists("Phone is already used");
+            if (id.Count > 0) 
+                throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
+            if (email.Count > 0)
+                throw new ItemAlreadyExists(Constants.EMAIL_ALREADY_USED);
+            if (phone.Count > 0)
+                throw new ItemAlreadyExists(Constants.PHONE_ALREADY_USED);
             _repository.Add(user);
         }
 
@@ -67,9 +62,11 @@ namespace polyclinic_project.user.service
 
         public void Update(User user)
         {
-            User check = _repository.FindById(user.GetId());
+            List<User> check = _repository.FindById(user.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
             if (check.Equals(user))
-                throw new ItemNotModified("User was not modified, it doesn't require to be updated");
+                throw new ItemNotModified(Constants.USER_NOT_MODIFIED);
             _repository.Update(user);
         }
         

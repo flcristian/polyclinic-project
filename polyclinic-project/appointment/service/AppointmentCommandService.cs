@@ -32,22 +32,17 @@ namespace polyclinic_project.appointment.service
             if (appointment.GetStartDate() >= appointment.GetEndDate())
                 throw new InvalidAppointmentSchedule(Constants.INVALID_APPOINTMENT_DATES);
             
-            Appointment id = null!, startDate = null!, endDate = null!;
-            try { id = _repository.FindById(appointment.GetId()); }
-            catch(ItemDoesNotExist ex) { }
+            List<Appointment> id = null!, startDate = null!, endDate = null!;
+            id = _repository.FindById(appointment.GetId());
+            startDate = _repository.FindByDate(appointment.GetStartDate());
+            endDate = _repository.FindByDate(appointment.GetEndDate());
 
-            try { startDate = _repository.FindByDate(appointment.GetStartDate()); }
-            catch(ItemDoesNotExist ex) { }
-            
-            try { endDate = _repository.FindByDate(appointment.GetEndDate()); }
-            catch(ItemDoesNotExist ex) { }
-
-            if (id != null) 
+            if (id.Count > 0) 
                 throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
-            if (startDate != null) 
-                throw new ItemAlreadyExists("Another appointment is scheduled in that date");
-            if (endDate != null) 
-                throw new ItemAlreadyExists("Another appointment is scheduled in that date");
+            if (startDate.Count > 0) 
+                throw new ItemAlreadyExists(Constants.ANOTHER_APPOINTMENT_ALREADY_SCHEDULED);
+            if (endDate.Count > 0)
+                throw new ItemAlreadyExists(Constants.ANOTHER_APPOINTMENT_ALREADY_SCHEDULED);
             _repository.Add(appointment);
         }
 
@@ -58,9 +53,11 @@ namespace polyclinic_project.appointment.service
 
         public void Update(Appointment appointment)
         {
-            Appointment check = _repository.FindById(appointment.GetId());
-            if(check.Equals(appointment)) 
-                throw new ItemNotModified("Appointment was not modified, it doesn't require to be updated");
+            List<Appointment> check = _repository.FindById(appointment.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.APPOINTMENT_DOES_NOT_EXIST);
+            if (check[0].Equals(appointment)) 
+                throw new ItemNotModified(Constants.APPOINTMENT_NOT_MODIFIED);
             _repository.Update(appointment);
         }
 

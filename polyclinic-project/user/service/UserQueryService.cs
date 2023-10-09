@@ -1,4 +1,6 @@
-﻿using polyclinic_project.user.model;
+﻿using polyclinic_project.system.constants;
+using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service.interfaces;
@@ -27,17 +29,26 @@ namespace polyclinic_project.user.service
         
         public User FindByEmail(string email)
         {
-            return _repository.FindByEmail(email);
+            List<User> result = _repository.FindByEmail(email);
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            return result[0];
         }
 
         public User FindById(int id)
         {
-            return _repository.FindById(id);
+            List<User> result = _repository.FindById(id);
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            return result[0];
         }
 
         public User FindByPhone(string phone)
         {
-            return _repository.FindByPhone(phone);
+            List<User> result = _repository.FindByPhone(phone);
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            return result[0];
         }
 
         public int GetCount()

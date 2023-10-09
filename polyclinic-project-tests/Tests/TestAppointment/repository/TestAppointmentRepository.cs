@@ -71,7 +71,7 @@ public class TestAppointmentRepository
         
         // Assert
         Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(appointment.GetId()));
+        Assert.Equal(update, _repository.FindById(appointment.GetId())[0]);
         
         // Cleaning up
         _repository.Clear();
@@ -88,7 +88,7 @@ public class TestAppointmentRepository
         _repository.Add(appointment);
         
         // Act
-        Appointment found = _repository.FindById(appointment.GetId());
+        Appointment found = _repository.FindById(appointment.GetId())[0];
         
         // Assert
         Assert.NotNull(found);
@@ -109,7 +109,7 @@ public class TestAppointmentRepository
         _repository.Add(appointment);
         
         // Act
-        Appointment found = _repository.FindByDate(DateTime.ParseExact("06.10.2023 12:30", Constants.STANDARD_DATE_FORMAT, CultureInfo.InvariantCulture));
+        Appointment found = _repository.FindByDate(DateTime.ParseExact("06.10.2023 12:30", Constants.STANDARD_DATE_FORMAT, CultureInfo.InvariantCulture))[0];
         
         // Assert
         Assert.NotNull(found);

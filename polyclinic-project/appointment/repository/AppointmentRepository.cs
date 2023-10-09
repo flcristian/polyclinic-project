@@ -51,25 +51,19 @@ namespace polyclinic_project.appointment.repository
             _dataAccess.SaveData(sql, new { id = appointment.GetId(), startDate = appointment.GetStartDate(), endDate = appointment.GetEndDate() }, _connectionString);
         }
 
-        public Appointment FindById(int id)
+        public List<Appointment> FindById(int id)
         {
             string sql = "select * from appointment where id = @id";
 
-            List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
-            if (result.Count == 0) 
-                throw new ItemDoesNotExist(Constants.APPOINTMENT_DOES_NOT_EXIST);
-            return result[0];
+            return _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
         }
 
-        public Appointment FindByDate(DateTime date)
+        public List<Appointment> FindByDate(DateTime date)
         {
             string dateString = $"'{date.ToString(Constants.SQL_DATE_FORMAT)}'";
             string sql = $"select * from appointment where startDate <= {dateString} and endDate >= {dateString}";
 
-            List<Appointment> result = _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
-            if (result.Count == 0) 
-                throw new ItemDoesNotExist(Constants.NO_APPOINTMENT_SCHEDULED);
-            return result[0];
+            return _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
         }
         
         public List<Appointment> GetList()

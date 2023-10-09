@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using polyclinic_project.system.constants;
 using polyclinic_project.system.data;
 using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository.interfaces;
+
 namespace polyclinic_project.user.repository
 {
     public class UserRepository : IUserRepository
@@ -49,34 +51,25 @@ namespace polyclinic_project.user.repository
             _dataAccess.SaveData(sql, new { id = user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType() }, _connectionString);
         }
 
-        public User FindById(int id)
+        public List<User> FindById(int id)
         {
             string sql = "select * from user where id=@id";
 
-            List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { id }, _connectionString);
-            if (result.Count == 0) 
-                throw new ItemDoesNotExist("No user with that id exists");
-            return result[0];
+            return _dataAccess.LoadData<User, dynamic>(sql, new { id }, _connectionString);
         }
 
-        public User FindByEmail(string email)
+        public List<User> FindByEmail(string email)
         {
             string sql = "select * from user where email=@email";
 
-            List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { email }, _connectionString);
-            if (result.Count == 0) 
-                throw new ItemDoesNotExist("No user with that id exists");
-            return result[0];
+            return _dataAccess.LoadData<User, dynamic>(sql, new { email }, _connectionString);
         }
 
-        public User FindByPhone(string phone)
+        public List<User> FindByPhone(string phone)
         {
             string sql = "select * from user where phone=@phone";
 
-            List<User> result = _dataAccess.LoadData<User, dynamic>(sql, new { phone }, _connectionString);
-            if (result.Count == 0) 
-                throw new ItemDoesNotExist("No user with that id exists");
-            return result[0];
+            return _dataAccess.LoadData<User, dynamic>(sql, new { phone }, _connectionString);
         }
 
         public List<User> GetList()

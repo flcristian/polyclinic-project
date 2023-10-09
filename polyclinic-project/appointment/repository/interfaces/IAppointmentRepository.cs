@@ -12,8 +12,8 @@ namespace polyclinic_project.appointment.repository.interfaces
         void Add(Appointment appointment);
         void Delete(int id);
         void Update(Appointment appointment);
-        Appointment FindById(int id);
-        Appointment FindByDate(DateTime date);
+        List<Appointment> FindById(int id);
+        List<Appointment> FindByDate(DateTime date);
         List<Appointment> GetList();
         int GetCount();
         void Clear();

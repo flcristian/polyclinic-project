@@ -50,44 +50,32 @@ public class UserAppointmentRepository : IUserAppointmentRepository
         _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
     }
 
-    public UserAppointment FindById(int id)
+    public List<UserAppointment> FindById(int id)
     {
         string sql = "select * from user_appointment where id = @id";
 
-        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { id }, _connectionString);
-        if (result.Count == 0)
-            throw new ItemDoesNotExist("No user appointment with that id exists");
-        return result[0];
+        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { id }, _connectionString);
     }
 
     public List<UserAppointment> FindByPacientId(int pacientId)
     {
         string sql = "select * from user_appointment where pacientId = @pacientId";
         
-        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { pacientId }, _connectionString);
-        if (result.Count == 0)
-            throw new ItemsDoNotExist("Pacient has no appointments scheduled");
-        return result;
+        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { pacientId }, _connectionString);
     }
 
     public List<UserAppointment> FindByDoctorId(int doctorId)
     {
         string sql = "select * from user_appointment where doctorId = @doctorId";
         
-        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { doctorId }, _connectionString);
-        if (result.Count == 0)
-            throw new ItemsDoNotExist("Doctor has no appointments scheduled");
-        return result;
+        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { doctorId }, _connectionString);
     }
 
-    public UserAppointment FindByAppointmentId(int appointmentId)
+    public List<UserAppointment> FindByAppointmentId(int appointmentId)
     {
         string sql = "select * from user_appointment where appointmentId = @appointmentId";
         
-        List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { appointmentId }, _connectionString);
-        if (result.Count == 0)
-            throw new ItemDoesNotExist("Appointment does not exist or is not linked to any user appointments");
-        return result[0];
+        return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { appointmentId }, _connectionString);
     }
 
     public List<UserAppointment> GetList()

@@ -1,7 +1,9 @@
 ﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
+using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
@@ -40,15 +42,21 @@ public class UserAppointmentCommandService : IUserAppointmentCommandService
 
     public void Add(UserAppointment userAppointment)
     {
-        User pacient = _userRepository.FindById(userAppointment.GetPacientId());
-        User Doctor = _userRepository.FindById(userAppointment.GetDoctorId());
-        Appointment appointment = _appointmentRepository.FindById(userAppointment.GetAppointmentId());
-        if (pacient == null)
-            throw new ItemDoesNotExist("This pacient does not exist.");
-        if (doctor == null)
-            throw new ItemDoesNotExist("This doctor does not exist.");
-        if (pacient == null)
-            throw new ItemDoesNotExist("This pacient does not exist.");
+        List<User> pacient = _userRepository.FindById(userAppointment.GetPacientId());
+        List<User> doctor = _userRepository.FindById(userAppointment.GetDoctorId());
+        List<Appointment> appointment = _appointmentRepository.FindById(userAppointment.GetAppointmentId());
+        if (pacient.Count == 0)
+            throw new ItemDoesNotExist(Constants.PACIENT_DOES_NOT_EXIST);
+        if (doctor.Count == 0)
+            throw new ItemDoesNotExist(Constants.DOCTOR_DOES_NOT_EXIST);
+        if (appointment.Count == 0)
+            throw new ItemDoesNotExist(Constants.APPOINTMENT_DOES_NOT_EXIST);
+        if (doctor[0].GetType() != UserType.DOCTOR)
+            throw new UserIsNotADoctor(Constants.USER_NOT_DOCTOR);
+
+        List<UserAppointment> check = _userAppointmentRepository.FindById(userAppointment.GetId());
+        if (check.Count > 0)
+            throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
     }
 
     public void ClearList()

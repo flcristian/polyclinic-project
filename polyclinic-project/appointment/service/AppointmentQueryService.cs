@@ -3,6 +3,7 @@ using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
+using polyclinic_project.system.interfaces.exceptions;
 using System.Globalization;
 
 namespace polyclinic_project.appointment.service
@@ -29,12 +30,18 @@ namespace polyclinic_project.appointment.service
 
         public Appointment FindById(int id)
         {
-            return _repository.FindById(id);
+            List<Appointment> result = _repository.FindById(id);
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.APPOINTMENT_DOES_NOT_EXIST);
+            return result[0];
         }
 
         public Appointment FindByDate(DateTime date)
         {
-            return _repository.FindByDate(date);
+            List<Appointment> result = _repository.FindByDate(date);
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.NO_APPOINTMENT_SCHEDULED);
+            return result[0];
         }
 
         public int GetCount()
@@ -44,7 +51,10 @@ namespace polyclinic_project.appointment.service
 
         public Appointment FindByDate(String date)
         {
-            return _repository.FindByDate(DateTime.ParseExact(date, Constants.SQL_DATE_FORMAT, CultureInfo.InvariantCulture));
+            List<Appointment> result = _repository.FindByDate(DateTime.ParseExact(date, Constants.SQL_DATE_FORMAT, CultureInfo.InvariantCulture));
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.NO_APPOINTMENT_SCHEDULED);
+            return result[0];
         }
         
         #endregion
