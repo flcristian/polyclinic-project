@@ -8,7 +8,28 @@ namespace polyclinic_project.system.constants
 {
     public class Constants
     {
+        // DATE FORMATS
         public static readonly string STANDARD_DATE_FORMAT = "dd.MM.yyyy HH:mm";
         public static readonly string SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm";
+
+        #region EXCEPTION_MESSAGES
+
+        // GENERAL
+        public static readonly string ID_ALREADY_USED = "This id is already used.";
+
+        // USER
+        public static readonly string USER_DOES_NOT_EXIST = "This user does not exist.";
+        public static readonly string PACIENT_DOES_NOT_EXIST = "This pacient does not exist.";
+        public static readonly string DOCTOR_DOES_NOT_EXIST = "This doctor does not exist.";
+
+        // APPOINTMENT
+        public static readonly string APPOINTMENT_DOES_NOT_EXIST = "This appointment does not exist.";
+        public static readonly string NO_APPOINTMENT_SCHEDULED = "No appointment is scheduled in that date.";
+        public static readonly string INVALID_APPOINTMENT_DATES = "Start date can't be after or the same with the end date.";
+
+        // USER APPOINTMENT
+        public static readonly string USER_APPOINTMENT_DOES_NOT_EXIST = "This user appointment does not exist.";
+
+        #endregion
     }
 }

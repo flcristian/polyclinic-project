@@ -1,4 +1,5 @@
-﻿using polyclinic_project.appointment.model;
+﻿using polyclinic_project.system.constants;
+using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
@@ -29,7 +30,7 @@ namespace polyclinic_project.appointment.service
         public void Add(Appointment appointment)
         {
             if (appointment.GetStartDate() >= appointment.GetEndDate())
-                throw new InvalidAppointmentSchedule("Start date can't be after or the same with the end date");
+                throw new InvalidAppointmentSchedule(Constants.INVALID_APPOINTMENT_DATES);
             
             Appointment id = null!, startDate = null!, endDate = null!;
             try { id = _repository.FindById(appointment.GetId()); }
@@ -42,7 +43,7 @@ namespace polyclinic_project.appointment.service
             catch(ItemDoesNotExist ex) { }
 
             if (id != null) 
-                throw new ItemAlreadyExists("Id is already used");
+                throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
             if (startDate != null) 
                 throw new ItemAlreadyExists("Another appointment is scheduled in that date");
             if (endDate != null) 

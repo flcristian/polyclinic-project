@@ -31,28 +31,28 @@ public class UserAppointmentRepository : IUserAppointmentRepository
     
     public void Add(UserAppointment userAppointment)
     {
-        string sql = "insert into userAppointment values(@id,@pacientId,@doctorId,@appointmentId)";
+        string sql = "insert into user_appointment values(@id,@pacientId,@doctorId,@appointmentId)";
         
         _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
     }
 
     public void Delete(int id)
     {
-        string sql = "delete from userAppointment where id = @id";
+        string sql = "delete from user_appointment where id = @id";
 
         _dataAccess.SaveData(sql, new { id }, _connectionString);
     }
 
     public void Update(UserAppointment userAppointment)
     {
-        string sql = "update userAppointment set pacientId = @pacientId, doctorId = @doctorId, appointmentId = @appointmentId where id = @id";
+        string sql = "update user_appointment set pacientId = @pacientId, doctorId = @doctorId, appointmentId = @appointmentId where id = @id";
         
         _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), pacientId = userAppointment.GetPacientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
     }
 
     public UserAppointment FindById(int id)
     {
-        string sql = "select * from userAppointment where id = @id";
+        string sql = "select * from user_appointment where id = @id";
 
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { id }, _connectionString);
         if (result.Count == 0)
@@ -62,7 +62,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
     public List<UserAppointment> FindByPacientId(int pacientId)
     {
-        string sql = "select * from userAppointment where pacientId = @pacientId";
+        string sql = "select * from user_appointment where pacientId = @pacientId";
         
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { pacientId }, _connectionString);
         if (result.Count == 0)
@@ -72,7 +72,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
     public List<UserAppointment> FindByDoctorId(int doctorId)
     {
-        string sql = "select * from userAppointment where doctorId = @doctorId";
+        string sql = "select * from user_appointment where doctorId = @doctorId";
         
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { doctorId }, _connectionString);
         if (result.Count == 0)
@@ -82,7 +82,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
     public UserAppointment FindByAppointmentId(int appointmentId)
     {
-        string sql = "select * from userAppointment where appointmentId = @appointmentId";
+        string sql = "select * from user_appointment where appointmentId = @appointmentId";
         
         List<UserAppointment> result = _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { appointmentId }, _connectionString);
         if (result.Count == 0)
@@ -92,21 +92,21 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
     public List<UserAppointment> GetList()
     {
-        string sql = "select * from userAppointment";
+        string sql = "select * from user_appointment";
 
         return _dataAccess.LoadData<UserAppointment, dynamic>(sql, new { }, _connectionString);
     }
 
     public int GetCount()
     {
-        string sql = "select count(id) from userAppointment";
+        string sql = "select count(id) from user_appointment";
 
         return _dataAccess.LoadData<int, dynamic>(sql, new { }, _connectionString)[0];
     }
 
     public void Clear()
     {
-        string sql = "delete from userAppointment";
+        string sql = "delete from user_appointment";
 
         _dataAccess.SaveData(sql, new { }, _connectionString);
     }
