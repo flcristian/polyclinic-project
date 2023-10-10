@@ -1,6 +1,6 @@
 ﻿using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
-using polyclinic_project_tests.TestConnectionString;
+using polyclinic_project_tests;
 using polyclinic_project.user.model;
 using polyclinic_project.user.model.interfaces;
 
@@ -9,7 +9,7 @@ namespace polyclinic_project_tests.Tests.TestUser.repository;
 [Collection("Tests")]
 public class TestUserRepository
 {
-    private IUserRepository _repository = new UserRepository(ITestConnectionString.GetConnection("UserRepository")); 
+    private IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserRepository")); 
     
     [Fact]
     public void TestAdd_AddsUser()
@@ -20,7 +20,7 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Act
         _repository.Add(user);
@@ -41,7 +41,7 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -63,13 +63,13 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User update = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -77,7 +77,7 @@ public class TestUserRepository
         
         // Assert
         Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(user.GetId()));
+        Assert.Equal(update, _repository.FindById(user.GetId())[0]);
         
         // Cleaning up
         _repository.Clear();
@@ -92,11 +92,11 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
-        User found = _repository.FindById(user.GetId());
+        User found = _repository.FindById(user.GetId())[0];
         
         // Assert
         Assert.NotNull(found);
@@ -115,11 +115,11 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
-        User found = _repository.FindByEmail(user.GetEmail());
+        User found = _repository.FindByEmail(user.GetEmail())[0];
         
         // Assert
         Assert.NotNull(found);
@@ -138,11 +138,11 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
-        User found = _repository.FindByPhone(user.GetPhone());
+        User found = _repository.FindByPhone(user.GetPhone())[0];
         
         // Assert
         Assert.NotNull(found);
@@ -161,13 +161,13 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User another = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+15399738970")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         List<User> list = new List<User> { user, another };
         _repository.Add(user);
         _repository.Add(another);
@@ -189,13 +189,13 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User another = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+15399738970")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         _repository.Add(another);
         
@@ -215,13 +215,13 @@ public class TestUserRepository
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User another = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+15399738970")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         _repository.Add(another);
         

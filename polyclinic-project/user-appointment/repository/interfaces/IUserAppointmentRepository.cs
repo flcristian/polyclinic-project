@@ -8,7 +8,7 @@ public interface IUserAppointmentRepository
     void Delete(int id);
     void Update(UserAppointment userAppointment);
     List<UserAppointment> FindById(int id);
-    List<UserAppointment> FindByPacientId(int pacientId);
+    List<UserAppointment> FindByPatientId(int patientId);
     List<UserAppointment> FindByDoctorId(int doctorId);
     List<UserAppointment> FindByAppointmentId(int appointmentId);
     List<UserAppointment> GetList();

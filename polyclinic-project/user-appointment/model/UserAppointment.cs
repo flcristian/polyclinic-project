@@ -6,7 +6,7 @@ namespace polyclinic_project.user_appointment.model;
 public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointment>
 {
     private int id;
-    private int pacientId;
+    private int patientId;
     private int doctorId;
     private int appointmentId;
     
@@ -15,15 +15,15 @@ public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointme
     public UserAppointment()
     {
         this.id = -1;
-        this.pacientId = -1;
+        this.patientId = -1;
         this.doctorId = -1;
         this.appointmentId = -1;
     }
 
-    public UserAppointment(int id, int pacientId, int doctorId, int appointmentId)
+    public UserAppointment(int id, int patientId, int doctorId, int appointmentId)
     {
         this.id = id;
-        this.pacientId = pacientId;
+        this.patientId = patientId;
         this.doctorId = doctorId;
         this.appointmentId = appointmentId;
     }
@@ -31,7 +31,7 @@ public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointme
     public UserAppointment(UserAppointment userAppointment)
     {
         this.id = userAppointment.id;
-        this.pacientId = userAppointment.pacientId;
+        this.patientId = userAppointment.patientId;
         this.doctorId = userAppointment.doctorId;
         this.appointmentId = userAppointment.appointmentId;
     }
@@ -40,11 +40,11 @@ public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointme
     
     #region ACCESSORS
         public int GetId() { return this.id; }
-        public int GetPacientId() { return this.pacientId; }
+        public int GetPatientId() { return this.patientId; }
         public int GetDoctorId() { return this.doctorId; }
         public int GetAppointmentId() { return this.appointmentId; }
         public void SetId(int id) { this.id = id; }
-        public void SetPacientId(int pacientId) { this.pacientId = pacientId; }
+        public void SetPatientId(int patientId) { this.patientId = patientId; }
         public void SetDoctorId(int doctorId) { this.doctorId = doctorId; }
         public void SetAppointmentId(int appointmentId) { this.appointmentId = appointmentId; }
     #endregion
@@ -57,9 +57,9 @@ public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointme
         return this;
     }
 
-    public UserAppointment PacientId(int pacientId)
+    public UserAppointment PatientId(int patientId)
     {
-        this.pacientId = pacientId;
+        this.patientId = patientId;
         return this;
     }
 
@@ -82,19 +82,19 @@ public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointme
     public override Boolean Equals(object? obj)
     {
         UserAppointment userAppointment = obj as UserAppointment;
-        return userAppointment.id == this.id && userAppointment.pacientId == this.pacientId && userAppointment.doctorId == this.doctorId && userAppointment.appointmentId == this.appointmentId;
+        return userAppointment.id == this.id && userAppointment.patientId == this.patientId && userAppointment.doctorId == this.doctorId && userAppointment.appointmentId == this.appointmentId;
     }
 
     public override int GetHashCode()
     {
-        return this.id * this.appointmentId + (int)Math.Pow(this.pacientId, this.doctorId);
+        return this.id * this.appointmentId + (int)Math.Pow(this.patientId, this.doctorId);
     }
 
     public override String ToString()
     {
         String desc = "";
         desc += $"Id : {this.id}\n";
-        desc += $"Pacient Id : {this.pacientId}\n";
+        desc += $"Patient Id : {this.patientId}\n";
         desc += $"Doctor Id : {this.doctorId}\n";
         desc += $"Appointment Id : {this.appointmentId}\n";
         return desc;

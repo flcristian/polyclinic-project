@@ -1,11 +1,8 @@
-﻿using polyclinic_project_tests.TestConnectionString;
-using polyclinic_project.appointment.model;
+﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
-using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user_appointment.model;
-using polyclinic_project.user_appointment.model.comparators;
 using polyclinic_project.user_appointment.model.interfaces;
 using polyclinic_project.user_appointment.repository;
 using polyclinic_project.user_appointment.repository.interfaces;
@@ -19,20 +16,20 @@ namespace polyclinic_project_tests.Tests.TestUserAppointment.repository;
 [Collection("Tests")]
 public class TestUserAppointmentRepository
 {
-    private IUserAppointmentRepository _userAppointmentRepository = new UserAppointmentRepository(ITestConnectionString.GetConnection("UserAppointmentRepository"));
-    private IAppointmentRepository _appointmentRepository = new AppointmentRepository(ITestConnectionString.GetConnection("AppointmentRepository"));
-    private IUserRepository _userRepository = new UserRepository(ITestConnectionString.GetConnection("UserRepository"));
+    private IUserAppointmentRepository _userAppointmentRepository = new UserAppointmentRepository(TestConnectionString.GetConnection("UserAppointmentRepository"));
+    private IAppointmentRepository _appointmentRepository = new AppointmentRepository(TestConnectionString.GetConnection("AppointmentRepository"));
+    private IUserRepository _userRepository = new UserRepository(TestConnectionString.GetConnection("UserRepository"));
     
     [Fact]
     public void TestAdd_AddsUserAppointment()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -45,10 +42,10 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 13:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         
@@ -68,12 +65,12 @@ public class TestUserAppointmentRepository
     public void TestDelete_DeletesUserAppointment()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -86,10 +83,10 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 13:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _userAppointmentRepository.Add(userAppointment);
@@ -110,12 +107,12 @@ public class TestUserAppointmentRepository
     public void TestUpdate_UpdatesUserAppointment()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -132,15 +129,15 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 14:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
         UserAppointment update = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(2);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _appointmentRepository.Add(another);
@@ -151,7 +148,7 @@ public class TestUserAppointmentRepository
         
         // Assert
         Assert.Contains(update, _userAppointmentRepository.GetList());
-        Assert.Equal(update, _userAppointmentRepository.FindById(userAppointment.GetId()));
+        Assert.Equal(update, _userAppointmentRepository.FindById(userAppointment.GetId())[0]);
         
         // Cleaning up
         _userAppointmentRepository.Clear();
@@ -163,12 +160,12 @@ public class TestUserAppointmentRepository
     public void TestFindById_ReturnsUserAppointment()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -181,20 +178,19 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 13:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _userAppointmentRepository.Add(userAppointment);
         
         // Act
-        UserAppointment found = _userAppointmentRepository.FindById(userAppointment.GetId());
+        UserAppointment found = _userAppointmentRepository.FindById(userAppointment.GetId())[0];
         
         // Assert
         Assert.Equal(userAppointment, found);
-        Assert.Throws<ItemDoesNotExist>(() => _userAppointmentRepository.FindById(2));
         
         // Cleaning up
         _userAppointmentRepository.Clear();
@@ -203,15 +199,15 @@ public class TestUserAppointmentRepository
     }
     
     [Fact]
-    public void TestFindByPacientId_ReturnsUserAppointmentList()
+    public void TestFindByPatientId_ReturnsUserAppointmentList()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -228,15 +224,15 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 14:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
         UserAppointment anotherUserAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(2)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(2);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _appointmentRepository.Add(anotherAppointment);
@@ -245,11 +241,10 @@ public class TestUserAppointmentRepository
         List<UserAppointment> list = new List<UserAppointment> { userAppointment, anotherUserAppointment };
         
         // Act
-        List<UserAppointment> check = _userAppointmentRepository.FindByPacientId(1);
+        List<UserAppointment> check = _userAppointmentRepository.FindByPatientId(1);
         
         // Assert
         Assert.Equal(list, check);
-        Assert.Throws<ItemsDoNotExist>(() => _userAppointmentRepository.FindByPacientId(2));
         
         // Cleaning up
         _userAppointmentRepository.Clear();
@@ -261,12 +256,12 @@ public class TestUserAppointmentRepository
     public void TestFindByDoctorId_ReturnsUserAppointmentList()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -283,15 +278,15 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 14:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
         UserAppointment anotherUserAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(2)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(2);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _appointmentRepository.Add(anotherAppointment);
@@ -304,7 +299,6 @@ public class TestUserAppointmentRepository
         
         // Assert
         Assert.Equal(list, check);
-        Assert.Throws<ItemsDoNotExist>(() => _userAppointmentRepository.FindByDoctorId(1));
         
         // Cleaning up
         _userAppointmentRepository.Clear();
@@ -316,12 +310,12 @@ public class TestUserAppointmentRepository
     public void TestFindByAppointmentId_ReturnsUserAppointment()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -334,20 +328,19 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 13:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _userAppointmentRepository.Add(userAppointment);
         
         // Act
-        UserAppointment found = _userAppointmentRepository.FindByAppointmentId(userAppointment.GetAppointmentId());
+        UserAppointment found = _userAppointmentRepository.FindByAppointmentId(userAppointment.GetAppointmentId())[0];
         
         // Assert
         Assert.Equal(userAppointment, found);
-        Assert.Throws<ItemDoesNotExist>(() => _userAppointmentRepository.FindByAppointmentId(2));
         
         // Cleaning up
         _userAppointmentRepository.Clear();
@@ -359,12 +352,12 @@ public class TestUserAppointmentRepository
     public void TestGetList_ReturnsUserAppointmentList()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -381,15 +374,15 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 14:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
         UserAppointment anotherUserAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(2)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(2);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _appointmentRepository.Add(anotherAppointment);
@@ -413,12 +406,12 @@ public class TestUserAppointmentRepository
     public void TestGetCount_ReturnsUserAppointmentCount()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -435,15 +428,15 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 14:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
         UserAppointment anotherUserAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(2)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(2);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _appointmentRepository.Add(anotherAppointment);
@@ -467,12 +460,12 @@ public class TestUserAppointmentRepository
     public void TestClear_ClearsList()
     {
         // Arrange
-        User pacient = IUserBuilder.BuildUser()
+        User patient = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User doctor = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
@@ -489,21 +482,20 @@ public class TestUserAppointmentRepository
             .EndDate("06.10.2023 14:00");
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(1);
         UserAppointment anotherUserAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(2)
-            .PacientId(1)
+            .PatientId(1)
             .DoctorId(2)
             .AppointmentId(2);
-        _userRepository.Add(pacient);
+        _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
         _appointmentRepository.Add(anotherAppointment);
         _userAppointmentRepository.Add(userAppointment);
         _userAppointmentRepository.Add(anotherUserAppointment);
-        List<UserAppointment> list = new List<UserAppointment> { userAppointment, anotherUserAppointment };
         
         // Act
         _userAppointmentRepository.Clear();

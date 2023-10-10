@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace polyclinic_project_tests.TestConnectionString;
+namespace polyclinic_project_tests;
 
-public interface ITestConnectionString
+public static class TestConnectionString
 {
     public static string GetConnection(string test)
     {

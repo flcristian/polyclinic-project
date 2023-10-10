@@ -45,13 +45,17 @@ namespace polyclinic_project.user.service
 
         public void Delete(User user)
         {
-            _repository.FindById(user.GetId());
+            List<User> check = _repository.FindById(user.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
             _repository.Delete(user.GetId());
         }
 
         public void DeleteById(int id)
         {
-            _repository.FindById(id);
+            List<User> check = _repository.FindById(id);
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
             _repository.Delete(id);
         }
 
@@ -65,7 +69,7 @@ namespace polyclinic_project.user.service
             List<User> check = _repository.FindById(user.GetId());
             if (check.Count == 0)
                 throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
-            if (check.Equals(user))
+            if (check[0].Equals(user))
                 throw new ItemNotModified(Constants.USER_NOT_MODIFIED);
             _repository.Update(user);
         }

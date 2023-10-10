@@ -1,4 +1,4 @@
-﻿using polyclinic_project_tests.TestConnectionString;
+﻿using polyclinic_project_tests;
 using polyclinic_project.user.model;
 using polyclinic_project.user.model.interfaces;
 using polyclinic_project.user.repository;
@@ -12,7 +12,7 @@ namespace polyclinic_project_tests.Tests.TestUser.service;
 [Collection("Tests")]
 public class TestUserCommandService
 {
-    private static IUserRepository _repository = new UserRepository(ITestConnectionString.GetConnection("UserCommandService"));
+    private static IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserCommandService"));
     private IUserCommandService _service = new UserCommandService(_repository);
     
     [Fact]
@@ -24,13 +24,13 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User add = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+12191633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Assert
@@ -49,13 +49,13 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User add = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+71623163111")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Assert
@@ -74,13 +74,13 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User add = IUserBuilder.BuildUser()
             .Id(2)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Assert
@@ -99,7 +99,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Act
         _service.Add(user);
@@ -120,7 +120,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -142,7 +142,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Assert
         Assert.Throws<ItemDoesNotExist>(() => _service.Update(user));
@@ -160,13 +160,13 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User update = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Assert
@@ -185,13 +185,13 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         User update = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Marian")
             .Email("marian@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -199,7 +199,7 @@ public class TestUserCommandService
         
         // Assert
         Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(user.GetId()));
+        Assert.Equal(update, _repository.FindById(user.GetId())[0]);
         
         // Cleaning up
         _repository.Clear();
@@ -214,7 +214,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Assert
         Assert.Throws<ItemDoesNotExist>(() => _service.Delete(user));
@@ -232,7 +232,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act
@@ -254,7 +254,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         
         // Assert
         Assert.Throws<ItemDoesNotExist>(() => _service.DeleteById(user.GetId()));
@@ -272,7 +272,7 @@ public class TestUserCommandService
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+12174633909")
-            .Type(UserType.PACIENT);
+            .Type(UserType.PATIENT);
         _repository.Add(user);
         
         // Act

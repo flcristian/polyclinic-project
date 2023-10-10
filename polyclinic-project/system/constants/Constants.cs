@@ -19,7 +19,7 @@ namespace polyclinic_project.system.constants
 
         // USER
         public static readonly string USER_DOES_NOT_EXIST = "This user does not exist.";
-        public static readonly string PACIENT_DOES_NOT_EXIST = "This pacient does not exist.";
+        public static readonly string PATIENT_DOES_NOT_EXIST = "This patient does not exist.";
         public static readonly string DOCTOR_DOES_NOT_EXIST = "This doctor does not exist.";
         public static readonly string USER_NOT_MODIFIED = "User was not modified, it doesn't require to be updated.";
         public static readonly string EMAIL_ALREADY_USED = "This email is already used.";
@@ -35,6 +35,9 @@ namespace polyclinic_project.system.constants
 
         // USER APPOINTMENT
         public static readonly string USER_APPOINTMENT_DOES_NOT_EXIST = "This user appointment does not exist.";
+        public static readonly string USER_APPOINTMENT_NOT_MODIFIED = "User appointment was not modified, it doesn't require to be updated.";
+        public static readonly string PATIENT_HAS_NO_APPOINTMENTS = "This patient has no appointments.";
+        public static readonly string DOCTOR_NOT_ASSIGNED = "This doctor is not assigned to any appointments.";
 
         #endregion
     }

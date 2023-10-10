@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
-using polyclinic_project_tests.TestConnectionString;
+using polyclinic_project_tests;
 using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.system.constants;
@@ -11,7 +11,7 @@ namespace polyclinic_project_tests.Tests.TestAppointment.repository;
 [Collection("Tests")]
 public class TestAppointmentRepository
 {
-    private IAppointmentRepository _repository = new AppointmentRepository(ITestConnectionString.GetConnection("AppointmentRepository")); 
+    private IAppointmentRepository _repository = new AppointmentRepository(TestConnectionString.GetConnection("AppointmentRepository")); 
     
     [Fact]
     public void TestAdd_AddsAppointment()
