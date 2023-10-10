@@ -1,11 +1,8 @@
-﻿using polyclinic_project_tests.TestConnectionString;
-using polyclinic_project.appointment.model;
+﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
-using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user_appointment.model;
-using polyclinic_project.user_appointment.model.comparators;
 using polyclinic_project.user_appointment.model.interfaces;
 using polyclinic_project.user_appointment.repository;
 using polyclinic_project.user_appointment.repository.interfaces;
@@ -19,9 +16,9 @@ namespace polyclinic_project_tests.Tests.TestUserAppointment.repository;
 [Collection("Tests")]
 public class TestUserAppointmentRepository
 {
-    private IUserAppointmentRepository _userAppointmentRepository = new UserAppointmentRepository(ITestConnectionString.GetConnection("UserAppointmentRepository"));
-    private IAppointmentRepository _appointmentRepository = new AppointmentRepository(ITestConnectionString.GetConnection("AppointmentRepository"));
-    private IUserRepository _userRepository = new UserRepository(ITestConnectionString.GetConnection("UserRepository"));
+    private IUserAppointmentRepository _userAppointmentRepository = new UserAppointmentRepository(TestConnectionString.GetConnection("UserAppointmentRepository"));
+    private IAppointmentRepository _appointmentRepository = new AppointmentRepository(TestConnectionString.GetConnection("AppointmentRepository"));
+    private IUserRepository _userRepository = new UserRepository(TestConnectionString.GetConnection("UserRepository"));
     
     [Fact]
     public void TestAdd_AddsUserAppointment()
@@ -499,7 +496,6 @@ public class TestUserAppointmentRepository
         _appointmentRepository.Add(anotherAppointment);
         _userAppointmentRepository.Add(userAppointment);
         _userAppointmentRepository.Add(anotherUserAppointment);
-        List<UserAppointment> list = new List<UserAppointment> { userAppointment, anotherUserAppointment };
         
         // Act
         _userAppointmentRepository.Clear();

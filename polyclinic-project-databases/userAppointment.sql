@@ -8,7 +8,7 @@ create table user_appointment(
     foreign key (appointmentId) references appointment(id) on delete cascade
 );
 
-drop table user_appointment;
+drop table userAppointment;
 
 delete from user_appointment where id in (1,2,3);
 delete from user where id in (1,2,3);

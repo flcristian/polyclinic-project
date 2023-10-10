@@ -1,6 +1,6 @@
 ﻿using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
-using polyclinic_project_tests.TestConnectionString;
+using polyclinic_project_tests;
 using polyclinic_project.user.model;
 using polyclinic_project.user.model.interfaces;
 
@@ -9,7 +9,7 @@ namespace polyclinic_project_tests.Tests.TestUser.repository;
 [Collection("Tests")]
 public class TestUserRepository
 {
-    private IUserRepository _repository = new UserRepository(ITestConnectionString.GetConnection("UserRepository")); 
+    private IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserRepository")); 
     
     [Fact]
     public void TestAdd_AddsUser()

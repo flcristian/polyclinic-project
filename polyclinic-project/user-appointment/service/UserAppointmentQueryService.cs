@@ -52,7 +52,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
     {
         List<UserAppointment> result = _userAppointmentRepository.FindById(id);
         if (result.Count == 0)
-            throw new ItemsDoNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
+            throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
         return result[0];
     }
 

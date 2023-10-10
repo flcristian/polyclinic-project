@@ -87,7 +87,7 @@ public class UserAppointmentCommandService : IUserAppointmentCommandService
         if (check.Count == 0)
             throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
         if (check[0].Equals(userAppointment))
-            throw new ItemAlreadyExists(Constants.USER_APPOINTMENT_NOT_MODIFIED);
+            throw new ItemNotModified(Constants.USER_APPOINTMENT_NOT_MODIFIED);
         _userAppointmentRepository.Update(userAppointment);
     }
 

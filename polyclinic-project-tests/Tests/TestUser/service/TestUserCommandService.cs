@@ -1,4 +1,4 @@
-﻿using polyclinic_project_tests.TestConnectionString;
+﻿using polyclinic_project_tests;
 using polyclinic_project.user.model;
 using polyclinic_project.user.model.interfaces;
 using polyclinic_project.user.repository;
@@ -12,7 +12,7 @@ namespace polyclinic_project_tests.Tests.TestUser.service;
 [Collection("Tests")]
 public class TestUserCommandService
 {
-    private static IUserRepository _repository = new UserRepository(ITestConnectionString.GetConnection("UserCommandService"));
+    private static IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserCommandService"));
     private IUserCommandService _service = new UserCommandService(_repository);
     
     [Fact]
