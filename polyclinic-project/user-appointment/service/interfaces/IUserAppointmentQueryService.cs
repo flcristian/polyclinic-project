@@ -6,9 +6,11 @@ public interface IUserAppointmentQueryService
 {
     UserAppointment FindById(int id);
 
-    UserAppointment FindByEmail(String email);
+    UserAppointment FindByAppointmentId(int appointmentId);
 
-    UserAppointment FindByPhone(String phone);
+    List<UserAppointment> FindByPatientId(int patientId);
+
+    List<UserAppointment> FindByDoctorId(int doctorId);
 
     int GetCount();
 }

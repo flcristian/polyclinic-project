@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace polyclinic_project.user.model
 {
-    public class Pacient : User
+    public class Patient : User
     {
     }
 }

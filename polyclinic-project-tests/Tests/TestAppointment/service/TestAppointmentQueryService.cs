@@ -1,4 +1,4 @@
-﻿using polyclinic_project_tests.TestConnectionString;
+﻿using polyclinic_project_tests;
 using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
@@ -13,7 +13,7 @@ namespace polyclinic_project_tests.Tests.TestAppointment.service;
 [Collection("Tests")]
 public class TestAppointmentQueryService
 {
-    private static IAppointmentRepository _repository = new AppointmentRepository(ITestConnectionString.GetConnection("AppointmentQueryService"));
+    private static IAppointmentRepository _repository = new AppointmentRepository(TestConnectionString.GetConnection("AppointmentQueryService"));
     private IAppointmentQueryService _service = new AppointmentQueryService(_repository);
     
     [Fact]

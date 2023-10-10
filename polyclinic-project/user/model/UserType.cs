@@ -9,7 +9,7 @@ namespace polyclinic_project.user.model
     public enum UserType
     {
         DOCTOR,
-        PACIENT,
+        PATIENT,
         NONE
     }
 
@@ -18,7 +18,7 @@ namespace polyclinic_project.user.model
         private static readonly Dictionary<UserType, string> _map = new Dictionary<UserType, string>
        {
         { UserType.DOCTOR, "Doctor" },
-        { UserType.PACIENT, "Pacient" },
+        { UserType.PATIENT, "Patient" },
         { UserType.NONE, "None" },
        };
 

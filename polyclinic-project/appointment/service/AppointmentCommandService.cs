@@ -63,13 +63,17 @@ namespace polyclinic_project.appointment.service
 
         public void Delete(Appointment appointment)
         {
-            _repository.FindById(appointment.GetId());
+            List<Appointment> check = _repository.FindById(appointment.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
             _repository.Delete(appointment.GetId());
         }
 
         public void DeleteById(int id)
         {
-            _repository.FindById(id);
+            List<Appointment> check = _repository.FindById(id);
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
             _repository.Delete(id);
         }
         
