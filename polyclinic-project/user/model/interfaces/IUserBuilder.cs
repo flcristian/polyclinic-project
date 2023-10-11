@@ -28,7 +28,7 @@ namespace polyclinic_project.user.model.interfaces
             return new Doctor();
         }
 
-        public static Patient BuildPacient()
+        public static Patient BuildPatient()
         {
             return new Patient();
         }
