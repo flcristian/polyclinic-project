@@ -12,6 +12,7 @@ namespace polyclinic_project.system.constants
         public static readonly string STANDARD_DATE_FORMAT = "dd.MM.yyyy HH:mm";
         public static readonly string SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm";
         public static readonly string STANDARD_DATE_DAYTIME_ONLY = "HH:mm";
+        public static readonly string STANDARD_DATE_CALENDAR_DATE_ONLY = "dd.MM.yyyy";
 
         #region EXCEPTION_MESSAGES
 

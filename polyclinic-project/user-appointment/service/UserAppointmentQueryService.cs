@@ -1,20 +1,18 @@
-﻿using polyclinic_project.appointment.repository.interfaces;
-using polyclinic_project.appointment.repository;
-using polyclinic_project.user.repository.interfaces;
-using polyclinic_project.user.repository;
-using polyclinic_project.user_appointment.model;
-using polyclinic_project.user_appointment.repository.interfaces;
-using polyclinic_project.user_appointment.repository;
-using polyclinic_project.user_appointment.service.interfaces;
-using polyclinic_project.system.interfaces.exceptions;
-using polyclinic_project.system.constants;
-using polyclinic_project.user.model;
-using polyclinic_project.user_appointment.dtos;
-using polyclinic_project.appointment.model;
-using polyclinic_project.user.dtos;
-using MySqlX.XDevAPI.Common;
-using polyclinic_project.user.exceptions;
+﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
+using polyclinic_project.appointment.repository;
+using polyclinic_project.appointment.repository.interfaces;
+using polyclinic_project.system.constants;
+using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.exceptions;
+using polyclinic_project.user.model;
+using polyclinic_project.user.repository;
+using polyclinic_project.user.repository.interfaces;
+using polyclinic_project.user_appointment.dtos;
+using polyclinic_project.user_appointment.model;
+using polyclinic_project.user_appointment.repository;
+using polyclinic_project.user_appointment.repository.interfaces;
+using polyclinic_project.user_appointment.service.interfaces;
 
 namespace polyclinic_project.user_appointment.service;
 
@@ -94,7 +92,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
             .StartDate(startDate)
             .EndDate(endDate);
         List<UserAppointment> userAppointments = FindByDoctorId(doctors[0].GetId());
-        foreach(UserAppointment userAppointment in userAppointments)
+        foreach (UserAppointment userAppointment in userAppointments)
         {
             Appointment appointment = _appointmentRepository.FindById(userAppointment.GetAppointmentId())[0];
             if (appointment.Equals(check))
@@ -141,14 +139,14 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         List<Appointment> appointments = _appointmentRepository.GetList();
 
         IEnumerable<PatientViewAppointmentsResponse> result = from userAppointment in userAppointments
-                                                       join appointment in appointments on userAppointment.GetAppointmentId() equals appointment.GetId()
-                                                       join user in users on userAppointment.GetDoctorId() equals user.GetId()
-                                                       select new PatientViewAppointmentsResponse
-                                                       {
-                                                           StartDate = appointment.GetStartDate(),
-                                                           EndDate = appointment.GetEndDate(),
-                                                           DoctorName = user.GetName()
-                                                       };
+                                                              join appointment in appointments on userAppointment.GetAppointmentId() equals appointment.GetId()
+                                                              join user in users on userAppointment.GetDoctorId() equals user.GetId()
+                                                              select new PatientViewAppointmentsResponse
+                                                              {
+                                                                  StartDate = appointment.GetStartDate(),
+                                                                  EndDate = appointment.GetEndDate(),
+                                                                  DoctorName = user.GetName()
+                                                              };
         return result.ToList();
     }
 

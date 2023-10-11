@@ -1,15 +1,16 @@
 ﻿using polyclinic_project.appointment.service;
 using polyclinic_project.appointment.service.interfaces;
-using polyclinic_project.user_appointment.service;
-using polyclinic_project.user_appointment.service.interfaces;
-using polyclinic_project.user.model;
-using polyclinic_project.user.service;
-using polyclinic_project.user.service.interfaces;
-using polyclinic_project.view.interfaces;
-using polyclinic_project.user_appointment.dtos;
 using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.dtos;
+using polyclinic_project.user.model;
+using polyclinic_project.user.service;
+using polyclinic_project.user.service.interfaces;
+using polyclinic_project.user_appointment.dtos;
+using polyclinic_project.user_appointment.service;
+using polyclinic_project.user_appointment.service.interfaces;
+using polyclinic_project.view.interfaces;
+using System.Globalization;
 
 namespace polyclinic_project.view;
 
@@ -35,11 +36,11 @@ public class ViewPatient : IViewPatient
         _appointmentCommandService = AppointmentCommandServiceSingleton.Instance;
         _appointmentQueryService = AppointmentQueryServiceSingleton.Instance;
     }
-    
+
     #endregion
-    
+
     #region PUBLIC_METHODS
-    
+
     public void RunMenu()
     {
         bool running = true;
@@ -63,7 +64,7 @@ public class ViewPatient : IViewPatient
                     ViewDoctors();
                     break;
                 case "4":
-                    ViewAvailableDoctors();
+                    CheckIfDoctorIsAvailable();
                     break;
                 case "5":
                     MakeAppointment();
@@ -123,7 +124,7 @@ public class ViewPatient : IViewPatient
             Console.WriteLine(message);
         }
     }
-    
+
     private void ViewDoctors()
     {
         PatientViewAllDoctorsResponse response = null!;
@@ -136,16 +137,54 @@ public class ViewPatient : IViewPatient
 
         Console.WriteLine("Available doctors :");
         string message = "";
-        foreach(string doctor in response.Doctors)
+        foreach (string doctor in response.Doctors)
         {
             message += doctor + "\n";
         }
         Console.WriteLine(message);
     }
 
-    private void ViewAvailableDoctors()
+    private void CheckIfDoctorIsAvailable()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Enter the doctor's name :");
+        String name = Console.ReadLine()!;
+        Console.WriteLine("Choose the day you want to check the doctor's availability (Example : 21.03.2022)");
+        Console.WriteLine("Please enter a date starting from today :");
+        String dateString = Console.ReadLine()!;
+
+        DateTime date = DateTime.MinValue;
+        bool parsed = false;
+        while (!parsed)
+        {
+            try
+            {
+                date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
+                parsed = true;
+                if (date < DateTime.Now) throw new FormatException();
+            }
+            catch (FormatException)
+            {
+                parsed = false;
+                Console.WriteLine("You have entered an incorrect date. Use this as an example : 21.03.2022");
+                Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
+                Console.WriteLine("Please try again :");
+                dateString = Console.ReadLine()!;
+            }
+        }
+
+        parsed = false;
+        TimeSpan duration = new TimeSpan(0, 0, 0);
+        Console.WriteLine("\nMaximum appointment duration is 120 minutes! (2 hours)");
+        Console.WriteLine("Enter how long you want the appointment to be in minutes. Example: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+        String minutesString = Console.ReadLine()!;
+        int minutes = 0;
+        while (!Int32.TryParse(minutesString, out minutes) || minutes < 30 || minutes > 120)
+        {
+            Console.WriteLine("You have entered an incorrect.");
+            Console.WriteLine("Reminder, your number needs to be between 30 and 120 minutes!");
+            Console.WriteLine("Please try again :");
+            minutesString = Console.ReadLine()!;
+        }
     }
 
     private void MakeAppointment()
@@ -195,6 +234,6 @@ public class ViewPatient : IViewPatient
         Console.Write("Enter anything to continue");
         Console.ReadLine();
     }
-    
+
     #endregion
 }
