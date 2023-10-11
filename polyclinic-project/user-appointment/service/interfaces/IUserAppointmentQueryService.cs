@@ -16,4 +16,8 @@ public interface IUserAppointmentQueryService
     int GetCount();
 
     List<PatientViewAppointmentsResponse> ObtainAppointmentDatesAndDoctorNameByPatientId(int patientId);
+
+    Boolean IsDoctorAvailable(String name, DateTime startDate, DateTime endDate);
+
+    Boolean IsDoctorAvailableByEmail(String email, DateTime startDate, DateTime endDate);
 }

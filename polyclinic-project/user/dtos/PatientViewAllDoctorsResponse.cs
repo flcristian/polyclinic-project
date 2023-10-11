@@ -10,6 +10,11 @@ namespace polyclinic_project.user.dtos
     {
         private List<String> _doctors;
 
+        public PatientViewAllDoctorsResponse()
+        {
+            _doctors = new List<string>();
+        }
+
         public List<String> Doctors
         {
             get { return _doctors; }

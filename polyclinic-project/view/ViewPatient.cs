@@ -15,7 +15,7 @@ namespace polyclinic_project.view;
 
 public class ViewPatient : IViewPatient
 {
-    private Patient _user;
+    private User _user;
     private IUserCommandService _userCommandService;
     private IUserQueryService _userQueryService;
     private IAppointmentCommandService _appointmentCommandService;
@@ -25,7 +25,7 @@ public class ViewPatient : IViewPatient
 
     #region CONSTRUCTORS
 
-    public ViewPatient(Patient user)
+    public ViewPatient(User user)
     {
         _user = user;
         _userCommandService = UserCommandServiceSingleton.Instance;

@@ -1,6 +1,7 @@
 ﻿using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.dtos;
+using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
@@ -64,7 +65,6 @@ namespace polyclinic_project.user.service
                 throw new ItemsDoNotExist(Constants.NO_DOCTORS_AVAILABLE);
             return result;
         }
-        
         #endregion
     }
 }

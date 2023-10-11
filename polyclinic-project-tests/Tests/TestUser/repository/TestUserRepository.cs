@@ -11,13 +11,6 @@ namespace polyclinic_project_tests.Tests.TestUser.repository;
 [Collection("Tests")]
 public class TestUserRepository
 {
-    private readonly ITestOutputHelper output;
-
-    public TestUserRepository(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
-
     private IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserRepository")); 
     
     [Fact]
@@ -266,6 +259,29 @@ public class TestUserRepository
 
         // Assert
         Assert.Equal(new List<String> { user.GetName(), another.GetName() }, response.Doctors);
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestFindDoctorByName_ReturnsDoctor()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+
+        // Act
+        User found = _repository.FindDoctorByName(user.GetName())[0];
+
+        // Assert
+        Assert.NotNull(found);
+        Assert.Equal(user, found);
 
         // Cleaning up
         _repository.Clear();

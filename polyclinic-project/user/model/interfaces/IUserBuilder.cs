@@ -22,15 +22,5 @@ namespace polyclinic_project.user.model.interfaces
         {
             return new User();
         }
-
-        public static Doctor BuildDoctor()
-        {
-            return new Doctor();
-        }
-
-        public static Patient BuildPatient()
-        {
-            return new Patient();
-        }
     }
 }

@@ -198,7 +198,7 @@ public class TestUserQueryService
     }
 
     [Fact]
-    public void TestObtainAllDoctorNames_NoDoctorsExist_ThrowsItemsDoNotExistException()
+    public void TestObtainAllDoctorNames_NoDoctorsAvailable_ThrowsItemsDoNotExistException()
     {
         // Arrange
         User user = IUserBuilder.BuildUser()

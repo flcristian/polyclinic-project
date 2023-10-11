@@ -99,9 +99,15 @@ namespace polyclinic_project.user.repository
             string sql = "select name from user where type = 'Doctor'";
 
             PatientViewAllDoctorsResponse response = new PatientViewAllDoctorsResponse();
-            List<string> names = _dataAccess.LoadData<string, dynamic>(sql, new { }, _connectionString).ToList();
-            response.Doctors = names;
+            response.Doctors = _dataAccess.LoadData<string, dynamic>(sql, new { }, _connectionString);
             return response;
+        }
+
+        public List<User> FindDoctorByName(String name)
+        {
+            string sql = "select * from user where type = 'Doctor' and name = @name";
+
+            return _dataAccess.LoadData<User, dynamic>(sql, new { name }, _connectionString);
         }
 
         #endregion
