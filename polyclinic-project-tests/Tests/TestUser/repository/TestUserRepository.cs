@@ -3,12 +3,21 @@ using polyclinic_project.user.repository.interfaces;
 using polyclinic_project_tests;
 using polyclinic_project.user.model;
 using polyclinic_project.user.model.interfaces;
+using polyclinic_project.user.dtos;
+using Xunit.Abstractions;
 
 namespace polyclinic_project_tests.Tests.TestUser.repository;
 
 [Collection("Tests")]
 public class TestUserRepository
 {
+    private readonly ITestOutputHelper output;
+
+    public TestUserRepository(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
+
     private IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserRepository")); 
     
     [Fact]
@@ -231,5 +240,34 @@ public class TestUserRepository
         // Assert
         Assert.Equal(0, _repository.GetCount());
         Assert.Empty(_repository.GetList());
+    }
+
+    [Fact]
+    public void TestObtainAllDoctorNames_ReturnsStringListOfDoctorNames()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        PatientViewAllDoctorsResponse response = _repository.ObtainAllDoctorNames();
+
+        // Assert
+        Assert.Equal(new List<String> { user.GetName(), another.GetName() }, response.Doctors);
+
+        // Cleaning up
+        _repository.Clear();
     }
 }

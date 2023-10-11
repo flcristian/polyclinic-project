@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace polyclinic_project.dtos
+namespace polyclinic_project.user_appointment.dtos
 {
     public class PatientViewAppointmentsResponse
     {
@@ -31,5 +31,13 @@ namespace polyclinic_project.dtos
         }
 
         #endregion
+
+        // Methods
+
+        public override bool Equals(object? obj)
+        {
+            PatientViewAppointmentsResponse check = obj as PatientViewAppointmentsResponse;
+            return check._startDate.Equals(_startDate) && check._endDate.Equals(_endDate) && check._doctorName.Equals(_doctorName);
+        }
     }
 }

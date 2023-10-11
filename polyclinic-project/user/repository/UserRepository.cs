@@ -2,6 +2,7 @@
 using polyclinic_project.system.constants;
 using polyclinic_project.system.data;
 using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.dtos;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository.interfaces;
 
@@ -34,7 +35,7 @@ namespace polyclinic_project.user.repository
         {
             string sql = "insert into user(id,name,email,phone,type) values(@id,@name,@email,@phone,@type)";
 
-            _dataAccess.SaveData(sql, new { id =  user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType() }, _connectionString);
+            _dataAccess.SaveData(sql, new { id =  user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
         }
 
         public void Delete(int id)
@@ -91,6 +92,16 @@ namespace polyclinic_project.user.repository
             string sql = "delete from user";
 
             _dataAccess.SaveData(sql, new { }, _connectionString);
+        }
+
+        public PatientViewAllDoctorsResponse ObtainAllDoctorNames()
+        {
+            string sql = "select name from user where type = 'Doctor'";
+
+            PatientViewAllDoctorsResponse response = new PatientViewAllDoctorsResponse();
+            List<string> names = _dataAccess.LoadData<string, dynamic>(sql, new { }, _connectionString).ToList();
+            response.Doctors = names;
+            return response;
         }
 
         #endregion

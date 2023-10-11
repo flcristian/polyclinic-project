@@ -6,8 +6,10 @@ using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.view.interfaces;
-using polyclinic_project.user_appointment.model;
-using polyclinic_project.dtos;
+using polyclinic_project.user_appointment.dtos;
+using polyclinic_project.system.constants;
+using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.dtos;
 
 namespace polyclinic_project.view;
 
@@ -16,12 +18,11 @@ public class ViewPatient : IViewPatient
     private Patient _user;
     private IUserCommandService _userCommandService;
     private IUserQueryService _userQueryService;
-    private IUserAppointmentCommandService _userAppointmentCommandService;
-    private IUserAppointmentQueryService _userAppointmentQueryService;
     private IAppointmentCommandService _appointmentCommandService;
     private IAppointmentQueryService _appointmentQueryService;
-    
-    
+    private IUserAppointmentCommandService _userAppointmentCommandService;
+    private IUserAppointmentQueryService _userAppointmentQueryService;
+
     #region CONSTRUCTORS
 
     public ViewPatient(Patient user)
@@ -80,8 +81,11 @@ public class ViewPatient : IViewPatient
                     running = false;
                     break;
             }
-            WaitForUser();
-            LineBreak();
+            if (running)
+            {
+                WaitForUser();
+                LineBreak();
+            }
         }
     }
 
@@ -97,12 +101,46 @@ public class ViewPatient : IViewPatient
 
     private void ViewAppointments()
     {
-        throw new NotImplementedException();
+        List<PatientViewAppointmentsResponse> responses = null!;
+        try { responses = _userAppointmentQueryService.ObtainAppointmentDatesAndDoctorNameByPatientId(_user.GetId()); }
+        catch (ItemsDoNotExist)
+        {
+            Console.WriteLine("You have no appointments!\n");
+            return;
+        }
+
+        Console.WriteLine("Your appointments are :\n");
+        for (int i = 0; i < responses.Count; i++)
+        {
+            PatientViewAppointmentsResponse response = responses[i];
+            string message = $"{i + 1}. ";
+
+            if (response.StartDate.DayOfYear == response.EndDate.DayOfYear)
+                message += response.StartDate.ToString(Constants.STANDARD_DATE_FORMAT) + " - " + response.EndDate.ToString(Constants.STANDARD_DATE_DAYTIME_ONLY);
+            else message += response.StartDate.ToString(Constants.STANDARD_DATE_FORMAT) + " - " + response.EndDate.ToString(Constants.STANDARD_DATE_FORMAT);
+            message += "\nWith dr. " + response.DoctorName + "\n";
+
+            Console.WriteLine(message);
+        }
     }
     
     private void ViewDoctors()
     {
-        throw new NotImplementedException();
+        PatientViewAllDoctorsResponse response = null!;
+        try { response = _userQueryService.ObtainAllDoctorNames(); }
+        catch (ItemsDoNotExist ex)
+        {
+            Console.WriteLine(ex.Message);
+            return;
+        }
+
+        Console.WriteLine("Available doctors :");
+        string message = "";
+        foreach(string doctor in response.Doctors)
+        {
+            message += doctor + "\n";
+        }
+        Console.WriteLine(message);
     }
 
     private void ViewAvailableDoctors()
@@ -130,12 +168,14 @@ public class ViewPatient : IViewPatient
         throw new NotImplementedException();
     }
 
+    // Menu Methods
+
     private void DisplayOptions()
     {
         string options = "";
         options += "1. View personal details\n";
         options += "2. View appointments\n";
-        options += "3. View doctors\n";
+        options += "3. View all doctors\n";
         options += "4. View available doctors in a certain day\n";
         options += "5. Make an appointment\n";
         options += "6. Cancel an appointment\n";

@@ -86,7 +86,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
     }
 
     public int GetCount()
-    {
+    { 
         string sql = "select count(id) from user_appointment";
 
         return _dataAccess.LoadData<int, dynamic>(sql, new { }, _connectionString)[0];
@@ -98,7 +98,7 @@ public class UserAppointmentRepository : IUserAppointmentRepository
 
         _dataAccess.SaveData(sql, new { }, _connectionString);
     }
-    
+
     #endregion
     
     #region PRIVATE_METHODS
