@@ -15,6 +15,6 @@ internal class Program
             .Type(UserType.PATIENT) as Patient ?? throw new InvalidOperationException();
 
         IViewPatient view = new ViewPatient(user);
-        view.DisplayMenu();
+        view.RunMenu();
     }
 }

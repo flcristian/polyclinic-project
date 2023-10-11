@@ -19,9 +19,13 @@ namespace polyclinic_project_tests.Tests.TestUserAppointment.service;
 [Collection("Tests")]
 public class TestUserAppointmentCommandService
 {
-    private static IUserRepository _userRepository = new UserRepository(TestConnectionString.GetConnection("UserAppointmentCommandService"));
-    private static IAppointmentRepository _appointmentRepository = new AppointmentRepository(TestConnectionString.GetConnection("UserAppointmentCommandService"));
-    private static IUserAppointmentRepository _userAppointmentRepository = new UserAppointmentRepository(TestConnectionString.GetConnection("UserAppointmentCommandService"));
+    private static string _connection = TestConnectionString.GetConnection("UserAppointmentCommandService");
+    private static IUserRepository _userRepository =
+        new UserRepository(_connection);
+    private static IAppointmentRepository _appointmentRepository = 
+        new AppointmentRepository(_connection);
+    private static IUserAppointmentRepository _userAppointmentRepository =
+        new UserAppointmentRepository(_connection);
     private IUserAppointmentCommandService _service = new UserAppointmentCommandService(_userRepository, _appointmentRepository, _userAppointmentRepository);
 
     [Fact]

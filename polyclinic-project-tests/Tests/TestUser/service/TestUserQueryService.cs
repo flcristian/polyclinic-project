@@ -6,6 +6,7 @@ using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.dtos;
 
 namespace polyclinic_project_tests.Tests.TestUser.service;
 
@@ -163,6 +164,59 @@ public class TestUserQueryService
         // Assert
         Assert.Equal(_repository.GetList().Count, count);
         
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestObtainAllDoctorNames_ReturnsStringListOfDoctorNames()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        PatientViewAllDoctorsResponse response = _service.ObtainAllDoctorNames();
+
+        // Assert
+        Assert.Equal(new List<String> { user.GetName(), another.GetName() }, response.Doctors);
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestObtainAllDoctorNames_NoDoctorsExist_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+
+        // Act
+        Assert.Throws<ItemsDoNotExist>(() => _service.ObtainAllDoctorNames());
+
         // Cleaning up
         _repository.Clear();
     }
