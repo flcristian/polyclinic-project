@@ -2,8 +2,11 @@
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
+using polyclinic_project.appointment.service;
+using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.system.models;
 using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
@@ -21,6 +24,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
     private IUserRepository _userRepository;
     private IAppointmentRepository _appointmentRepository;
     private IUserAppointmentRepository _userAppointmentRepository;
+    private IAppointmentQueryService _appointmentQueryService;
 
     #region CONSTRUCTORS
 
@@ -29,6 +33,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         _userRepository = UserRepositorySingleton.Instance;
         _appointmentRepository = AppointmentRepositorySingleton.Instance;
         _userAppointmentRepository = UserAppointmentRepositorySingleton.Instance;
+        _appointmentQueryService = AppointmentQueryServiceSingleton.Instance;
     }
 
     public UserAppointmentQueryService(IUserRepository userRepository, IAppointmentRepository appointmentRepository, IUserAppointmentRepository userAppointmentRepository)
@@ -36,6 +41,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         _userRepository = userRepository;
         _appointmentRepository = appointmentRepository;
         _userAppointmentRepository = userAppointmentRepository;
+        _appointmentQueryService = new AppointmentQueryService(appointmentRepository);
     }
 
     #endregion
@@ -79,54 +85,51 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         return _userAppointmentRepository.GetCount();
     }
 
-    public bool IsDoctorAvailable(string name, DateTime startDate, DateTime endDate)
+    public PatientGetDoctorFreeTimeResponse GetDoctorFreeTime(int doctorId, DateTime date, TimeSpan duration)
     {
-        List<User> doctors = _userRepository.FindDoctorByName(name);
-        if (doctors.Count == 0)
-            throw new ItemsDoNotExist(Constants.NO_DOCTORS_WITH_THAT_NAME);
-        if (doctors.Count > 1)
-            throw new MultipleDoctorsWithThatName(Constants.MULTIPLE_DOCTORS_WITH_THAT_NAME);
-
-        Appointment check = IAppointmentBuilder.BuildAppointment()
-            .Id(-1)
-            .StartDate(startDate)
-            .EndDate(endDate);
-        List<UserAppointment> userAppointments = FindByDoctorId(doctors[0].GetId());
-        foreach (UserAppointment userAppointment in userAppointments)
+        PatientGetDoctorFreeTimeResponse response = new PatientGetDoctorFreeTimeResponse();
+        List<UserAppointment> userAppointments = FindByDoctorId(doctorId);
+        List<Appointment> appointments = new List<Appointment>();
+        foreach(UserAppointment userAppointment in userAppointments)
         {
-            Appointment appointment = _appointmentRepository.FindById(userAppointment.GetAppointmentId())[0];
-            if (appointment.Equals(check))
-            {
-                return false;
-            }
+            appointments.Add(_appointmentQueryService.FindById(userAppointment.GetAppointmentId()));
         }
-        return true;
-    }
-
-    public bool IsDoctorAvailableByEmail(string email, DateTime startDate, DateTime endDate)
-    {
-        List<User> users = _userRepository.FindByEmail(email);
-        if (users.Count == 0)
-            throw new ItemDoesNotExist(Constants.DOCTOR_DOES_NOT_EXIST);
-
-        User doctor = users[0];
-        if (doctor.GetType() != UserType.DOCTOR)
-            throw new UserIsNotADoctor(Constants.USER_NOT_DOCTOR);
-
-        Appointment check = IAppointmentBuilder.BuildAppointment()
-            .Id(-1)
-            .StartDate(startDate)
-            .EndDate(endDate);
-        List<UserAppointment> userAppointments = FindByDoctorId(doctor.GetId());
-        foreach (UserAppointment userAppointment in userAppointments)
+        appointments.RemoveAll((appointment) =>
         {
-            Appointment appointment = _appointmentRepository.FindById(userAppointment.GetAppointmentId())[0];
-            if (appointment.Equals(check))
+            if (appointment.GetStartDate().Year != date.Year || appointment.GetStartDate().DayOfYear != date.DayOfYear)
+                return true;
+            return false;
+        });
+        appointments.Sort((a, b) =>
+        {
+            if(a.GetStartDate() > b.GetStartDate())
             {
-                return false;
+                return 1;
             }
+            else
+            {
+                return 0;
+            }
+        });
+
+        DateTime prev = date;
+        DateTime next = date;
+        foreach (Appointment appointment in appointments)
+        {
+            next = appointment.GetStartDate();
+            TimeSpan check = next - prev;
+            if (check >= duration)
+            {
+                response.TimeIntervals.Add(new TimeInterval(prev, next));
+            }
+            prev = appointment.GetEndDate();
         }
-        return true;
+        if(next < date + new TimeSpan(8, 0, 0))
+        {
+            response.TimeIntervals.Add(new TimeInterval(prev, date + new TimeSpan(8, 0, 0)));
+        }
+
+        return response;
     }
 
     public List<PatientViewAppointmentsResponse> ObtainAppointmentDatesAndDoctorNameByPatientId(int patientId)

@@ -103,7 +103,7 @@ namespace polyclinic_project.user.repository
             return response;
         }
 
-        public List<User> FindDoctorByName(String name)
+        public List<User> FindDoctorsByName(String name)
         {
             string sql = "select * from user where type = 'Doctor' and name = @name";
 

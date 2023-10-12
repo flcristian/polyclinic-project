@@ -263,7 +263,7 @@ public class TestUserRepository
     }
 
     [Fact]
-    public void TestFindDoctorByName_ReturnsDoctor()
+    public void TestFindDoctorsByName_ReturnsDoctor()
     {
         // Arrange
         User user = IUserBuilder.BuildUser()
@@ -275,7 +275,7 @@ public class TestUserRepository
         _repository.Add(user);
 
         // Act
-        User found = _repository.FindDoctorByName(user.GetName())[0];
+        User found = _repository.FindDoctorsByName(user.GetName())[0];
 
         // Assert
         Assert.NotNull(found);

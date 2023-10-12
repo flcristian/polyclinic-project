@@ -20,6 +20,6 @@ namespace polyclinic_project.user.repository.interfaces
         int GetCount();
         void Clear();
         PatientViewAllDoctorsResponse ObtainAllDoctorNames();
-        List<User> FindDoctorByName(String name);
+        List<User> FindDoctorsByName(String name);
     }
 }

@@ -10,6 +10,8 @@ namespace polyclinic_project.appointment.service.interfaces
 
         Appointment FindByDate(String date);
 
+        bool CanAddAppointment(Appointment appointment);
+
         int GetCount();
     }
 }

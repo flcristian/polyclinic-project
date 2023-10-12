@@ -88,7 +88,7 @@ namespace polyclinic_project.appointment.repository
         }
 
         #endregion
-        
+
         #region PRIVATE_METHODS
 
         private string GetConnection()
