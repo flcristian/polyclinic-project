@@ -504,7 +504,42 @@ public class ViewPatient : IViewPatient
 
     private void UpdatePhone()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Enter your new phone number :");
+        string phone = Console.ReadLine()!;
+        bool unique = false;
+        while (!unique)
+        {
+            if (phone.Replace(" ", "") == "")
+            {
+                Console.WriteLine("\nInvalid phone number.");
+                Console.WriteLine("Please try again :");
+                phone = Console.ReadLine()!;
+            }
+            else if (phone == _user.GetPhone())
+            {
+                Console.WriteLine("\nYou can't change the phone number to the same one as before!");
+                Console.WriteLine("Please try again :");
+                phone = Console.ReadLine()!;
+            }
+            else
+            {
+                try
+                {
+                    _userQueryService.FindByPhone(phone);
+                    unique = false;
+                    Console.WriteLine("\nThis phone number is already used.");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    unique = true;
+                }
+            }
+        }
+        _user.SetPhone(phone);
+        _userCommandService.Update(_user);
+        Console.WriteLine("\nYour phone number has been succesfully updated!");
     }
 
     // Menu Methods

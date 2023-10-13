@@ -19,6 +19,8 @@ delete from user_appointment;
 select * from user_appointment;
 select * from user;
 
+update user set type = 'Patient' where id = 1;
+
 insert into user_appointment values (1,1,3,1);
 insert into user_appointment values (2,1,3,2);
 insert into user_appointment values (3,1,3,3);
