@@ -191,7 +191,7 @@ public class ViewPatient : IViewPatient
                         Console.WriteLine("\n" + ex.Message);
                     }
 
-                    if(doctor != null && doctor.GetType() != UserType.DOCTOR)
+                    if (doctor != null && doctor.GetType() != UserType.DOCTOR)
                     {
                         parsed = false;
                         Console.WriteLine("\n" + Constants.USER_NOT_DOCTOR);
@@ -205,7 +205,7 @@ public class ViewPatient : IViewPatient
                 }
             }
         }
-        
+
         Console.WriteLine("\nChoose the day you want to check the doctor's availability (Example : 21.03.2022)");
         Console.WriteLine("Please enter a date starting from today :");
         String dateString = Console.ReadLine()!;
@@ -252,7 +252,7 @@ public class ViewPatient : IViewPatient
             return;
         }
         Console.WriteLine("\nThis doctor is free in these time intervals :");
-        foreach(TimeInterval interval in response.TimeIntervals)
+        foreach (TimeInterval interval in response.TimeIntervals)
         {
             Console.Write(interval.StartTime.ToString(Constants.STANDARD_DATE_DAYTIME_ONLY) + " - " + interval.EndTime.ToString(Constants.STANDARD_DATE_DAYTIME_ONLY) + "\n");
         }
@@ -380,7 +380,7 @@ public class ViewPatient : IViewPatient
             .DoctorId(doctor.GetId())
             .AppointmentId(appointment.GetId());
         _userAppointmentCommandService.Add(userAppointment);
-        Console.WriteLine("\nSuccessfuly scheduled the appointment!\nDoctor will be notified.");
+        Console.WriteLine("\nSuccesfully scheduled the appointment!\nDoctor will be notified.");
     }
 
     private void CancelAppointment()
@@ -459,12 +459,47 @@ public class ViewPatient : IViewPatient
 
         _userAppointmentCommandService.Delete(patientAppointment);
         _appointmentCommandService.DeleteById(patientAppointment.GetAppointmentId());
-        Console.WriteLine("Successfuly canceled your appointment!");
+        Console.WriteLine("Succesfully canceled your appointment!");
     }
 
     private void UpdateEmail()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Enter your new email :");
+        string email = Console.ReadLine()!;
+        bool unique = false;
+        while (!unique)
+        {
+            if (email.Replace(" ", "") == "")
+            {
+                Console.WriteLine("\nInvalid email adress.");
+                Console.WriteLine("Please try again :");
+                email = Console.ReadLine()!;
+            }
+            else if (email == _user.GetEmail())
+            {
+                Console.WriteLine("\nYou can't change the email to the same one as before!");
+                Console.WriteLine("Please try again :");
+                email = Console.ReadLine()!;
+            }
+            else
+            {
+                try
+                {
+                    _userQueryService.FindByEmail(email);
+                    unique = false;
+                    Console.WriteLine("\nThis email is already used.");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    unique = true;
+                }
+            }
+        }
+        _user.SetEmail(email);
+        _userCommandService.Update(_user);
+        Console.WriteLine("\nYour email has been succesfully updated!");
     }
 
     private void UpdatePhone()
