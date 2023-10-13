@@ -212,11 +212,11 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         return resultList;
     }
 
-    public bool DoesPatientHaveAppointmentByIdAndDates(int id, DateTime startDate, DateTime endDate)
+    public UserAppointment GetUserAppointmentByPatientIdAndDates(int patientId, DateTime startDate, DateTime endDate)
     {
         List<UserAppointment> userAppointments = null!;
-        try { userAppointments = FindByPatientId(id); }
-        catch (ItemsDoNotExist) { return false; }
+        try { userAppointments = FindByPatientId(patientId); }
+        catch (ItemsDoNotExist) { return null; }
 
         List<Appointment> appointments = new List<Appointment>();
         foreach(UserAppointment userAppointment in userAppointments)
@@ -233,11 +233,11 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         {
             if (check.Equals(appointment))
             {
-                return true;
+                return userAppointments[appointments.IndexOf(appointment)];
             }
         }
 
-        return false;
+        return null;
     }
 
     #endregion
