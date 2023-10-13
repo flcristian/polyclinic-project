@@ -13,4 +13,5 @@ select * from user;
 
 insert into user values(1, "Andrei", "andrei@email.com","+1934812", "Patient");
 insert into user values(2, "Marian", "marian@email.com","+1444812", "Patient");
-insert into user values(3, "Marius", "marius@email.com","+1666812", "Doctor");
+insert into user values(3, "Marius", "marius1@email.com","+1666812", "Doctor");
+insert into user values(4, "Marius", "marius2@email.com","+1631312", "Doctor");

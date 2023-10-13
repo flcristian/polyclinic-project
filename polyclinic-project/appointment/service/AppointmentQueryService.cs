@@ -56,6 +56,19 @@ namespace polyclinic_project.appointment.service
                 throw new ItemDoesNotExist(Constants.NO_APPOINTMENT_SCHEDULED);
             return result[0];
         }
+
+        public bool CanAddAppointment(Appointment appointment)
+        {
+            List<Appointment> appointments = _repository.GetList();
+            foreach(Appointment check in appointments)
+            {
+                if (check.Equals(appointment))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         
         #endregion
     }

@@ -151,4 +151,41 @@ public class TestAppointmentQueryService
         // Cleaning up
         _repository.Clear();
     }
+
+    [Fact]
+    public void TestCanAddAppointment_AnotherAppointmentScheduledInThatDate_ReturnsFalse()
+    {
+        // Arrange
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(1)
+            .StartDate("06.10.2023 12:00")
+            .EndDate("06.10.2023 13:00");
+        Appointment add = IAppointmentBuilder.BuildAppointment()
+            .Id(2)
+            .StartDate("06.10.2023 12:30")
+            .EndDate("06.10.2023 14:00");
+        _repository.Add(appointment);
+
+        // Assert
+        Assert.False(_service.CanAddAppointment(add));
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestCanAddAppointment_NoOtherAppointmentsScheduledInThatDate_ReturnsTrue()
+    {
+        // Arrange
+        Appointment add = IAppointmentBuilder.BuildAppointment()
+            .Id(2)
+            .StartDate("06.10.2023 12:30")
+            .EndDate("06.10.2023 14:00");
+
+        // Assert
+        Assert.True(_service.CanAddAppointment(add));
+
+        // Cleaning up
+        _repository.Clear();
+    }
 }

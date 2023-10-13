@@ -16,6 +16,8 @@ namespace polyclinic_project.user.service.interfaces
 
         User FindByPhone(String phone);
 
+        User FindDoctorByName(String name);
+
         int GetCount();
 
         PatientViewAllDoctorsResponse ObtainAllDoctorNames();

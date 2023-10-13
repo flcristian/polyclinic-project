@@ -1,21 +1,24 @@
 ﻿using polyclinic_project.appointment.service;
 using polyclinic_project.appointment.service.interfaces;
-using polyclinic_project.user_appointment.service;
-using polyclinic_project.user_appointment.service.interfaces;
+using polyclinic_project.system.constants;
+using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.system.models;
+using polyclinic_project.user.dtos;
+using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
-using polyclinic_project.view.interfaces;
 using polyclinic_project.user_appointment.dtos;
-using polyclinic_project.system.constants;
-using polyclinic_project.system.interfaces.exceptions;
-using polyclinic_project.user.dtos;
+using polyclinic_project.user_appointment.service;
+using polyclinic_project.user_appointment.service.interfaces;
+using polyclinic_project.view.interfaces;
+using System.Globalization;
 
 namespace polyclinic_project.view;
 
 public class ViewPatient : IViewPatient
 {
-    private Patient _user;
+    private User _user;
     private IUserCommandService _userCommandService;
     private IUserQueryService _userQueryService;
     private IAppointmentCommandService _appointmentCommandService;
@@ -25,7 +28,7 @@ public class ViewPatient : IViewPatient
 
     #region CONSTRUCTORS
 
-    public ViewPatient(Patient user)
+    public ViewPatient(User user)
     {
         _user = user;
         _userCommandService = UserCommandServiceSingleton.Instance;
@@ -35,11 +38,11 @@ public class ViewPatient : IViewPatient
         _appointmentCommandService = AppointmentCommandServiceSingleton.Instance;
         _appointmentQueryService = AppointmentQueryServiceSingleton.Instance;
     }
-    
+
     #endregion
-    
+
     #region PUBLIC_METHODS
-    
+
     public void RunMenu()
     {
         bool running = true;
@@ -63,7 +66,7 @@ public class ViewPatient : IViewPatient
                     ViewDoctors();
                     break;
                 case "4":
-                    ViewAvailableDoctors();
+                    CheckIfDoctorIsAvailable();
                     break;
                 case "5":
                     MakeAppointment();
@@ -123,7 +126,7 @@ public class ViewPatient : IViewPatient
             Console.WriteLine(message);
         }
     }
-    
+
     private void ViewDoctors()
     {
         PatientViewAllDoctorsResponse response = null!;
@@ -136,16 +139,116 @@ public class ViewPatient : IViewPatient
 
         Console.WriteLine("Available doctors :");
         string message = "";
-        foreach(string doctor in response.Doctors)
+        foreach (string doctor in response.Doctors)
         {
             message += doctor + "\n";
         }
         Console.WriteLine(message);
     }
 
-    private void ViewAvailableDoctors()
+    private void CheckIfDoctorIsAvailable()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Enter the doctor's name :");
+        String name = Console.ReadLine()!;
+        User doctor = null!;
+        bool parsed = false;
+        while (!parsed)
+        {
+            try
+            {
+                doctor = _userQueryService.FindDoctorByName(name);
+                parsed = true;
+            }
+            catch (ItemsDoNotExist)
+            {
+                parsed = false;
+                Console.WriteLine("\nNo doctors with that name exist!\nPlease try again :");
+                name = Console.ReadLine()!;
+            }
+            catch (MultipleDoctorsWithThatName)
+            {
+                parsed = false;
+                Console.WriteLine("\nThere are multiple doctors with that name!");
+                Console.WriteLine("Please enter the doctor's email to be more specific :");
+                String email = Console.ReadLine()!;
+                while (!parsed)
+                {
+                    try
+                    {
+                        doctor = _userQueryService.FindByEmail(email);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist ex)
+                    {
+                        parsed = false;
+                        Console.WriteLine("\n" + ex.Message);
+                    }
+
+                    if(doctor != null && doctor.GetType() != UserType.DOCTOR)
+                    {
+                        parsed = false;
+                        Console.WriteLine("\n" + Constants.USER_NOT_DOCTOR);
+                    }
+
+                    if (!parsed)
+                    {
+                        Console.WriteLine("Please try again :");
+                        email = Console.ReadLine()!;
+                    }
+                }
+            }
+        }
+        
+        Console.WriteLine("\nChoose the day you want to check the doctor's availability (Example : 21.03.2022)");
+        Console.WriteLine("Please enter a date starting from today :");
+        String dateString = Console.ReadLine()!;
+        DateTime date = DateTime.MinValue;
+        parsed = false;
+        while (!parsed)
+        {
+            try
+            {
+                date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
+                parsed = true;
+                if (date < DateTime.Now) throw new FormatException();
+            }
+            catch (FormatException)
+            {
+                parsed = false;
+                Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
+                Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
+                Console.WriteLine("Please try again :");
+                dateString = Console.ReadLine()!;
+            }
+        }
+        date += new TimeSpan(8, 0, 0);
+
+        parsed = false;
+        TimeSpan duration = new TimeSpan(0, 0, 0);
+        Console.WriteLine("\nAppointment must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
+        Console.WriteLine("Enter how long you want the appointment to be in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+        String minutesString = Console.ReadLine()!;
+        int minutes = 0;
+        while (!Int32.TryParse(minutesString, out minutes) || minutes < 30 || minutes > 120 || minutes % 5 != 0)
+        {
+            Console.WriteLine("\nYou have entered an incorrect.");
+            Console.WriteLine("Reminder, your number needs to be between 30 and 120 minutes and in multiples of 5!");
+            Console.WriteLine("Examples : 30, 35, 55, etc.");
+            Console.WriteLine("Please try again :");
+            minutesString = Console.ReadLine()!;
+        }
+
+        PatientGetDoctorFreeTimeResponse response = _userAppointmentQueryService.GetDoctorFreeTime(doctor.GetId(), date, duration);
+        if (response.TimeIntervals.Count == 0)
+        {
+            Console.WriteLine("\nThis doctor has a full schedule in this day.");
+            return;
+        }
+        Console.WriteLine("\nThis doctor is free in these time intervals :");
+        foreach(TimeInterval interval in response.TimeIntervals)
+        {
+            Console.Write(interval.StartTime.ToString(Constants.STANDARD_DATE_DAYTIME_ONLY) + " - " + interval.EndTime.ToString(Constants.STANDARD_DATE_DAYTIME_ONLY) + "\n");
+        }
     }
 
     private void MakeAppointment()
@@ -195,6 +298,6 @@ public class ViewPatient : IViewPatient
         Console.Write("Enter anything to continue");
         Console.ReadLine();
     }
-    
+
     #endregion
 }

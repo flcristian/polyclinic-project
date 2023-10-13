@@ -12,6 +12,7 @@ namespace polyclinic_project.system.constants
         public static readonly string STANDARD_DATE_FORMAT = "dd.MM.yyyy HH:mm";
         public static readonly string SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm";
         public static readonly string STANDARD_DATE_DAYTIME_ONLY = "HH:mm";
+        public static readonly string STANDARD_DATE_CALENDAR_DATE_ONLY = "dd.MM.yyyy";
 
         #region EXCEPTION_MESSAGES
 
@@ -27,6 +28,8 @@ namespace polyclinic_project.system.constants
         public static readonly string PHONE_ALREADY_USED = "This phone number is already used.";
         public static readonly string USER_NOT_DOCTOR = "This user is not a doctor.";
         public static readonly string NO_DOCTORS_AVAILABLE = "There are no doctors available.";
+        public static readonly string NO_DOCTORS_WITH_THAT_NAME = "There are no doctors with that name.";
+        public static readonly string MULTIPLE_DOCTORS_WITH_THAT_NAME = "There are multiple doctors with that name.";
 
         // APPOINTMENT
         public static readonly string APPOINTMENT_DOES_NOT_EXIST = "This appointment does not exist.";

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace polyclinic_project.user.model.interfaces
+﻿namespace polyclinic_project.user.model.interfaces
 {
     public interface IUserBuilder
     {
@@ -21,16 +15,6 @@ namespace polyclinic_project.user.model.interfaces
         public static User BuildUser()
         {
             return new User();
-        }
-
-        public static Doctor BuildDoctor()
-        {
-            return new Doctor();
-        }
-
-        public static Patient BuildPatient()
-        {
-            return new Patient();
         }
     }
 }

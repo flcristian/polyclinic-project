@@ -7,12 +7,12 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Patient user = IUserBuilder.BuildPatient()
+        User user = IUserBuilder.BuildUser()
             .Id(1)
             .Name("Andrei")
             .Email("andrei@email.com")
             .Phone("+9127431")
-            .Type(UserType.PATIENT) as Patient ?? throw new InvalidOperationException();
+            .Type(UserType.PATIENT);
 
         IViewPatient view = new ViewPatient(user);
         view.RunMenu();
