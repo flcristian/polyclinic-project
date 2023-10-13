@@ -352,27 +352,30 @@ public class ViewPatient : IViewPatient
         duration = new TimeSpan(0, minutes, 0);
 
         Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(_appointmentQueryService.GetCount() + 1)
+            .Id(0)
             .StartDate(date)
             .EndDate(date + duration);
 
-        UserAppointment check = _userAppointmentQueryService.FindByDoctorIdAndAppointment(doctor.GetId(), appointment);
-        if(check != null)
+        try
         {
+            UserAppointment check = _userAppointmentQueryService.FindByDoctorIdAndAppointment(doctor.GetId(), appointment);
             Console.WriteLine("\nDoctor is occupied in that date.");
             return;
         }
+        catch (ItemDoesNotExist) { }
 
-        bool patientAlreadyHasAppointment = _userAppointmentQueryService.DoesPatientHaveAppointmentByIdAndDates(_user.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
-        if (patientAlreadyHasAppointment)
+        UserAppointment patientAppointment = null!;
+        try
         {
+            patientAppointment = _userAppointmentQueryService.FindByPatientIdAndDates(_user.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
             Console.WriteLine("You already have an appointment in that date!");
             return;
         }
+        catch (ItemDoesNotExist) { }
 
         _appointmentCommandService.Add(appointment);
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(_userAppointmentQueryService.GetCount() + 1)
+            .Id(0)
             .PatientId(_user.GetId())
             .DoctorId(doctor.GetId())
             .AppointmentId(appointment.GetId());
@@ -382,7 +385,81 @@ public class ViewPatient : IViewPatient
 
     private void CancelAppointment()
     {
-        
+        Console.WriteLine("Enter the date of the appointment you want to cancel (Example : 21.03.2022)");
+        Console.WriteLine("Please enter a date starting from today :");
+        String dateString = Console.ReadLine()!;
+        DateTime date = DateTime.MinValue;
+        bool parsed = false;
+        while (!parsed)
+        {
+            try
+            {
+                date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
+                parsed = true;
+                if (date < DateTime.Now) throw new FormatException();
+            }
+            catch (FormatException)
+            {
+                parsed = false;
+                Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
+                Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
+                Console.WriteLine("Please try again :");
+                dateString = Console.ReadLine()!;
+            }
+        }
+
+        Console.WriteLine("\nEnter the hour and minute of the appointment you want to cancel (Example : 08:00)");
+        String daytimeString = Console.ReadLine()!;
+        parsed = false;
+        DateTime daytime = DateTime.MinValue;
+        while (!parsed)
+        {
+            try
+            {
+                daytime = DateTime.ParseExact(daytimeString, Constants.STANDARD_DATE_DAYTIME_ONLY, CultureInfo.InvariantCulture);
+                parsed = true;
+            }
+            catch (FormatException)
+            {
+                parsed = false;
+                Console.WriteLine("\nYou have entered an incorrect time. Use this as an example : 13:00");
+                Console.WriteLine("Please try again :");
+                daytimeString = Console.ReadLine()!;
+            }
+        }
+
+        parsed = false;
+        TimeSpan duration = new TimeSpan(0, 0, 0);
+        Console.WriteLine("\nAppointment must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
+        Console.WriteLine("Enter how long you want the appointment to be in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+        String minutesString = Console.ReadLine()!;
+        int minutes = 0;
+        while (!Int32.TryParse(minutesString, out minutes) || minutes < 30 || minutes > 120 || minutes % 5 != 0)
+        {
+            Console.WriteLine("\nYou have entered an incorrect.");
+            Console.WriteLine("Reminder, your number needs to be between 30 and 120 minutes and in multiples of 5!");
+            Console.WriteLine("Examples : 30, 35, 55, etc.");
+            Console.WriteLine("Please try again :");
+            minutesString = Console.ReadLine()!;
+        }
+        duration = new TimeSpan(0, minutes, 0);
+
+        DateTime start = date + new TimeSpan(daytime.Hour, daytime.Minute, 0);
+
+        UserAppointment patientAppointment = null!;
+        try
+        {
+            patientAppointment = _userAppointmentQueryService.FindByPatientIdAndDates(_user.GetId(), start, start + duration);
+        }
+        catch (ItemDoesNotExist)
+        {
+            Console.WriteLine("\nYou have no appointments scheduled at that date and time.");
+            return;
+        }
+
+        _userAppointmentCommandService.Delete(patientAppointment);
+        _appointmentCommandService.DeleteById(patientAppointment.GetAppointmentId());
+        Console.WriteLine("Successfuly canceled your appointment!");
     }
 
     private void UpdateEmail()

@@ -23,5 +23,5 @@ public interface IUserAppointmentQueryService
 
     PatientGetDoctorFreeTimeResponse GetDoctorFreeTime(int doctorId, DateTime date, TimeSpan duration);
 
-    bool DoesPatientHaveAppointmentByIdAndDates(int id, DateTime startDate, DateTime endDate);
+    UserAppointment FindByPatientIdAndDates(int patientId, DateTime startDate, DateTime endDate);
 }

@@ -556,4 +556,159 @@ public class TestUserAppointmentQueryService
         _appointmentRepository.Clear();
         _userAppointmentRepository.Clear();
     }
+
+
+    [Fact]
+    public void TestFindByDoctorIdAndAppointment_UserAppointmentDoesNotExist_ThrowsItemDoesNotExistException()
+    {
+        // Arrange
+        User patient = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User doctor = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+98127633909")
+            .Type(UserType.DOCTOR);
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(1)
+            .StartDate("06.10.2023 12:00")
+            .EndDate("06.10.2023 13:00");
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(1)
+            .DoctorId(2)
+            .AppointmentId(1);
+
+        // Assert
+        Assert.Throws<ItemDoesNotExist>(() => _service.FindByDoctorIdAndAppointment(userAppointment.GetDoctorId(), appointment));
+
+        // Cleaning up
+        _userRepository.Clear();
+        _appointmentRepository.Clear();
+        _userAppointmentRepository.Clear();
+    }
+
+    [Fact]
+    public void TestFindByDoctorIdAndAppointment_ReturnsUserAppointment()
+    {
+        // Arrange
+        User patient = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User doctor = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+98127633909")
+            .Type(UserType.DOCTOR);
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(1)
+            .StartDate("06.10.2023 12:00")
+            .EndDate("06.10.2023 13:00");
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(1)
+            .DoctorId(2)
+            .AppointmentId(1);
+        _userRepository.Add(patient);
+        _userRepository.Add(doctor);
+        _appointmentRepository.Add(appointment);
+        _userAppointmentRepository.Add(userAppointment);
+
+        // Act
+        UserAppointment found = _service.FindByDoctorIdAndAppointment(userAppointment.GetDoctorId(), appointment);
+
+        // Assert
+        Assert.Equal(userAppointment, found);
+
+        // Cleaning up
+        _userRepository.Clear();
+        _appointmentRepository.Clear();
+        _userAppointmentRepository.Clear();
+    }
+
+    [Fact]
+    public void TestFindByPatientIdAndDates_UserAppointmentDoesNotExist_ThrowsItemDoesNotExistException()
+    {
+        // Arrange
+        User patient = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User doctor = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+98127633909")
+            .Type(UserType.DOCTOR);
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(1)
+            .StartDate("06.10.2023 12:00")
+            .EndDate("06.10.2023 13:00");
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(1)
+            .DoctorId(2)
+            .AppointmentId(1);
+
+        // Assert
+        Assert.Throws<ItemDoesNotExist>(() => _service.FindByPatientIdAndDates(patient.GetId(), appointment.GetStartDate(), appointment.GetEndDate()));
+
+        // Cleaning up
+        _userRepository.Clear();
+        _appointmentRepository.Clear();
+        _userAppointmentRepository.Clear();
+    }
+
+    [Fact]
+    public void TestFindByPatientIdAndDates_ReturnsUserAppointment()
+    {
+        // Arrange
+        User patient = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User doctor = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+98127633909")
+            .Type(UserType.DOCTOR);
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(1)
+            .StartDate("06.10.2023 12:00")
+            .EndDate("06.10.2023 13:00");
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(1)
+            .DoctorId(2)
+            .AppointmentId(1);
+        _userRepository.Add(patient);
+        _userRepository.Add(doctor);
+        _appointmentRepository.Add(appointment);
+        _userAppointmentRepository.Add(userAppointment);
+
+        // Act
+        UserAppointment found = _service.FindByPatientIdAndDates(patient.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
+
+        // Assert
+        Assert.Equal(userAppointment, found);
+
+        // Cleaning up
+        _userRepository.Clear();
+        _appointmentRepository.Clear();
+        _userAppointmentRepository.Clear();
+    }
 }
