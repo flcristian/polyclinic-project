@@ -1,4 +1,5 @@
-﻿using System;
+﻿using polyclinic_project.user.model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,14 @@ namespace polyclinic_project.user.dtos
 {
     public class PatientViewAllDoctorsResponse
     {
-        private List<String> _doctors;
+        private List<User> _doctors;
 
         public PatientViewAllDoctorsResponse()
         {
-            _doctors = new List<string>();
+            _doctors = new List<User>();
         }
 
-        public List<String> Doctors
+        public List<User> Doctors
         {
             get { return _doctors; }
             set { _doctors = value; }

@@ -20,6 +20,6 @@ namespace polyclinic_project.user.service.interfaces
 
         int GetCount();
 
-        PatientViewAllDoctorsResponse ObtainAllDoctorNames();
+        PatientViewAllDoctorsResponse ObtainAllDoctorDetails();
     }
 }

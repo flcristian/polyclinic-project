@@ -94,12 +94,12 @@ namespace polyclinic_project.user.repository
             _dataAccess.SaveData(sql, new { }, _connectionString);
         }
 
-        public PatientViewAllDoctorsResponse ObtainAllDoctorNames()
+        public PatientViewAllDoctorsResponse ObtainAllDoctorDetails()
         {
-            string sql = "select name from user where type = 'Doctor'";
+            string sql = "select * from user where type = 'Doctor'";
 
             PatientViewAllDoctorsResponse response = new PatientViewAllDoctorsResponse();
-            response.Doctors = _dataAccess.LoadData<string, dynamic>(sql, new { }, _connectionString);
+            response.Doctors = _dataAccess.LoadData<User, dynamic>(sql, new { }, _connectionString);
             return response;
         }
 

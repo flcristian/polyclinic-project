@@ -1,4 +1,6 @@
-﻿using polyclinic_project.appointment.service;
+﻿using polyclinic_project.appointment.model;
+using polyclinic_project.appointment.model.interfaces;
+using polyclinic_project.appointment.service;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
@@ -9,6 +11,8 @@ using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.user_appointment.dtos;
+using polyclinic_project.user_appointment.model;
+using polyclinic_project.user_appointment.model.interfaces;
 using polyclinic_project.user_appointment.service;
 using polyclinic_project.user_appointment.service.interfaces;
 using polyclinic_project.view.interfaces;
@@ -66,7 +70,7 @@ public class ViewPatient : IViewPatient
                     ViewDoctors();
                     break;
                 case "4":
-                    CheckIfDoctorIsAvailable();
+                    CheckDoctorFreeTime();
                     break;
                 case "5":
                     MakeAppointment();
@@ -130,7 +134,7 @@ public class ViewPatient : IViewPatient
     private void ViewDoctors()
     {
         PatientViewAllDoctorsResponse response = null!;
-        try { response = _userQueryService.ObtainAllDoctorNames(); }
+        try { response = _userQueryService.ObtainAllDoctorDetails(); }
         catch (ItemsDoNotExist ex)
         {
             Console.WriteLine(ex.Message);
@@ -139,14 +143,17 @@ public class ViewPatient : IViewPatient
 
         Console.WriteLine("Available doctors :");
         string message = "";
-        foreach (string doctor in response.Doctors)
+        foreach (User doctor in response.Doctors)
         {
-            message += doctor + "\n";
+            message += doctor.GetName() + "\n";
+            message += doctor.GetEmail() + "\n";
+            message += doctor.GetPhone() + "\n";
+            message += "\n";
         }
         Console.WriteLine(message);
     }
 
-    private void CheckIfDoctorIsAvailable()
+    private void CheckDoctorFreeTime()
     {
         Console.WriteLine("Enter the doctor's name :");
         String name = Console.ReadLine()!;
@@ -253,12 +260,129 @@ public class ViewPatient : IViewPatient
 
     private void MakeAppointment()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Enter the doctor's name :");
+        String name = Console.ReadLine()!;
+        User doctor = null!;
+        bool parsed = false;
+        while (!parsed)
+        {
+            try
+            {
+                doctor = _userQueryService.FindDoctorByName(name);
+                parsed = true;
+            }
+            catch (ItemsDoNotExist)
+            {
+                parsed = false;
+                Console.WriteLine("\nNo doctors with that name exist!\nPlease try again :");
+                name = Console.ReadLine()!;
+            }
+            catch (MultipleDoctorsWithThatName)
+            {
+                parsed = false;
+                Console.WriteLine("\nThere are multiple doctors with that name!");
+                Console.WriteLine("Please enter the doctor's email to be more specific :");
+                String email = Console.ReadLine()!;
+                while (!parsed)
+                {
+                    try
+                    {
+                        doctor = _userQueryService.FindByEmail(email);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist ex)
+                    {
+                        parsed = false;
+                        Console.WriteLine("\n" + ex.Message);
+                    }
+
+                    if (doctor != null && doctor.GetType() != UserType.DOCTOR)
+                    {
+                        parsed = false;
+                        Console.WriteLine("\n" + Constants.USER_NOT_DOCTOR);
+                    }
+
+                    if (!parsed)
+                    {
+                        Console.WriteLine("Please try again :");
+                        email = Console.ReadLine()!;
+                    }
+                }
+            }
+        }
+
+        Console.WriteLine("\nChoose the day for the appointment (Example : 21.03.2022)");
+        Console.WriteLine("Please enter a date starting from today :");
+        String dateString = Console.ReadLine()!;
+        DateTime date = DateTime.MinValue;
+        parsed = false;
+        while (!parsed)
+        {
+            try
+            {
+                date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
+                parsed = true;
+                if (date < DateTime.Now) throw new FormatException();
+            }
+            catch (FormatException)
+            {
+                parsed = false;
+                Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
+                Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
+                Console.WriteLine("Please try again :");
+                dateString = Console.ReadLine()!;
+            }
+        }
+        date += new TimeSpan(8, 0, 0);
+
+        parsed = false;
+        TimeSpan duration = new TimeSpan(0, 0, 0);
+        Console.WriteLine("\nAppointment must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
+        Console.WriteLine("Enter how long you want the appointment to be in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+        String minutesString = Console.ReadLine()!;
+        int minutes = 0;
+        while (!Int32.TryParse(minutesString, out minutes) || minutes < 30 || minutes > 120 || minutes % 5 != 0)
+        {
+            Console.WriteLine("\nYou have entered an incorrect.");
+            Console.WriteLine("Reminder, your number needs to be between 30 and 120 minutes and in multiples of 5!");
+            Console.WriteLine("Examples : 30, 35, 55, etc.");
+            Console.WriteLine("Please try again :");
+            minutesString = Console.ReadLine()!;
+        }
+        duration = new TimeSpan(0, minutes, 0);
+
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(_appointmentQueryService.GetCount() + 1)
+            .StartDate(date)
+            .EndDate(date + duration);
+
+        UserAppointment check = _userAppointmentQueryService.FindByDoctorIdAndAppointment(doctor.GetId(), appointment);
+        if(check != null)
+        {
+            Console.WriteLine("\nDoctor is occupied in that date.");
+            return;
+        }
+
+        bool patientAlreadyHasAppointment = _userAppointmentQueryService.DoesPatientHaveAppointmentByIdAndDates(_user.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
+        if (patientAlreadyHasAppointment)
+        {
+            Console.WriteLine("You already have an appointment in that date!");
+            return;
+        }
+
+        _appointmentCommandService.Add(appointment);
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(_userAppointmentQueryService.GetCount() + 1)
+            .PatientId(_user.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
+        _userAppointmentCommandService.Add(userAppointment);
+        Console.WriteLine("\nSuccessfuly scheduled the appointment!\nDoctor will be notified.");
     }
 
     private void CancelAppointment()
     {
-        throw new NotImplementedException();
+        
     }
 
     private void UpdateEmail()
@@ -279,7 +403,7 @@ public class ViewPatient : IViewPatient
         options += "1. View personal details\n";
         options += "2. View appointments\n";
         options += "3. View all doctors\n";
-        options += "4. View available doctors in a certain day\n";
+        options += "4. Check a doctor's availability in a certain day\n";
         options += "5. Make an appointment\n";
         options += "6. Cancel an appointment\n";
         options += "7. Update your email\n";

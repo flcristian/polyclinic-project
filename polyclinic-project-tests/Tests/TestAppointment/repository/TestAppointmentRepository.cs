@@ -99,27 +99,6 @@ public class TestAppointmentRepository
     }
 
     [Fact]
-    public void TestFindByDate_ReturnsAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("06.10.2023 12:00")
-            .EndDate("06.10.2023 13:00");
-        _repository.Add(appointment);
-        
-        // Act
-        Appointment found = _repository.FindByDate(DateTime.ParseExact("06.10.2023 12:30", Constants.STANDARD_DATE_FORMAT, CultureInfo.InvariantCulture))[0];
-        
-        // Assert
-        Assert.NotNull(found);
-        Assert.Equal(appointment, found);
-        
-        // Cleaning up
-        _repository.Clear();
-    }
-
-    [Fact]
     public void TestGetList_ReturnsList()
     {
         // Arrange

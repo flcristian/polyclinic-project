@@ -170,7 +170,7 @@ public class TestUserQueryService
     }
 
     [Fact]
-    public void TestObtainAllDoctorNames_ReturnsStringListOfDoctorNames()
+    public void TestObtainAllDoctorDetails_ReturnsStringListOfDoctorNames()
     {
         // Arrange
         User user = IUserBuilder.BuildUser()
@@ -189,10 +189,10 @@ public class TestUserQueryService
         _repository.Add(another);
 
         // Act
-        PatientViewAllDoctorsResponse response = _service.ObtainAllDoctorNames();
+        PatientViewAllDoctorsResponse response = _service.ObtainAllDoctorDetails();
 
         // Assert
-        Assert.Equal(new List<String> { user.GetName(), another.GetName() }, response.Doctors);
+        Assert.Equal(new List<User> { user, another }, response.Doctors);
 
         // Cleaning up
         _repository.Clear();
@@ -216,7 +216,7 @@ public class TestUserQueryService
             .Type(UserType.DOCTOR);
 
         // Act
-        Assert.Throws<ItemsDoNotExist>(() => _service.ObtainAllDoctorNames());
+        Assert.Throws<ItemsDoNotExist>(() => _service.ObtainAllDoctorDetails());
 
         // Cleaning up
         _repository.Clear();
