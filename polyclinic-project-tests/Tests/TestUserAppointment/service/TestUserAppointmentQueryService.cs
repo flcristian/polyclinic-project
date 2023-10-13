@@ -88,15 +88,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         UserAppointment found = _service.FindById(userAppointment.GetId());
@@ -165,15 +169,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         List<UserAppointment> found = _service.FindByPatientId(userAppointment.GetPatientId());
@@ -242,15 +250,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         List<UserAppointment> found = _service.FindByDoctorId(userAppointment.GetDoctorId());
@@ -319,15 +331,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         UserAppointment found = _service.FindByAppointmentId(userAppointment.GetAppointmentId());
@@ -361,16 +377,20 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
-        
+        userAppointment = _userAppointmentRepository.GetList()[0];
+
         // Act
         int count = _service.GetCount();
         
@@ -403,14 +423,17 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
 
         // Assert
         Assert.Throws<ItemsDoNotExist>(() => _service.ObtainAppointmentDatesAndDoctorNameByPatientId(patient.GetId()));
@@ -441,15 +464,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         List<PatientViewAppointmentsResponse> check = _service.ObtainAppointmentDatesAndDoctorNameByPatientId(patient.GetId());
@@ -487,15 +514,20 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
+        _userRepository.Add(patient);
+        _userRepository.Add(doctor);
+        _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
-        _userRepository.Add(doctor);
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
 
         // Act
-        DateTime start = DateTime.ParseExact("06.10.2023", Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture) + new TimeSpan(8, 0, 0); ;
+        DateTime start = DateTime.ParseExact("06.10.2023", Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture) + new TimeSpan(8, 0, 0);
         PatientGetDoctorFreeTimeResponse response = _service.GetDoctorFreeTime(doctor.GetId(), start, new TimeSpan(0, 30, 0));
 
         // Assert
@@ -530,18 +562,22 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0]; 
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
-        DateTime start = DateTime.ParseExact("06.10.2023", Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture) + new TimeSpan(8, 0, 0); ;
+        DateTime start = DateTime.ParseExact("06.10.2023", Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture) + new TimeSpan(8, 0, 0);
         PatientGetDoctorFreeTimeResponse response = _service.GetDoctorFreeTime(doctor.GetId(), start, new TimeSpan(0, 30, 0));
 
         // Assert
@@ -613,15 +649,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         UserAppointment found = _service.FindByDoctorIdAndAppointment(userAppointment.GetDoctorId(), appointment);
@@ -690,15 +730,19 @@ public class TestUserAppointmentQueryService
             .Id(1)
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
-        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
-            .Id(1)
-            .PatientId(1)
-            .DoctorId(2)
-            .AppointmentId(1);
         _userRepository.Add(patient);
         _userRepository.Add(doctor);
         _appointmentRepository.Add(appointment);
+        patient = _userRepository.GetList()[0];
+        doctor = _userRepository.GetList()[1];
+        appointment = _appointmentRepository.GetList()[0];
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(patient.GetId())
+            .DoctorId(doctor.GetId())
+            .AppointmentId(appointment.GetId());
         _userAppointmentRepository.Add(userAppointment);
+        userAppointment = _userAppointmentRepository.GetList()[0];
 
         // Act
         UserAppointment found = _service.FindByPatientIdAndDates(patient.GetId(), appointment.GetStartDate(), appointment.GetEndDate());

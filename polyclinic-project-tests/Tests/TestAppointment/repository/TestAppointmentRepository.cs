@@ -5,6 +5,8 @@ using polyclinic_project_tests;
 using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.system.constants;
+using polyclinic_project.appointment.model.comparators;
+using Microsoft.VisualBasic;
 
 namespace polyclinic_project_tests.Tests.TestAppointment.repository;
 
@@ -26,12 +28,12 @@ public class TestAppointmentRepository
         _repository.Add(appointment);
         
         // Assert
-        Assert.Contains(appointment, _repository.GetList());
+        Assert.Contains(appointment, _repository.GetList(), new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();
     }
-
+        
     [Fact]
     public void TestDelete_DeletesAppointment()
     {
@@ -41,12 +43,13 @@ public class TestAppointmentRepository
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+
         // Act
         _repository.Delete(appointment.GetId());
         
         // Assert
-        Assert.DoesNotContain(appointment, _repository.GetList());
+        Assert.DoesNotContain(appointment, _repository.GetList(), new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();
@@ -65,13 +68,15 @@ public class TestAppointmentRepository
             .StartDate("06.10.2023 13:10")
             .EndDate("06.10.2023 13:30");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+        update.SetId(appointment.GetId());
+
         // Act
         _repository.Update(update);
         
         // Assert
-        Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(appointment.GetId())[0]);
+        Assert.Contains(update, _repository.GetList(), new AppointmentEqualityComparer());
+        Assert.Equal(update, _repository.FindById(appointment.GetId())[0], new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();
@@ -86,13 +91,14 @@ public class TestAppointmentRepository
             .StartDate("06.10.2023 12:00")
             .EndDate("06.10.2023 13:00");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+
         // Act
         Appointment found = _repository.FindById(appointment.GetId())[0];
         
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(appointment, found);
+        Assert.Equal(appointment, found, new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();
@@ -115,7 +121,7 @@ public class TestAppointmentRepository
         _repository.Add(another);
         
         // Assert
-        Assert.Equal(list, _repository.GetList());
+        Assert.Equal(list, _repository.GetList(), new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();

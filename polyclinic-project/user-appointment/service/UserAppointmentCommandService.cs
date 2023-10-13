@@ -54,9 +54,6 @@ public class UserAppointmentCommandService : IUserAppointmentCommandService
         if (doctor[0].GetType() != UserType.DOCTOR)
             throw new UserIsNotADoctor(Constants.USER_NOT_DOCTOR);
 
-        List<UserAppointment> id = _userAppointmentRepository.FindById(userAppointment.GetId());
-        if (id.Count > 0)
-            throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
         _userAppointmentRepository.Add(userAppointment);
     }
 

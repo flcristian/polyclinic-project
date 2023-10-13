@@ -82,7 +82,7 @@ public class UserAppointment : IUserAppointmentBuilder, IPrototype<UserAppointme
     public override Boolean Equals(object? obj)
     {
         UserAppointment userAppointment = obj as UserAppointment;
-        return userAppointment.id == this.id && userAppointment.patientId == this.patientId && userAppointment.doctorId == this.doctorId && userAppointment.appointmentId == this.appointmentId;
+        return userAppointment.patientId == this.patientId && userAppointment.doctorId == this.doctorId && userAppointment.appointmentId == this.appointmentId;
     }
 
     public override int GetHashCode()

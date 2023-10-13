@@ -31,9 +31,9 @@ public class UserAppointmentRepository : IUserAppointmentRepository
     
     public void Add(UserAppointment userAppointment)
     {
-        string sql = "insert into user_appointment values(@id,@patientId,@doctorId,@appointmentId)";
+        string sql = "insert into user_appointment(patientId,doctorId,appointmentId) values(@patientId,@doctorId,@appointmentId)";
         
-        _dataAccess.SaveData(sql, new { id = userAppointment.GetId(), patientId = userAppointment.GetPatientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
+        _dataAccess.SaveData(sql, new { patientId = userAppointment.GetPatientId(), doctorId = userAppointment.GetDoctorId(), appointmentId = userAppointment.GetAppointmentId() }, _connectionString);
     }
 
     public void Delete(int id)

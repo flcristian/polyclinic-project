@@ -33,9 +33,9 @@ namespace polyclinic_project.user.repository
 
         public void Add(User user)
         {
-            string sql = "insert into user(id,name,email,phone,type) values(@id,@name,@email,@phone,@type)";
+            string sql = "insert into user(name,email,phone,type) values(@name,@email,@phone,@type)";
 
-            _dataAccess.SaveData(sql, new { id =  user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
+            _dataAccess.SaveData(sql, new { name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
         }
 
         public void Delete(int id)

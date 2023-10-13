@@ -11,10 +11,13 @@ create table user_appointment(
 drop table user_appointment;
 
 delete from user_appointment where id in (1,2,3);
-delete from user where id in (1,2,3);
+delete from user;
+delete from user_appointment;
+delete from appointment;
 delete from appointment where id in (1,2,3);
 delete from user_appointment;
 select * from user_appointment;
+select * from user;
 
 insert into user_appointment values (1,1,3,1);
 insert into user_appointment values (2,1,3,2);
