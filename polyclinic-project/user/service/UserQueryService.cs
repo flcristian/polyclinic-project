@@ -58,9 +58,9 @@ namespace polyclinic_project.user.service
             return _repository.GetCount();
         }
 
-        public PatientViewAllDoctorsResponse ObtainAllDoctorNames()
+        public PatientViewAllDoctorsResponse ObtainAllDoctorDetails()
         {
-            PatientViewAllDoctorsResponse result = _repository.ObtainAllDoctorNames();
+            PatientViewAllDoctorsResponse result = _repository.ObtainAllDoctorDetails();
             if (result.Doctors.Count == 0)
                 throw new ItemsDoNotExist(Constants.NO_DOCTORS_AVAILABLE);
             return result;

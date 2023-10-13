@@ -66,7 +66,7 @@ public class ViewPatient : IViewPatient
                     ViewDoctors();
                     break;
                 case "4":
-                    CheckIfDoctorIsAvailable();
+                    CheckDoctorFreeTime();
                     break;
                 case "5":
                     MakeAppointment();
@@ -130,7 +130,7 @@ public class ViewPatient : IViewPatient
     private void ViewDoctors()
     {
         PatientViewAllDoctorsResponse response = null!;
-        try { response = _userQueryService.ObtainAllDoctorNames(); }
+        try { response = _userQueryService.ObtainAllDoctorDetails(); }
         catch (ItemsDoNotExist ex)
         {
             Console.WriteLine(ex.Message);
@@ -139,14 +139,17 @@ public class ViewPatient : IViewPatient
 
         Console.WriteLine("Available doctors :");
         string message = "";
-        foreach (string doctor in response.Doctors)
+        foreach (User doctor in response.Doctors)
         {
-            message += doctor + "\n";
+            message += doctor.GetName() + "\n";
+            message += doctor.GetEmail() + "\n";
+            message += doctor.GetPhone() + "\n";
+            message += "\n";
         }
         Console.WriteLine(message);
     }
 
-    private void CheckIfDoctorIsAvailable()
+    private void CheckDoctorFreeTime()
     {
         Console.WriteLine("Enter the doctor's name :");
         String name = Console.ReadLine()!;
@@ -279,7 +282,7 @@ public class ViewPatient : IViewPatient
         options += "1. View personal details\n";
         options += "2. View appointments\n";
         options += "3. View all doctors\n";
-        options += "4. View available doctors in a certain day\n";
+        options += "4. Check a doctor's availability in a certain day\n";
         options += "5. Make an appointment\n";
         options += "6. Cancel an appointment\n";
         options += "7. Update your email\n";

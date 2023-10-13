@@ -234,7 +234,7 @@ public class TestUserRepository
     }
 
     [Fact]
-    public void TestObtainAllDoctorNames_ReturnsStringListOfDoctorNames()
+    public void TestObtainAllDoctorDetails_ReturnsStringListOfDoctors()
     {
         // Arrange
         User user = IUserBuilder.BuildUser()
@@ -253,10 +253,10 @@ public class TestUserRepository
         _repository.Add(another);
 
         // Act
-        PatientViewAllDoctorsResponse response = _repository.ObtainAllDoctorNames();
+        PatientViewAllDoctorsResponse response = _repository.ObtainAllDoctorDetails();
 
         // Assert
-        Assert.Equal(new List<String> { user.GetName(), another.GetName() }, response.Doctors);
+        Assert.Equal(new List<User> { user, another }, response.Doctors);
 
         // Cleaning up
         _repository.Clear();

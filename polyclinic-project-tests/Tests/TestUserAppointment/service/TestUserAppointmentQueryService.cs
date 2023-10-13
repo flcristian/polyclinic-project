@@ -1,4 +1,4 @@
-﻿using polyclinic_project.appointment.model;
+﻿ using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
@@ -468,6 +468,49 @@ public class TestUserAppointmentQueryService
     }
 
     [Fact]
+    public void TestGetDoctorFreeTime_DoctorHasNoAppointments_ReturnsEntireDayAsTimeIntervalInDTO()
+    {
+        // Arrange
+        User patient = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User doctor = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+98127633909")
+            .Type(UserType.DOCTOR);
+        Appointment appointment = IAppointmentBuilder.BuildAppointment()
+            .Id(1)
+            .StartDate("06.10.2023 12:00")
+            .EndDate("06.10.2023 13:00");
+        UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
+            .Id(1)
+            .PatientId(1)
+            .DoctorId(2)
+            .AppointmentId(1);
+        _userRepository.Add(doctor);
+
+        // Act
+        DateTime start = DateTime.ParseExact("06.10.2023", Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture) + new TimeSpan(8, 0, 0); ;
+        PatientGetDoctorFreeTimeResponse response = _service.GetDoctorFreeTime(doctor.GetId(), start, new TimeSpan(0, 30, 0));
+
+        // Assert
+        List<TimeInterval> list = new List<TimeInterval>{
+            new TimeInterval(start, start + new TimeSpan(8, 0, 0)),
+        };
+        Assert.Equal(list, response.TimeIntervals);
+
+        // Cleaning up
+        _userRepository.Clear();
+        _appointmentRepository.Clear();
+        _userAppointmentRepository.Clear();
+    }
+
+    [Fact]
     public void TestGetDoctorFreeTime_ReturnsResponseDTOWithCorrectTimeIntervals()
     {
         // Arrange
@@ -514,4 +557,3 @@ public class TestUserAppointmentQueryService
         _userAppointmentRepository.Clear();
     }
 }
-

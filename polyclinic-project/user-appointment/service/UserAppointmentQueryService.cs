@@ -86,7 +86,17 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
     public PatientGetDoctorFreeTimeResponse GetDoctorFreeTime(int doctorId, DateTime date, TimeSpan duration)
     {
         PatientGetDoctorFreeTimeResponse response = new PatientGetDoctorFreeTimeResponse();
-        List<UserAppointment> userAppointments = FindByDoctorId(doctorId);
+        List<UserAppointment> userAppointments = null!;
+        try
+        {
+             userAppointments = FindByDoctorId(doctorId);
+        }
+        catch (ItemsDoNotExist)
+        {
+            response.TimeIntervals.Add(new TimeInterval(date, date + new TimeSpan(8, 0, 0)));
+            return response;
+        }
+
         List<Appointment> appointments = new List<Appointment>();
         foreach (UserAppointment userAppointment in userAppointments)
         {
