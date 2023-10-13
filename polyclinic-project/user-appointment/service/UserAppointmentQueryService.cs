@@ -1,5 +1,4 @@
 ﻿using polyclinic_project.appointment.model;
-using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service;
@@ -7,7 +6,6 @@ using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.system.models;
-using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
 using polyclinic_project.user.repository.interfaces;
@@ -90,7 +88,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         PatientGetDoctorFreeTimeResponse response = new PatientGetDoctorFreeTimeResponse();
         List<UserAppointment> userAppointments = FindByDoctorId(doctorId);
         List<Appointment> appointments = new List<Appointment>();
-        foreach(UserAppointment userAppointment in userAppointments)
+        foreach (UserAppointment userAppointment in userAppointments)
         {
             appointments.Add(_appointmentQueryService.FindById(userAppointment.GetAppointmentId()));
         }
@@ -102,7 +100,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         });
         appointments.Sort((a, b) =>
         {
-            if(a.GetStartDate() > b.GetStartDate())
+            if (a.GetStartDate() > b.GetStartDate())
             {
                 return 1;
             }
@@ -124,7 +122,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
             }
             prev = appointment.GetEndDate();
         }
-        if(next < date + new TimeSpan(8, 0, 0))
+        if (next < date + new TimeSpan(8, 0, 0))
         {
             response.TimeIntervals.Add(new TimeInterval(prev, date + new TimeSpan(8, 0, 0)));
         }

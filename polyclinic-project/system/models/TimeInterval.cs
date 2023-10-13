@@ -28,5 +28,11 @@ namespace polyclinic_project.system.models
             get { return _endTime; }
             set { _endTime = value; }
         }
+
+        public override bool Equals(object? obj)
+        {
+            TimeInterval interval = obj as TimeInterval;
+            return interval._startTime.Equals(_startTime) && interval._endTime.Equals(_endTime);
+        }
     }
 }
