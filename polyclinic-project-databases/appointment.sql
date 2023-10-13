@@ -1,10 +1,12 @@
 create table appointment(
     id integer auto_increment primary key,
-    startDate datetime unique,
-    endDate datetime unique
+    startDate datetime,
+    endDate datetime
 );
 
-delete from appointment;
+drop table appointment;
+
+delete from appointment where id = 4;
 delete from appointment where id in (1,2,3);
 delete from appointment where id = 2;
 

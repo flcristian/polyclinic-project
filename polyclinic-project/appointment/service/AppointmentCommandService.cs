@@ -31,18 +31,6 @@ namespace polyclinic_project.appointment.service
         {
             if (appointment.GetStartDate() >= appointment.GetEndDate())
                 throw new InvalidAppointmentSchedule(Constants.INVALID_APPOINTMENT_DATES);
-            
-            List<Appointment> id = null!, startDate = null!, endDate = null!;
-            id = _repository.FindById(appointment.GetId());
-            startDate = _repository.FindByDate(appointment.GetStartDate());
-            endDate = _repository.FindByDate(appointment.GetEndDate());
-
-            if (id.Count > 0) 
-                throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
-            if (startDate.Count > 0) 
-                throw new ItemAlreadyExists(Constants.ANOTHER_APPOINTMENT_ALREADY_SCHEDULED);
-            if (endDate.Count > 0)
-                throw new ItemAlreadyExists(Constants.ANOTHER_APPOINTMENT_ALREADY_SCHEDULED);
             _repository.Add(appointment);
         }
 
@@ -76,7 +64,7 @@ namespace polyclinic_project.appointment.service
                 throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
             _repository.Delete(id);
         }
-        
+
         #endregion
     }
 }

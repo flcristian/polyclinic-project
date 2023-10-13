@@ -14,69 +14,6 @@ public class TestAppointmentCommandService
 {
     private static IAppointmentRepository _repository = new AppointmentRepository(TestConnectionString.GetConnection("AppointmentCommandService"));
     private IAppointmentCommandService _service = new AppointmentCommandService(_repository);
-    
-    [Fact]
-    public void TestAdd_IdAlreadyUsed_ThrowsItemAlreadyExistsException_DoesNotAddAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("06.10.2023 12:00")
-            .EndDate("06.10.2023 13:00");
-        Appointment add = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("07.10.2023 13:00")
-            .EndDate("07.10.2023 14:00");
-        _repository.Add(appointment);
-        
-        // Assert
-        Assert.Throws<ItemAlreadyExists>(() => _service.Add(add));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
-    
-    [Fact]
-    public void TestAdd_StartDateCoincidesWithAnotherAppointment_ThrowsItemAlreadyExistsException_DoesNotAddAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("07.10.2023 12:00")
-            .EndDate("07.10.2023 13:00");
-        Appointment add = IAppointmentBuilder.BuildAppointment()
-            .Id(2)
-            .StartDate("07.10.2023 12:30")
-            .EndDate("07.10.2023 14:00");
-        _repository.Add(appointment);
-        
-        // Assert
-        Assert.Throws<ItemAlreadyExists>(() => _service.Add(add));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
-        
-    [Fact]
-    public void TestAdd_EndDateCoincidesWithAnotherAppointment_ThrowsItemAlreadyExistsException_DoesNotAddAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("07.10.2023 12:00")
-            .EndDate("07.10.2023 13:00");
-        Appointment add = IAppointmentBuilder.BuildAppointment()
-            .Id(2)
-            .StartDate("07.10.2023 11:30")
-            .EndDate("07.10.2023 12:30");
-        _repository.Add(appointment);
-        
-        // Assert
-        Assert.Throws<ItemAlreadyExists>(() => _service.Add(add));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
 
     [Fact]
     public void TestAdd_StartDateSameOrAfterEndDate_ThrowsInvalidAppointmentScheduleException_DoesNotAddAppointment()

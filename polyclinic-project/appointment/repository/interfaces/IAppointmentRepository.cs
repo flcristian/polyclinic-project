@@ -13,7 +13,6 @@ namespace polyclinic_project.appointment.repository.interfaces
         void Delete(int id);
         void Update(Appointment appointment);
         List<Appointment> FindById(int id);
-        List<Appointment> FindByDate(DateTime date);
         List<Appointment> GetList();
         int GetCount();
         void Clear();

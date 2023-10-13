@@ -57,14 +57,6 @@ namespace polyclinic_project.appointment.repository
 
             return _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
         }
-
-        public List<Appointment> FindByDate(DateTime date)
-        {
-            string dateString = $"'{date.ToString(Constants.SQL_DATE_FORMAT)}'";
-            string sql = $"select * from appointment where startDate <= {dateString} and endDate >= {dateString}";
-
-            return _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
-        }
         
         public List<Appointment> GetList()
         {

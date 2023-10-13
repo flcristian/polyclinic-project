@@ -1,4 +1,5 @@
 ﻿using polyclinic_project.appointment.model;
+using polyclinic_project.appointment.model.interfaces;
 using polyclinic_project.appointment.repository;
 using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service;
@@ -78,6 +79,33 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         return result;
     }
 
+    public UserAppointment FindByDoctorIdAndAppointment(int doctorId, Appointment appointment)
+    {
+        List<UserAppointment> userAppointments = null!;
+        try
+        {
+            userAppointments = FindByDoctorId(doctorId);
+        }
+        catch (ItemsDoNotExist)
+        {
+            return null!;
+        }
+
+        List<Appointment> appointments = new List<Appointment>();
+        userAppointments.ForEach(userAppointment =>
+        {
+            appointments.Add(_appointmentQueryService.FindById(userAppointment.GetAppointmentId()));
+        });
+        foreach(Appointment current in appointments)
+        {
+            if (current.Equals(appointment))
+            {
+                return userAppointments[appointments.IndexOf(appointment)];
+            }
+        }
+        return null!;
+    }
+
     public int GetCount()
     {
         return _userAppointmentRepository.GetCount();
@@ -137,6 +165,17 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
             response.TimeIntervals.Add(new TimeInterval(prev, date + new TimeSpan(8, 0, 0)));
         }
 
+        for(int i = 0; i < response.TimeIntervals.Count; i++)
+        {
+            TimeInterval interval = response.TimeIntervals[i];
+
+            if (interval.StartTime == interval.EndTime)
+            {
+                response.TimeIntervals.Remove(interval);
+                i--;
+            }
+        }
+
         return response;
     }
 
@@ -158,7 +197,47 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
                                                                   EndDate = appointment.GetEndDate(),
                                                                   DoctorName = user.GetName()
                                                               };
-        return result.ToList();
+        List<PatientViewAppointmentsResponse> resultList = result.ToList();
+        resultList.Sort((a, b) =>
+        {
+            if(a.StartDate > b.StartDate)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        });
+        return resultList;
+    }
+
+    public bool DoesPatientHaveAppointmentByIdAndDates(int id, DateTime startDate, DateTime endDate)
+    {
+        List<UserAppointment> userAppointments = null!;
+        try { userAppointments = FindByPatientId(id); }
+        catch (ItemsDoNotExist) { return false; }
+
+        List<Appointment> appointments = new List<Appointment>();
+        foreach(UserAppointment userAppointment in userAppointments)
+        {
+            appointments.Add(_appointmentQueryService.FindById(userAppointment.GetAppointmentId()));
+        }
+
+        Appointment check = IAppointmentBuilder.BuildAppointment()
+            .Id(-1)
+            .StartDate(startDate)
+            .EndDate(endDate);
+
+        foreach(Appointment appointment in appointments)
+        {
+            if (check.Equals(appointment))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #endregion
