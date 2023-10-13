@@ -105,12 +105,21 @@ namespace polyclinic_project.user.model
         public override Boolean Equals(object? obj)
         {
             User user = obj as User;
-            return user.id == this.id && user.name == this.name && user.email == this.email && user.phone == this.phone && user.type == this.type;
+            return user.email == this.email && user.phone == this.phone;
         }
 
         public override String ToString()
         {
-            String desc = $"{this.type.GetString().ToUpper()}\n=-=-=-=-=-=-=-=\n";
+            String desc = "";
+            desc += $"Name : {this.name}\n";
+            desc += $"Email : {this.email}\n";
+            desc += $"Phone : {this.phone}\n";
+            return desc;
+        }
+
+        public String ToStringAdmin()
+        {
+            String desc = "";
             desc += $"Id : {this.id}\n";
             desc += $"Name : {this.name}\n";
             desc += $"Email : {this.email}\n";
@@ -142,11 +151,6 @@ namespace polyclinic_project.user.model
         public User Clone()
         {
             return new User(this);
-        }
-
-        public String ToSave()
-        {
-            return $"{this.id}/{this.name}/{this.email}/{this.phone}/{this.type.GetString()}\n";
         }
 
         #endregion  

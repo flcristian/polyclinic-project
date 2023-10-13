@@ -1,4 +1,5 @@
-﻿using polyclinic_project.user.model;
+﻿using polyclinic_project.user.dtos;
+using polyclinic_project.user.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,10 @@ namespace polyclinic_project.user.service.interfaces
 
         User FindByPhone(String phone);
 
+        User FindDoctorByName(String name);
+
         int GetCount();
+
+        PatientViewAllDoctorsResponse ObtainAllDoctorDetails();
     }
 }

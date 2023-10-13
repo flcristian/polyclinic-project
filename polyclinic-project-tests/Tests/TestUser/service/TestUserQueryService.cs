@@ -6,6 +6,9 @@ using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.dtos;
+using polyclinic_project.user.exceptions;
+using polyclinic_project.user.model.comparators;
 
 namespace polyclinic_project_tests.Tests.TestUser.service;
 
@@ -44,13 +47,14 @@ public class TestUserQueryService
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+        user = _repository.FindByEmail(user.GetEmail())[0];
+
         // Act
         User found = _service.FindById(user.GetId());
                     
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
+        Assert.Equal(user, found, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -91,7 +95,7 @@ public class TestUserQueryService
                     
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
+        Assert.Equal(user, found, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -132,7 +136,7 @@ public class TestUserQueryService
                     
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
+        Assert.Equal(user, found, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -163,6 +167,132 @@ public class TestUserQueryService
         // Assert
         Assert.Equal(_repository.GetList().Count, count);
         
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestObtainAllDoctorDetails_ReturnsStringListOfDoctorNames()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        PatientViewAllDoctorsResponse response = _service.ObtainAllDoctorDetails();
+
+        // Assert
+        Assert.Equal(new List<User> { user, another }, response.Doctors, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestObtainAllDoctorNames_NoDoctorsAvailable_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+
+        // Act
+        Assert.Throws<ItemsDoNotExist>(() => _service.ObtainAllDoctorDetails());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestFindDoctorByName_NoDoctorsWithThatName_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User doctor1 = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Marian")
+            .Email("marian1@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User doctor2 = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian2@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+
+        // Assert
+        Assert.Throws<ItemsDoNotExist>(() => _service.FindDoctorByName(doctor1.GetName()));
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestFindDoctorByName_MultipleDoctorsWithThatName_ThrowsMultipleDoctorsWithThatNameException()
+    {
+        // Arrange
+        User doctor1 = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Marian")
+            .Email("marian1@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User doctor2 = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian2@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+        _repository.Add(doctor1);
+        _repository.Add(doctor2);
+
+        // Assert
+        Assert.Throws<MultipleDoctorsWithThatName>(() => _service.FindDoctorByName(doctor1.GetName()));
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestFindDoctorByName_DoctorExists_ReturnsDoctor()
+    {
+        // Arrange
+        User doctor = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        _repository.Add(doctor);
+
+        // Act
+        User found = _service.FindDoctorByName(doctor.GetName());
+
+        // Assert
+        Assert.Equal(doctor, found, new UserEqualityComparer());
+        Assert.Equal(UserType.DOCTOR, found.GetType());
+
         // Cleaning up
         _repository.Clear();
     }

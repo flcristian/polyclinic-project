@@ -1,16 +1,18 @@
-﻿using polyclinic_project.user.repository;
-using polyclinic_project.user.repository.interfaces;
-using polyclinic_project_tests;
+﻿using Microsoft.VisualBasic;
+using polyclinic_project.user.dtos;
 using polyclinic_project.user.model;
+using polyclinic_project.user.model.comparators;
 using polyclinic_project.user.model.interfaces;
+using polyclinic_project.user.repository;
+using polyclinic_project.user.repository.interfaces;
 
 namespace polyclinic_project_tests.Tests.TestUser.repository;
 
 [Collection("Tests")]
 public class TestUserRepository
 {
-    private IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserRepository")); 
-    
+    private IUserRepository _repository = new UserRepository(TestConnectionString.GetConnection("UserRepository"));
+
     [Fact]
     public void TestAdd_AddsUser()
     {
@@ -21,13 +23,13 @@ public class TestUserRepository
             .Email("andrei@email.com")
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
-        
+
         // Act
         _repository.Add(user);
-        
+
         // Assert
-        Assert.Contains(user, _repository.GetList());
-        
+        Assert.Contains(user, _repository.GetList(), new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
@@ -43,13 +45,14 @@ public class TestUserRepository
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+        user = _repository.FindByEmail(user.GetEmail())[0];
+
         // Act
         _repository.Delete(user.GetId());
-        
+
         // Assert
-        Assert.DoesNotContain(user, _repository.GetList());
-        
+        Assert.DoesNotContain(user, _repository.GetList(), new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
@@ -71,14 +74,16 @@ public class TestUserRepository
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+        user = _repository.FindByEmail(user.GetEmail())[0];
+        update.SetId(user.GetId());
+
         // Act
         _repository.Update(update);
-        
+
         // Assert
-        Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(user.GetId())[0]);
-        
+        Assert.Contains(update, _repository.GetList(), new UserEqualityComparer());
+        Assert.Equal(update, _repository.FindById(user.GetId())[0], new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
@@ -94,18 +99,19 @@ public class TestUserRepository
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+        user = _repository.FindByEmail(user.GetEmail())[0];
+
         // Act
         User found = _repository.FindById(user.GetId())[0];
-        
+
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
-        
+        Assert.Equal(user, found, new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
-    
+
     [Fact]
     public void TestFindByEmail_ReturnsUser()
     {
@@ -117,18 +123,18 @@ public class TestUserRepository
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+
         // Act
         User found = _repository.FindByEmail(user.GetEmail())[0];
-        
+
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
-        
+        Assert.Equal(user, found, new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
-    
+
     [Fact]
     public void TestFindByPhone_ReturnsUser()
     {
@@ -140,14 +146,14 @@ public class TestUserRepository
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+
         // Act
         User found = _repository.FindByPhone(user.GetPhone())[0];
-        
+
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
-        
+        Assert.Equal(user, found, new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
@@ -171,10 +177,10 @@ public class TestUserRepository
         List<User> list = new List<User> { user, another };
         _repository.Add(user);
         _repository.Add(another);
-        
+
         // Assert
-        Assert.Equal(list, _repository.GetList());
-        
+        Assert.Equal(list, _repository.GetList(), new UserEqualityComparer());
+
         // Cleaning up
         _repository.Clear();
     }
@@ -182,7 +188,7 @@ public class TestUserRepository
     [Fact]
     public void TestGetCount_ReturnsCount()
     {
-        
+
         // Arrange
         User user = IUserBuilder.BuildUser()
             .Id(1)
@@ -198,10 +204,10 @@ public class TestUserRepository
             .Type(UserType.PATIENT);
         _repository.Add(user);
         _repository.Add(another);
-        
+
         // Assert
         Assert.Equal(2, _repository.GetCount());
-        
+
         // Cleaning up
         _repository.Clear();
     }
@@ -224,12 +230,64 @@ public class TestUserRepository
             .Type(UserType.PATIENT);
         _repository.Add(user);
         _repository.Add(another);
-        
+
         // Act
         _repository.Clear();
-        
+
         // Assert
         Assert.Equal(0, _repository.GetCount());
         Assert.Empty(_repository.GetList());
+    }
+
+    [Fact]
+    public void TestObtainAllDoctorDetails_ReturnsStringListOfDoctors()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+15399738970")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        PatientViewAllDoctorsResponse response = _repository.ObtainAllDoctorDetails();
+
+        // Assert
+        Assert.Equal(new List<User> { user, another }, response.Doctors, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestFindDoctorsByName_ReturnsDoctor()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+
+        // Act
+        User found = _repository.FindDoctorsByName(user.GetName())[0];
+
+        // Assert
+        Assert.NotNull(found);
+        Assert.Equal(user, found, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
     }
 }

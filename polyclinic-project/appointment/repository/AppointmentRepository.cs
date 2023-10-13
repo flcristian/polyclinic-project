@@ -32,9 +32,9 @@ namespace polyclinic_project.appointment.repository
 
         public void Add(Appointment appointment)
         {
-            string sql = "insert into appointment(id, startDate, endDate) values(@id, @startDate, @endDate)";
+            string sql = "insert into appointment(startDate, endDate) values(@startDate, @endDate)";
 
-            _dataAccess.SaveData(sql, new { id = appointment.GetId(), startDate = appointment.GetStartDate(),  endDate = appointment.GetEndDate() }, _connectionString);
+            _dataAccess.SaveData(sql, new { startDate = appointment.GetStartDate(),  endDate = appointment.GetEndDate() }, _connectionString);
         }
 
         public void Delete(int id)
@@ -56,14 +56,6 @@ namespace polyclinic_project.appointment.repository
             string sql = "select * from appointment where id = @id";
 
             return _dataAccess.LoadData<Appointment, dynamic>(sql, new { id }, _connectionString).ToList();
-        }
-
-        public List<Appointment> FindByDate(DateTime date)
-        {
-            string dateString = $"'{date.ToString(Constants.SQL_DATE_FORMAT)}'";
-            string sql = $"select * from appointment where startDate <= {dateString} and endDate >= {dateString}";
-
-            return _dataAccess.LoadData<Appointment, dynamic>(sql, new { date }, _connectionString).ToList();
         }
         
         public List<Appointment> GetList()
@@ -88,7 +80,7 @@ namespace polyclinic_project.appointment.repository
         }
 
         #endregion
-        
+
         #region PRIVATE_METHODS
 
         private string GetConnection()

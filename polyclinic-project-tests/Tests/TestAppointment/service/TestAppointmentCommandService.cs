@@ -6,6 +6,8 @@ using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.appointment.model.comparators;
+using Microsoft.VisualBasic;
 
 namespace polyclinic_project_tests.Tests.TestAppointment.service;
 
@@ -14,69 +16,6 @@ public class TestAppointmentCommandService
 {
     private static IAppointmentRepository _repository = new AppointmentRepository(TestConnectionString.GetConnection("AppointmentCommandService"));
     private IAppointmentCommandService _service = new AppointmentCommandService(_repository);
-    
-    [Fact]
-    public void TestAdd_IdAlreadyUsed_ThrowsItemAlreadyExistsException_DoesNotAddAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("06.10.2023 12:00")
-            .EndDate("06.10.2023 13:00");
-        Appointment add = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("07.10.2023 13:00")
-            .EndDate("07.10.2023 14:00");
-        _repository.Add(appointment);
-        
-        // Assert
-        Assert.Throws<ItemAlreadyExists>(() => _service.Add(add));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
-    
-    [Fact]
-    public void TestAdd_StartDateCoincidesWithAnotherAppointment_ThrowsItemAlreadyExistsException_DoesNotAddAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("07.10.2023 12:00")
-            .EndDate("07.10.2023 13:00");
-        Appointment add = IAppointmentBuilder.BuildAppointment()
-            .Id(2)
-            .StartDate("07.10.2023 12:30")
-            .EndDate("07.10.2023 14:00");
-        _repository.Add(appointment);
-        
-        // Assert
-        Assert.Throws<ItemAlreadyExists>(() => _service.Add(add));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
-        
-    [Fact]
-    public void TestAdd_EndDateCoincidesWithAnotherAppointment_ThrowsItemAlreadyExistsException_DoesNotAddAppointment()
-    {
-        // Arrange
-        Appointment appointment = IAppointmentBuilder.BuildAppointment()
-            .Id(1)
-            .StartDate("07.10.2023 12:00")
-            .EndDate("07.10.2023 13:00");
-        Appointment add = IAppointmentBuilder.BuildAppointment()
-            .Id(2)
-            .StartDate("07.10.2023 11:30")
-            .EndDate("07.10.2023 12:30");
-        _repository.Add(appointment);
-        
-        // Assert
-        Assert.Throws<ItemAlreadyExists>(() => _service.Add(add));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
 
     [Fact]
     public void TestAdd_StartDateSameOrAfterEndDate_ThrowsInvalidAppointmentScheduleException_DoesNotAddAppointment()
@@ -112,7 +51,7 @@ public class TestAppointmentCommandService
         _service.Add(appointment);
 
         // Assert
-        Assert.Contains(appointment, _repository.GetList());
+        Assert.Contains(appointment, _repository.GetList(), new AppointmentEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -127,6 +66,7 @@ public class TestAppointmentCommandService
             .StartDate("07.10.2023 12:00")
             .EndDate("07.10.2023 13:00");
         _repository.Add(appointment);
+        appointment = _repository.GetList()[0];
         
         // Act
         _service.ClearList();
@@ -167,7 +107,9 @@ public class TestAppointmentCommandService
             .StartDate("07.10.2023 12:00")
             .EndDate("07.10.2023 13:00");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+        update.SetId(appointment.GetId());
+
         // Assert
         Assert.Throws<ItemNotModified>(() => _service.Update(update));
         
@@ -188,13 +130,15 @@ public class TestAppointmentCommandService
             .StartDate("07.10.2023 13:00")
             .EndDate("07.10.2023 14:00");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+        update.SetId(appointment.GetId());
+
         // Act
         _service.Update(update);
         
         // Assert
-        Assert.Contains(update, _repository.GetList());
-        Assert.Equal(update, _repository.FindById(appointment.GetId())[0]);
+        Assert.Contains(update, _repository.GetList(), new AppointmentEqualityComparer());
+        Assert.Equal(update, _repository.FindById(appointment.GetId())[0], new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();
@@ -225,12 +169,13 @@ public class TestAppointmentCommandService
             .StartDate("07.10.2023 12:00")
             .EndDate("07.10.2023 13:00");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+
         // Act
         _service.Delete(appointment);
         
         // Assert
-        Assert.DoesNotContain(appointment,_repository.GetList());
+        Assert.DoesNotContain(appointment,_repository.GetList(), new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();
@@ -261,12 +206,13 @@ public class TestAppointmentCommandService
             .StartDate("07.10.2023 12:00")
             .EndDate("07.10.2023 13:00");
         _repository.Add(appointment);
-        
+        appointment = _repository.GetList()[0];
+
         // Act
         _service.DeleteById(appointment.GetId());
         
         // Assert
-        Assert.DoesNotContain(appointment,_repository.GetList());
+        Assert.DoesNotContain(appointment,_repository.GetList(), new AppointmentEqualityComparer());
         
         // Cleaning up
         _repository.Clear();

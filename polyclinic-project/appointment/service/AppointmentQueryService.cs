@@ -36,25 +36,22 @@ namespace polyclinic_project.appointment.service
             return result[0];
         }
 
-        public Appointment FindByDate(DateTime date)
-        {
-            List<Appointment> result = _repository.FindByDate(date);
-            if (result.Count == 0)
-                throw new ItemDoesNotExist(Constants.NO_APPOINTMENT_SCHEDULED);
-            return result[0];
-        }
-
         public int GetCount()
         {
             return _repository.GetCount();
         }
 
-        public Appointment FindByDate(String date)
+        public bool CanAddAppointment(Appointment appointment)
         {
-            List<Appointment> result = _repository.FindByDate(DateTime.ParseExact(date, Constants.SQL_DATE_FORMAT, CultureInfo.InvariantCulture));
-            if (result.Count == 0)
-                throw new ItemDoesNotExist(Constants.NO_APPOINTMENT_SCHEDULED);
-            return result[0];
+            List<Appointment> appointments = _repository.GetList();
+            foreach(Appointment check in appointments)
+            {
+                if (check.Equals(appointment))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         
         #endregion

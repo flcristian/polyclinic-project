@@ -1,4 +1,5 @@
-﻿using polyclinic_project.user.model;
+﻿using polyclinic_project.user.dtos;
+using polyclinic_project.user.model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,7 @@ namespace polyclinic_project.user.repository.interfaces
         List<User> GetList();
         int GetCount();
         void Clear();
+        PatientViewAllDoctorsResponse ObtainAllDoctorDetails();
+        List<User> FindDoctorsByName(String name);
     }
 }
