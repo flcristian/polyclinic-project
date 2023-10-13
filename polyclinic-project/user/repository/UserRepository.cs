@@ -49,7 +49,7 @@ namespace polyclinic_project.user.repository
         {
             string sql = "update user set name = @name,email = @email,phone = @phone,type = @type where id = @id";
 
-            _dataAccess.SaveData(sql, new { id = user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType() }, _connectionString);
+            _dataAccess.SaveData(sql, new { id = user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
         }
 
         public List<User> FindById(int id)
