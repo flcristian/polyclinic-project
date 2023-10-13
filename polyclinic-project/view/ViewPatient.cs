@@ -356,19 +356,22 @@ public class ViewPatient : IViewPatient
             .StartDate(date)
             .EndDate(date + duration);
 
-        UserAppointment check = _userAppointmentQueryService.FindByDoctorIdAndAppointment(doctor.GetId(), appointment);
-        if(check != null)
+        try
         {
+            UserAppointment check = _userAppointmentQueryService.FindByDoctorIdAndAppointment(doctor.GetId(), appointment);
             Console.WriteLine("\nDoctor is occupied in that date.");
             return;
         }
+        catch (ItemDoesNotExist) { }
 
-        UserAppointment patientAppointment = _userAppointmentQueryService.GetUserAppointmentByPatientIdAndDates(_user.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
-        if (patientAppointment != null)
+        UserAppointment patientAppointment = null!;
+        try
         {
+            patientAppointment = _userAppointmentQueryService.FindByPatientIdAndDates(_user.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
             Console.WriteLine("You already have an appointment in that date!");
             return;
         }
+        catch (ItemDoesNotExist) { }
 
         _appointmentCommandService.Add(appointment);
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
@@ -443,8 +446,12 @@ public class ViewPatient : IViewPatient
 
         DateTime start = date + new TimeSpan(daytime.Hour, daytime.Minute, 0);
 
-        UserAppointment patientAppointment = _userAppointmentQueryService.GetUserAppointmentByPatientIdAndDates(_user.GetId(), start, start + duration);
-        if (patientAppointment == null)
+        UserAppointment patientAppointment = null!;
+        try
+        {
+            patientAppointment = _userAppointmentQueryService.FindByPatientIdAndDates(_user.GetId(), start, start + duration);
+        }
+        catch (ItemDoesNotExist)
         {
             Console.WriteLine("\nYou have no appointments scheduled at that date and time.");
             return;

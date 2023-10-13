@@ -88,7 +88,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         }
         catch (ItemsDoNotExist)
         {
-            return null!;
+            throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
         }
 
         List<Appointment> appointments = new List<Appointment>();
@@ -103,7 +103,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
                 return userAppointments[appointments.IndexOf(appointment)];
             }
         }
-        return null!;
+        throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
     }
 
     public int GetCount()
@@ -212,11 +212,11 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         return resultList;
     }
 
-    public UserAppointment GetUserAppointmentByPatientIdAndDates(int patientId, DateTime startDate, DateTime endDate)
+    public UserAppointment FindByPatientIdAndDates(int patientId, DateTime startDate, DateTime endDate)
     {
         List<UserAppointment> userAppointments = null!;
         try { userAppointments = FindByPatientId(patientId); }
-        catch (ItemsDoNotExist) { return null; }
+        catch (ItemsDoNotExist) { throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST); }
 
         List<Appointment> appointments = new List<Appointment>();
         foreach(UserAppointment userAppointment in userAppointments)
@@ -237,7 +237,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
             }
         }
 
-        return null;
+        throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
     }
 
     #endregion
