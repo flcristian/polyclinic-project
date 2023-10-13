@@ -105,7 +105,7 @@ namespace polyclinic_project.user.model
         public override Boolean Equals(object? obj)
         {
             User user = obj as User;
-            return user.id == this.id && user.name == this.name && user.email == this.email && user.phone == this.phone && user.type == this.type;
+            return user.email == this.email && user.phone == this.phone;
         }
 
         public override String ToString()

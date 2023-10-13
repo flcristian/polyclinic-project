@@ -8,6 +8,7 @@ using polyclinic_project.user.service.interfaces;
 using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.dtos;
 using polyclinic_project.user.exceptions;
+using polyclinic_project.user.model.comparators;
 
 namespace polyclinic_project_tests.Tests.TestUser.service;
 
@@ -46,13 +47,14 @@ public class TestUserQueryService
             .Phone("+12174633909")
             .Type(UserType.PATIENT);
         _repository.Add(user);
-        
+        user = _repository.FindByEmail(user.GetEmail())[0];
+
         // Act
         User found = _service.FindById(user.GetId());
                     
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
+        Assert.Equal(user, found, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -93,7 +95,7 @@ public class TestUserQueryService
                     
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
+        Assert.Equal(user, found, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -134,7 +136,7 @@ public class TestUserQueryService
                     
         // Assert
         Assert.NotNull(found);
-        Assert.Equal(user, found);
+        Assert.Equal(user, found, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -192,7 +194,7 @@ public class TestUserQueryService
         PatientViewAllDoctorsResponse response = _service.ObtainAllDoctorDetails();
 
         // Assert
-        Assert.Equal(new List<User> { user, another }, response.Doctors);
+        Assert.Equal(new List<User> { user, another }, response.Doctors, new UserEqualityComparer());
 
         // Cleaning up
         _repository.Clear();
@@ -288,7 +290,7 @@ public class TestUserQueryService
         User found = _service.FindDoctorByName(doctor.GetName());
 
         // Assert
-        Assert.Equal(doctor, found);
+        Assert.Equal(doctor, found, new UserEqualityComparer());
         Assert.Equal(UserType.DOCTOR, found.GetType());
 
         // Cleaning up

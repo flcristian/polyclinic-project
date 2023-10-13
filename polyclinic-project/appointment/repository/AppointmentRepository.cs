@@ -32,9 +32,9 @@ namespace polyclinic_project.appointment.repository
 
         public void Add(Appointment appointment)
         {
-            string sql = "insert into appointment(id, startDate, endDate) values(@id, @startDate, @endDate)";
+            string sql = "insert into appointment(startDate, endDate) values(@startDate, @endDate)";
 
-            _dataAccess.SaveData(sql, new { id = appointment.GetId(), startDate = appointment.GetStartDate(),  endDate = appointment.GetEndDate() }, _connectionString);
+            _dataAccess.SaveData(sql, new { startDate = appointment.GetStartDate(),  endDate = appointment.GetEndDate() }, _connectionString);
         }
 
         public void Delete(int id)

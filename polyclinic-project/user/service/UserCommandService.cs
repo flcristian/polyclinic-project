@@ -29,13 +29,10 @@ namespace polyclinic_project.user.service
         
         public void Add(User user)
         {
-            List<User> id = null!, email = null!, phone = null!;
-            id = _repository.FindById(user.GetId());
+            List<User> email = null!, phone = null!;
             email = _repository.FindByEmail(user.GetEmail());
             phone = _repository.FindByPhone(user.GetPhone());
 
-            if (id.Count > 0) 
-                throw new ItemAlreadyExists(Constants.ID_ALREADY_USED);
             if (email.Count > 0)
                 throw new ItemAlreadyExists(Constants.EMAIL_ALREADY_USED);
             if (phone.Count > 0)
