@@ -1,42 +1,76 @@
-﻿using polyclinic_project.system.interfaces;
+﻿using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.repository;
+using polyclinic_project.user.repository.interfaces;
 using polyclinic_project.user.service.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using polyclinic_project.system.constants;
 
 namespace polyclinic_project.user.service
 {
-    public class UserCommandService : IUserComandService
+    public class UserCommandService : IUserCommandService
     {
-        private IRepository<User> _userRepository = UserRepositorySingleton.Instance;
+        private IUserRepository _repository;
 
+        #region CONSTRUCTORS
+        
+        public UserCommandService()
+        {
+            _repository = UserRepositorySingleton.Instance;
+        }
+
+        public UserCommandService(IUserRepository repository)
+        {
+            _repository = repository;
+        }
+
+        #endregion
+        
+        #region PUBLIC_METHODS
+        
         public void Add(User user)
         {
-            ICommandServiceUtility<User>.Add(_userRepository, user);
+            List<User> email = null!, phone = null!;
+            email = _repository.FindByEmail(user.GetEmail());
+            phone = _repository.FindByPhone(user.GetPhone());
+
+            if (email.Count > 0)
+                throw new ItemAlreadyExists(Constants.EMAIL_ALREADY_USED);
+            if (phone.Count > 0)
+                throw new ItemAlreadyExists(Constants.PHONE_ALREADY_USED);
+            _repository.Add(user);
         }
 
-        public void Remove(User user)
+        public void Delete(User user)
         {
-            ICommandServiceUtility<User>.Remove(_userRepository, user);
+            List<User> check = _repository.FindById(user.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            _repository.Delete(user.GetId());
         }
 
-        public void RemoveById(int id)
+        public void DeleteById(int id)
         {
-            ICommandServiceUtility<User>.RemoveById(_userRepository, id);
+            List<User> check = _repository.FindById(id);
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            _repository.Delete(id);
         }
 
         public void ClearList()
         {
-            ICommandServiceUtility<User>.ClearList(_userRepository);
+            _repository.Clear();
         }
 
-        public void EditById(int id, User user)
+        public void Update(User user)
         {
-            ICommandServiceUtility<User>.EditById(_userRepository, id, user);
+            List<User> check = _repository.FindById(user.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            if (check[0].Equals(user))
+                throw new ItemNotModified(Constants.USER_NOT_MODIFIED);
+            _repository.Update(user);
         }
+        
+        #endregion
     }
 }

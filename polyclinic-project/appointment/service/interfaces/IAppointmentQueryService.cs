@@ -1,9 +1,4 @@
 ﻿using polyclinic_project.appointment.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polyclinic_project.appointment.service.interfaces
 {
@@ -11,9 +6,7 @@ namespace polyclinic_project.appointment.service.interfaces
     {
         Appointment FindById(int id);
 
-        Appointment FindByDate(DateTime date);
-
-        Appointment FindByDate(String date);
+        bool CanAddAppointment(Appointment appointment);
 
         int GetCount();
     }

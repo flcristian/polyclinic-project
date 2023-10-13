@@ -1,42 +1,70 @@
-﻿using polyclinic_project.appointment.model;
+﻿using polyclinic_project.system.constants;
+using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.repository;
+using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
-using polyclinic_project.system.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using polyclinic_project.system.interfaces.exceptions;
 
 namespace polyclinic_project.appointment.service
 {
     public class AppointmentCommandService : IAppointmentCommandService
     {
-        private IRepository<Appointment> _repository = AppointmentRepositorySingleton.Instance;
+        private IAppointmentRepository _repository;
 
+        #region CONSTRUCTORS
+        
+        public AppointmentCommandService()
+        {
+            _repository = AppointmentRepositorySingleton.Instance;
+        }
+
+        public AppointmentCommandService(IAppointmentRepository repository)
+        {
+            _repository = repository;
+        }
+        
+        #endregion
+
+        #region PUBLIC_METHODS
+        
         public void Add(Appointment appointment)
         {
-            ICommandServiceUtility<Appointment>.Add(_repository, appointment);
-        }
-
-        public void Remove(Appointment appointment)
-        {
-            ICommandServiceUtility<Appointment>.Remove(_repository, appointment);
-        }
-
-        public void RemoveById(int id)
-        {
-            ICommandServiceUtility<Appointment>.RemoveById(_repository, id);
+            if (appointment.GetStartDate() >= appointment.GetEndDate())
+                throw new InvalidAppointmentSchedule(Constants.INVALID_APPOINTMENT_DATES);
+            _repository.Add(appointment);
         }
 
         public void ClearList()
         {
-            ICommandServiceUtility<Appointment>.ClearList(_repository);
+            _repository.Clear();
         }
 
-        public void EditById(int id, Appointment appointment)
+        public void Update(Appointment appointment)
         {
-            ICommandServiceUtility<Appointment>.EditById(_repository, id, appointment);
+            List<Appointment> check = _repository.FindById(appointment.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.APPOINTMENT_DOES_NOT_EXIST);
+            if (check[0].Equals(appointment)) 
+                throw new ItemNotModified(Constants.APPOINTMENT_NOT_MODIFIED);
+            _repository.Update(appointment);
         }
+
+        public void Delete(Appointment appointment)
+        {
+            List<Appointment> check = _repository.FindById(appointment.GetId());
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            _repository.Delete(appointment.GetId());
+        }
+
+        public void DeleteById(int id)
+        {
+            List<Appointment> check = _repository.FindById(id);
+            if (check.Count == 0)
+                throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
+            _repository.Delete(id);
+        }
+
+        #endregion
     }
 }

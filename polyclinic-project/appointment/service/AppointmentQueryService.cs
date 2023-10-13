@@ -1,24 +1,20 @@
 ﻿using polyclinic_project.appointment.model;
 using polyclinic_project.appointment.repository;
+using polyclinic_project.appointment.repository.interfaces;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.constants;
-using polyclinic_project.system.interfaces;
-using System;
-using System.Collections.Generic;
+using polyclinic_project.system.interfaces.exceptions;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polyclinic_project.appointment.service
 {
     public class AppointmentQueryService : IAppointmentQueryService
     {
-        private IRepository<Appointment> _repository;
+        private IAppointmentRepository _repository;
 
-        // Constructors
-
-        public AppointmentQueryService(IRepository<Appointment> repository)
+        #region CONSTRUCTORS
+        
+        public AppointmentQueryService(IAppointmentRepository repository)
         {
             _repository = repository;
         }
@@ -27,28 +23,37 @@ namespace polyclinic_project.appointment.service
         {
             _repository = AppointmentRepositorySingleton.Instance;
         }
+        
+        #endregion
 
-        // Methods
+        #region PUBLIC_METHODS
 
         public Appointment FindById(int id)
         {
-            return IQueryServiceUtility<Appointment>.FindById(_repository, id);
-        }
-
-        public Appointment FindByDate(DateTime date)
-        {
-            return _repository.GetList().First(i => i.GetStartDate() <= date && i.GetEndDate() >= date);
-        }
-
-        public Appointment FindByDate(String date)
-        {
-            DateTime parsed = DateTime.ParseExact(date, Constants.STANDARD_DATE_FORMAT, CultureInfo.InvariantCulture);
-            return _repository.GetList().First(i => i.GetStartDate() <= parsed && i.GetEndDate() >= parsed);
+            List<Appointment> result = _repository.FindById(id);
+            if (result.Count == 0)
+                throw new ItemDoesNotExist(Constants.APPOINTMENT_DOES_NOT_EXIST);
+            return result[0];
         }
 
         public int GetCount()
         {
-            return IQueryServiceUtility<Appointment>.GetCount(_repository);
+            return _repository.GetCount();
         }
+
+        public bool CanAddAppointment(Appointment appointment)
+        {
+            List<Appointment> appointments = _repository.GetList();
+            foreach(Appointment check in appointments)
+            {
+                if (check.Equals(appointment))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        #endregion
     }
 }

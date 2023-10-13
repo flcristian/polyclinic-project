@@ -1,5 +1,4 @@
-﻿using polyclinic_project.system.constants;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +8,7 @@ namespace polyclinic_project.user.repository
 {
     public class UserRepositorySingleton
     {
-        private static readonly Lazy<UserRepository> _instance = new Lazy<UserRepository>(() => new UserRepository(Constants.USER_DATA_PATH));
+        private static readonly Lazy<UserRepository> _instance = new Lazy<UserRepository>(() => new UserRepository());
 
         public static UserRepository Instance => _instance.Value;
 
