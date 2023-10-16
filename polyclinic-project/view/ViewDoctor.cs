@@ -125,14 +125,52 @@ namespace polyclinic_project.view
 
         public void CompleteAppointment()
         {
+            
         }
 
-        public void UpdateEmail()
+        private void UpdateEmail()
         {
+            Console.WriteLine("Enter your new email :");
+            string email = Console.ReadLine()!;
+            bool unique = false;
+            while (!unique)
+            {
+                if (email.Replace(" ", "") == "")
+                {
+                    Console.WriteLine("\nInvalid email adress.");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                else if (email == _user.GetEmail())
+                {
+                    Console.WriteLine("\nYou can't change the email to the same one as before!");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                else
+                {
+                    try
+                    {
+                        _userQueryService.FindByEmail(email);
+                        unique = false;
+                        Console.WriteLine("\nThis email is already used.");
+                        Console.WriteLine("Please try again :");
+                        email = Console.ReadLine()!;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        unique = true;
+                    }
+                }
+            }
+            _user.SetEmail(email);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour email has been succesfully updated!");
         }
 
         public void UpdatePhone()
         {
+            
         }
         
         // Menu Methods
