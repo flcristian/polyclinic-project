@@ -1,22 +1,13 @@
-﻿using polyclinic_project.appointment.model;
-using polyclinic_project.appointment.model.interfaces;
-using polyclinic_project.appointment.service;
-using polyclinic_project.appointment.service.interfaces;
+﻿using polyclinic_project.appointment.service;
 using polyclinic_project.system.constants;
 using polyclinic_project.system.interfaces.exceptions;
-using polyclinic_project.system.models;
-using polyclinic_project.user.dtos;
-using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.user_appointment.dtos;
-using polyclinic_project.user_appointment.model;
-using polyclinic_project.user_appointment.model.interfaces;
 using polyclinic_project.user_appointment.service;
 using polyclinic_project.user_appointment.service.interfaces;
 using polyclinic_project.view.interfaces;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace polyclinic_project.view
@@ -26,8 +17,6 @@ namespace polyclinic_project.view
         private User _user;
         private IUserCommandService _userCommandService;
         private IUserQueryService _userQueryService;
-        private IAppointmentCommandService _appointmentCommandService;
-        private IUserAppointmentCommandService _userAppointmentCommandService;
         private IUserAppointmentQueryService _userAppointmentQueryService;
 
         #region CONSTRUCTORS
@@ -37,9 +26,7 @@ namespace polyclinic_project.view
             _user = user;
             _userCommandService = UserCommandServiceSingleton.Instance;
             _userQueryService = UserQueryServiceSingleton.Instance;
-            _userAppointmentCommandService = UserAppointmentCommandServiceSingleton.Instance;
             _userAppointmentQueryService = UserAppointmentQueryServiceSingleton.Instance;
-            _appointmentCommandService = AppointmentCommandServiceSingleton.Instance;
         }
 
         #endregion
@@ -55,7 +42,7 @@ namespace polyclinic_project.view
                 DisplayOptions();
                 Console.WriteLine("Enter what you want to do :");
 
-                string input = Console.ReadLine();
+                string input = Console.ReadLine()!;
                 LineBreak();
                 switch (input)
                 {
@@ -66,12 +53,9 @@ namespace polyclinic_project.view
                         ViewAppointments();
                         break;
                     case "3":
-                        CompleteAppointment();
-                        break;
-                    case "4":
                         UpdateEmail();
                         break;
-                    case "5":
+                    case "4":
                         UpdatePhone();
                         break;
                     default:
@@ -122,11 +106,6 @@ namespace polyclinic_project.view
 
                 Console.WriteLine(message);
             }
-        }
-
-        public void CompleteAppointment()
-        {
-
         }
         
         private void UpdateEmail()
@@ -216,9 +195,8 @@ namespace polyclinic_project.view
             string options = "";
             options += "1. View personal details\n";
             options += "2. View appointments\n";
-            options += "3. Mark an appointment as complete\n";
-            options += "4. Update your email\n";
-            options += "5. Updated your phone number\n";
+            options += "3. Update your email\n";
+            options += "4. Updated your phone number\n";
             options += "Anything else to log out";
             Console.WriteLine(options);
         }

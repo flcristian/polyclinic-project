@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace polyclinic_project.user_appointment.dtos
+﻿namespace polyclinic_project.user_appointment.dtos
 {
     public class DoctorViewAppointmentsResponse
     {
@@ -42,6 +36,12 @@ namespace polyclinic_project.user_appointment.dtos
         {
             get => _patientPhone;
             set => _patientPhone = value;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            DoctorViewAppointmentsResponse dto = obj as DoctorViewAppointmentsResponse;
+            return dto._startDate.Equals(_startDate) && dto._endDate.Equals(_endDate) && dto._patientEmail.Equals(_patientEmail) && dto._patientName.Equals(_patientName) && dto._patientPhone.Equals(_patientPhone);
         }
     }
 }
