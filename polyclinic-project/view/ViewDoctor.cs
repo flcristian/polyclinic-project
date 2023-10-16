@@ -17,6 +17,7 @@ using polyclinic_project.user_appointment.service;
 using polyclinic_project.user_appointment.service.interfaces;
 using polyclinic_project.view.interfaces;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace polyclinic_project.view
 {
@@ -127,7 +128,7 @@ namespace polyclinic_project.view
         {
 
         }
-
+        
         private void UpdateEmail()
         {
             Console.WriteLine("Enter your new email :");
@@ -135,9 +136,9 @@ namespace polyclinic_project.view
             bool unique = false;
             while (!unique)
             {
-                if (email.Replace(" ", "") == "")
+                if (!IsValidEmailAddress(email))
                 {
-                    Console.WriteLine("\nInvalid email adress.");
+                    Console.WriteLine("\nInvalid email address.");
                     Console.WriteLine("Please try again :");
                     email = Console.ReadLine()!;
                 }
@@ -165,16 +166,7 @@ namespace polyclinic_project.view
             }
             _user.SetEmail(email);
             _userCommandService.Update(_user);
-            Console.WriteLine("\nYour email has been succesfully updated!");
-        }
-
-        private bool IsValidPhoneNumber(string phone)
-        {
-            return phone.All(character =>
-            {
-                return char.IsDigit(character) || character == '-' ||
-                       (character == '+' && phone.IndexOf(character) == 0);
-            });
+            Console.WriteLine("\nYour email has been successfully updated!");
         }
         
         private void UpdatePhone()
@@ -214,7 +206,7 @@ namespace polyclinic_project.view
             }
             _user.SetPhone(phone);
             _userCommandService.Update(_user);
-            Console.WriteLine("\nYour phone number has been succesfully updated!");
+            Console.WriteLine("\nYour phone number has been successfully updated!");
         }
         
         // Menu Methods
@@ -240,6 +232,24 @@ namespace polyclinic_project.view
         {
             Console.Write("Enter anything to continue");
             Console.ReadLine();
+        }
+        
+        // Logistics
+    
+        private bool IsValidEmailAddress(string email)
+        {
+            string pattern = @"^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
+            return Regex.IsMatch(email, pattern);
+        }
+        
+        private bool IsValidPhoneNumber(string phone)
+        {
+            return phone.All(character =>
+            {
+                return char.IsDigit(character) || character == '-' ||
+                       (character == '+' && phone.IndexOf(character) == 0);
+            });
         }
 
         #endregion
