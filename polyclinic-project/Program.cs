@@ -14,12 +14,12 @@ internal class Program
         User user = null!;
         try
         {
-            user = query.FindById(1);
+            user = query.FindById(4);
         }
         catch (ItemDoesNotExist)
         {
             user = IUserBuilder.BuildUser()
-                .Id(1)
+                .Id(4)
                 .Name("Andrei")
                 .Email("andrei@email.com")
                 .Phone("+9127431")

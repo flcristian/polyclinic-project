@@ -26,7 +26,6 @@ public class ViewPatient : IViewPatient
     private IUserCommandService _userCommandService;
     private IUserQueryService _userQueryService;
     private IAppointmentCommandService _appointmentCommandService;
-    private IAppointmentQueryService _appointmentQueryService;
     private IUserAppointmentCommandService _userAppointmentCommandService;
     private IUserAppointmentQueryService _userAppointmentQueryService;
 
@@ -40,7 +39,6 @@ public class ViewPatient : IViewPatient
         _userAppointmentCommandService = UserAppointmentCommandServiceSingleton.Instance;
         _userAppointmentQueryService = UserAppointmentQueryServiceSingleton.Instance;
         _appointmentCommandService = AppointmentCommandServiceSingleton.Instance;
-        _appointmentQueryService = AppointmentQueryServiceSingleton.Instance;
     }
 
     #endregion

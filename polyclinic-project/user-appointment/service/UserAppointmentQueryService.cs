@@ -181,9 +181,7 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
 
     public List<PatientViewAppointmentsResponse> ObtainAppointmentDatesAndDoctorNameByPatientId(int patientId)
     {
-        List<UserAppointment> userAppointments;
-        try { userAppointments = FindByPatientId(patientId); }
-        catch (ItemsDoNotExist ex) { throw; }
+        List<UserAppointment> userAppointments = FindByPatientId(patientId);
 
         List<User> users = _userRepository.GetList();
         List<Appointment> appointments = _appointmentRepository.GetList();
@@ -204,10 +202,38 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
             {
                 return 1;
             }
-            else
+
+            return 0;
+        });
+        return resultList;
+    }
+
+    public List<DoctorViewAppointmentsResponse> ObtainAppointmentDetailsByDoctorId(int doctorId)
+    {
+        List<UserAppointment> userAppointments = FindByDoctorId(doctorId);
+        List<User> users = _userRepository.GetList();
+        List<Appointment> appointments = _appointmentRepository.GetList();
+
+        IEnumerable<DoctorViewAppointmentsResponse> result = from userAppointment in userAppointments
+            join appointment in appointments on userAppointment.GetAppointmentId() equals appointment.GetId()
+            join user in users on userAppointment.GetPatientId() equals user.GetId()
+            select new DoctorViewAppointmentsResponse
             {
-                return 0;
+                StartDate = appointment.GetStartDate(),
+                EndDate = appointment.GetEndDate(),
+                PatientName = user.GetName(),
+                PatientEmail = user.GetEmail(),
+                PatientPhone = user.GetPhone()
+            };
+        List<DoctorViewAppointmentsResponse> resultList = result.ToList();
+        resultList.Sort((a, b) =>
+        {
+            if(a.StartDate > b.StartDate)
+            {
+                return 1;
             }
+
+            return 0;
         });
         return resultList;
     }
