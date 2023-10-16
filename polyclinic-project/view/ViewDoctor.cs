@@ -125,7 +125,7 @@ namespace polyclinic_project.view
 
         public void CompleteAppointment()
         {
-            
+
         }
 
         private void UpdateEmail()
@@ -168,9 +168,53 @@ namespace polyclinic_project.view
             Console.WriteLine("\nYour email has been succesfully updated!");
         }
 
-        public void UpdatePhone()
+        private bool IsValidPhoneNumber(string phone)
         {
-            
+            return phone.All(character =>
+            {
+                return char.IsDigit(character) || character == '-' ||
+                       (character == '+' && phone.IndexOf(character) == 0);
+            });
+        }
+        
+        private void UpdatePhone()
+        {
+            Console.WriteLine("Enter your new phone number :");
+            string phone = Console.ReadLine()!;
+            bool unique = false;
+            while (!unique)
+            {
+                if (!IsValidPhoneNumber(phone))
+                {
+                    Console.WriteLine("\nInvalid phone number.");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                else if (phone == _user.GetPhone())
+                {
+                    Console.WriteLine("\nYou can't change the phone number to the same one as before!");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                else
+                {
+                    try
+                    {
+                        _userQueryService.FindByPhone(phone);
+                        unique = false;
+                        Console.WriteLine("\nThis phone number is already used.");
+                        Console.WriteLine("Please try again :");
+                        phone = Console.ReadLine()!;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        unique = true;
+                    }
+                }
+            }
+            _user.SetPhone(phone);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour phone number has been succesfully updated!");
         }
         
         // Menu Methods
