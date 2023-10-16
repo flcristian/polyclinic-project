@@ -14,19 +14,19 @@ internal class Program
         User user = null!;
         try
         {
-            user = query.FindById(4);
+            user = query.FindById(3);
         }
         catch (ItemDoesNotExist)
         {
             user = IUserBuilder.BuildUser()
-                .Id(4)
-                .Name("Andrei")
+                .Id(3)
+                .Name("Marius")
                 .Email("andrei@email.com")
                 .Phone("+9127431")
                 .Type(UserType.PATIENT);
         }
 
-        IViewPatient view = new ViewPatient(user);
+        IView view = new ViewDoctor(user);
         view.RunMenu();
     }
 }

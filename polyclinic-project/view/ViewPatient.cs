@@ -20,7 +20,7 @@ using System.Globalization;
 
 namespace polyclinic_project.view;
 
-public class ViewPatient : IViewPatient
+public class ViewPatient : IView
 {
     private User _user;
     private IUserCommandService _userCommandService;
