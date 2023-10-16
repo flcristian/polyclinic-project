@@ -499,6 +499,15 @@ public class ViewPatient : IView
         _userCommandService.Update(_user);
         Console.WriteLine("\nYour email has been succesfully updated!");
     }
+    
+    private bool IsValidPhoneNumber(string phone)
+    {
+        return phone.All(character =>
+        {
+            return char.IsDigit(character) || character == '-' ||
+                   (character == '+' && phone.IndexOf(character) == 0);
+        });
+    }
 
     private void UpdatePhone()
     {
@@ -507,7 +516,7 @@ public class ViewPatient : IView
         bool unique = false;
         while (!unique)
         {
-            if (phone.Replace(" ", "") == "")
+            if (!IsValidPhoneNumber(phone))
             {
                 Console.WriteLine("\nInvalid phone number.");
                 Console.WriteLine("Please try again :");
