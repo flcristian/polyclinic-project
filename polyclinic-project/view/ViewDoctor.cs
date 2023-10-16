@@ -92,7 +92,8 @@ namespace polyclinic_project.view
 
         public void ViewPersonalDetails()
         {
-            
+            Console.WriteLine("Here are your personal details :");
+            Console.WriteLine(_user);
         }
         
         public void ViewAppointments()
