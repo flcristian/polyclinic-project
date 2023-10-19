@@ -17,3 +17,4 @@ insert into user values(1, "Andrei", "andrei@email.com","1234","+1934812", "Pati
 insert into user values(2, "Marian", "marian@email.com","1234","+1444812", "Patient");
 insert into user values(3, "Marius", "marius1@email.com","1234","+1666812", "Doctor");
 insert into user values(4, "Marius", "marius2@email.com","1234","+1631312", "Doctor");
+insert into user values(5, "George", "george@email.com", "admin", "+9119111", "Admin");

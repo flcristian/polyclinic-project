@@ -1,21 +1,12 @@
-﻿using polyclinic_project.appointment.model.interfaces;
-using polyclinic_project.appointment.model;
-using polyclinic_project.appointment.service;
+﻿using polyclinic_project.appointment.service;
 using polyclinic_project.appointment.service.interfaces;
 using polyclinic_project.system.interfaces.exceptions;
-using polyclinic_project.system.models;
-using polyclinic_project.user.dtos;
-using polyclinic_project.user.exceptions;
 using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
-using polyclinic_project.user_appointment.dtos;
-using polyclinic_project.user_appointment.model.interfaces;
-using polyclinic_project.user_appointment.model;
 using polyclinic_project.user_appointment.service;
 using polyclinic_project.user_appointment.service.interfaces;
 using polyclinic_project.view.interfaces;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace polyclinic_project.view
@@ -56,7 +47,7 @@ namespace polyclinic_project.view
                 DisplayMenuOptions();
                 Console.WriteLine("Enter what you want to do :");
 
-                string input = Console.ReadLine();
+                string input = Console.ReadLine()!;
                 LineBreak();
                 switch (input)
                 {
@@ -72,11 +63,6 @@ namespace polyclinic_project.view
                     default:
                         running = false;
                         break;
-                }
-                if (running)
-                {
-                    WaitForUser();
-                    LineBreak();
                 }
             }
         }
@@ -287,17 +273,88 @@ namespace polyclinic_project.view
 
         private void ViewPersonalDetails()
         {
-
+            Console.WriteLine("Here are your personal details :");
+            Console.WriteLine(_user);
         }
 
         private void UpdateEmail()
         {
-
+            Console.WriteLine("Enter your new email :");
+            string email = Console.ReadLine()!;
+            bool unique = false;
+            while (!unique)
+            {
+                if (!IsValidEmailAddress(email))
+                {
+                    Console.WriteLine("\nInvalid email address.");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                else if (email == _user.GetEmail())
+                {
+                    Console.WriteLine("\nYou can't change the email to the same one as before!");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                else
+                {
+                    try
+                    {
+                        _userQueryService.FindByEmail(email);
+                        unique = false;
+                        Console.WriteLine("\nThis email is already used.");
+                        Console.WriteLine("Please try again :");
+                        email = Console.ReadLine()!;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        unique = true;
+                    }
+                }
+            }
+            _user.SetEmail(email);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour email has been successfully updated!");
         }
 
         private void UpdatePhone()
         {
-
+            Console.WriteLine("Enter your new phone number :");
+            string phone = Console.ReadLine()!;
+            bool unique = false;
+            while (!unique)
+            {
+                if (!IsValidPhoneNumber(phone))
+                {
+                    Console.WriteLine("\nInvalid phone number.");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                else if (phone == _user.GetPhone())
+                {
+                    Console.WriteLine("\nYou can't change the phone number to the same one as before!");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                else
+                {
+                    try
+                    {
+                        _userQueryService.FindByPhone(phone);
+                        unique = false;
+                        Console.WriteLine("\nThis phone number is already used.");
+                        Console.WriteLine("Please try again :");
+                        phone = Console.ReadLine()!;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        unique = true;
+                    }
+                }
+            }
+            _user.SetPhone(phone);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour phone number has been successfully updated!");
         }
 
 
