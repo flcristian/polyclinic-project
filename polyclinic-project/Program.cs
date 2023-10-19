@@ -12,21 +12,8 @@ internal class Program
     {
         IUserQueryService query = new UserQueryService();
         User user = null!;
-        try
-        {
-            user = query.FindById(3);
-        }
-        catch (ItemDoesNotExist)
-        {
-            user = IUserBuilder.BuildUser()
-                .Id(3)
-                .Name("Marius")
-                .Email("andrei@email.com")
-                .Phone("+9127431")
-                .Type(UserType.PATIENT);
-        }
+        user = query.FindById(3);
 
-        IView view = new ViewDoctor(user);
-        view.RunMenu();
+        Console.WriteLine(user.GetPassword());
     }
 }

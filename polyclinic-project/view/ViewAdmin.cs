@@ -96,7 +96,7 @@ namespace polyclinic_project.view
                 DisplayUserOptions();
                 Console.WriteLine("Enter what you want to do :");
 
-                string input = Console.ReadLine();
+                string input = Console.ReadLine()!;
                 LineBreak();
                 switch (input)
                 {
@@ -148,7 +148,7 @@ namespace polyclinic_project.view
                 DisplayAppointmentOptions();
                 Console.WriteLine("Enter what you want to do :");
 
-                string input = Console.ReadLine();
+                string input = Console.ReadLine()!;
                 LineBreak();
                 switch (input)
                 {
@@ -188,7 +188,7 @@ namespace polyclinic_project.view
                 DisplayPersonalOptions();
                 Console.WriteLine("Enter what you want to do :");
 
-                string input = Console.ReadLine();
+                string input = Console.ReadLine()!;
                 LineBreak();
                 switch (input)
                 {
@@ -212,6 +212,94 @@ namespace polyclinic_project.view
                 }
             }
         }
+
+        // Functionalities
+
+        private void ViewAllUsers()
+        {
+
+        }
+
+        private void ViewAllPatients()
+        {
+
+        }
+
+        private void ViewAllDoctors()
+        {
+
+        }
+
+        private void ViewUserDetails()
+        {
+
+        }
+
+        private void EditUserName()
+        {
+
+        }
+
+        private void EditUserEmail()
+        {
+
+        }
+
+        private void EditUserPhone()
+        {
+
+        }
+
+        private void AssignDoctor()
+        {
+
+        }
+
+        private void DeleteUser()
+        {
+
+        }
+
+        private void ViewAllAppointments()
+        {
+
+        }
+
+        private void ChangeAppointmentPatient()
+        {
+
+        }
+
+        private void ChangeAppointmentDoctor()
+        {
+
+        }
+
+        private void ChangeAppointmentDates()
+        {
+
+        }
+
+        private void CancelAppointment()
+        {
+
+        }
+
+        private void ViewPersonalDetails()
+        {
+
+        }
+
+        private void UpdateEmail()
+        {
+
+        }
+
+        private void UpdatePhone()
+        {
+
+        }
+
 
         // Menu Methods
 

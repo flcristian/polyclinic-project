@@ -2,6 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/user.sql" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/userAppointment.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/user_appointment.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/user_role.sql" dialect="GenericSQL" />
   </component>
 </project>

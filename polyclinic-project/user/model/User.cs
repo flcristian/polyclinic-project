@@ -1,5 +1,6 @@
 ﻿using polyclinic_project.system.interfaces;
 using polyclinic_project.user.model.interfaces;
+using polyclinic_project.user.roles;
 
 namespace polyclinic_project.user.model
 {
@@ -8,16 +9,19 @@ namespace polyclinic_project.user.model
         private Int32 id;
         private String name;
         private String email;
+        private String password;
         private String phone;
         private UserType type;
 
+
         #region CONSTRUCTORS
 
-        public User(Int32 id, String name, String email, String phone, UserType type)
+        public User(Int32 id, String name, String email, String password, String phone, UserType type)
         {
             this.id = id;
             this.name = name;
             this.email = email;
+            this.password = password;
             this.phone = phone;
             this.type = type;
         }
@@ -27,6 +31,7 @@ namespace polyclinic_project.user.model
             this.id = user.id;
             this.name = user.name;
             this.email = user.email;
+            this.password = user.password;
             this.phone = user.phone;
             this.type = user.type;
         }
@@ -36,6 +41,7 @@ namespace polyclinic_project.user.model
             this.id = -1;
             this.name = "name";
             this.email = "email";
+            this.password = "1234";
             this.phone = "phone";
             this.type = UserType.NONE;
         }
@@ -50,6 +56,8 @@ namespace polyclinic_project.user.model
 
         public String GetEmail() { return this.email; }
 
+        public String GetPassword() { return this.password; }
+
         public String GetPhone() { return this.phone; }
 
         public UserType GetType() { return this.type; }
@@ -59,6 +67,8 @@ namespace polyclinic_project.user.model
         public void SetName(String name) { this.name = name; }
 
         public void SetEmail(String email) { this.email = email; }
+
+        public void SetPassword(String password) { this.password = password; }
 
         public void SetPhone(String phone) { this.phone = phone; }
 
@@ -134,10 +144,10 @@ namespace polyclinic_project.user.model
 
         public Int32 CompareTo(User? user)
         {
-            if(this.id > user.id)
+            if (this.id > user.id)
             {
                 return 1;
-            } 
+            }
             else if (this.id == user.id)
             {
                 return 0;
