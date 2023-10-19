@@ -266,5 +266,66 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
     }
 
+    public UserAppointment FindByDoctorIdAndDates(int doctorId, DateTime startDate, DateTime endDate)
+    {
+        List<UserAppointment> userAppointments = null!;
+        try { userAppointments = FindByDoctorId(doctorId); }
+        catch (ItemsDoNotExist) { throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST); }
+
+        List<Appointment> appointments = new List<Appointment>();
+        foreach (UserAppointment userAppointment in userAppointments)
+        {
+            appointments.Add(_appointmentQueryService.FindById(userAppointment.GetAppointmentId()));
+        }
+
+        Appointment check = IAppointmentBuilder.BuildAppointment()
+            .Id(-1)
+            .StartDate(startDate)
+            .EndDate(endDate);
+
+        foreach (Appointment appointment in appointments)
+        {
+            if (check.Equals(appointment))
+            {
+                return userAppointments[appointments.IndexOf(appointment)];
+            }
+        }
+
+        throw new ItemDoesNotExist(Constants.USER_APPOINTMENT_DOES_NOT_EXIST);
+    }
+
+    public List<AdminViewAllAppointmentsResponse> ObtainAllAppointmentDetails()
+    {
+        List<UserAppointment> userAppointments = _userAppointmentRepository.GetList();
+        if(userAppointments.Count == 0)
+        {
+            throw new ItemsDoNotExist(Constants.USER_APPOINTMENTS_DO_NOT_EXIST);
+        }
+        List<User> users = _userRepository.GetList();
+        List<Appointment> appointments = _appointmentRepository.GetList();
+
+        IEnumerable<AdminViewAllAppointmentsResponse> result = from userAppointment in userAppointments
+                                                                 join patient in users on userAppointment.GetPatientId() equals patient.GetId()
+                                                                 join doctor in users on userAppointment.GetDoctorId() equals doctor.GetId()
+                                                                 join appointment in appointments on userAppointment.GetAppointmentId() equals appointment.GetId()
+                                                                 select new AdminViewAllAppointmentsResponse
+                                                                 {
+                                                                     Patient = patient,
+                                                                     Doctor = doctor,
+                                                                     Appointment = appointment
+                                                                 };
+        List<AdminViewAllAppointmentsResponse> response = result.ToList();
+        response.Sort((a, b) =>
+        {
+            if (a.Appointment.GetStartDate() > b.Appointment.GetEndDate())
+            {
+                return 1;
+            }
+
+            return 0;
+        });
+        return response;
+    }
+                    
     #endregion
 }

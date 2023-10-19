@@ -167,13 +167,11 @@ public class ViewPatient : IView
             }
             catch (ItemsDoNotExist)
             {
-                parsed = false;
                 Console.WriteLine("\nNo doctors with that name exist!\nPlease try again :");
                 name = Console.ReadLine()!;
             }
             catch (MultipleDoctorsWithThatName)
             {
-                parsed = false;
                 Console.WriteLine("\nThere are multiple doctors with that name!");
                 Console.WriteLine("Please enter the doctor's email to be more specific :");
                 String email = Console.ReadLine()!;
@@ -186,13 +184,12 @@ public class ViewPatient : IView
                     }
                     catch (ItemDoesNotExist ex)
                     {
-                        parsed = false;
+
                         Console.WriteLine("\n" + ex.Message);
                     }
 
                     if (doctor != null && doctor.GetType() != UserType.DOCTOR)
                     {
-                        parsed = false;
                         Console.WriteLine("\n" + Constants.USER_NOT_DOCTOR);
                     }
 
@@ -220,7 +217,6 @@ public class ViewPatient : IView
             }
             catch (FormatException)
             {
-                parsed = false;
                 Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
                 Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
                 Console.WriteLine("Please try again :");
@@ -272,13 +268,11 @@ public class ViewPatient : IView
             }
             catch (ItemsDoNotExist)
             {
-                parsed = false;
                 Console.WriteLine("\nNo doctors with that name exist!\nPlease try again :");
                 name = Console.ReadLine()!;
             }
             catch (MultipleDoctorsWithThatName)
             {
-                parsed = false;
                 Console.WriteLine("\nThere are multiple doctors with that name!");
                 Console.WriteLine("Please enter the doctor's email to be more specific :");
                 String email = Console.ReadLine()!;
@@ -291,13 +285,11 @@ public class ViewPatient : IView
                     }
                     catch (ItemDoesNotExist ex)
                     {
-                        parsed = false;
                         Console.WriteLine("\n" + ex.Message);
                     }
 
                     if (doctor != null && doctor.GetType() != UserType.DOCTOR)
                     {
-                        parsed = false;
                         Console.WriteLine("\n" + Constants.USER_NOT_DOCTOR);
                     }
 
@@ -325,7 +317,6 @@ public class ViewPatient : IView
             }
             catch (FormatException)
             {
-                parsed = false;
                 Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
                 Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
                 Console.WriteLine("Please try again :");
@@ -379,7 +370,7 @@ public class ViewPatient : IView
             .DoctorId(doctor.GetId())
             .AppointmentId(appointment.GetId());
         _userAppointmentCommandService.Add(userAppointment);
-        Console.WriteLine("\nsuccessfully scheduled the appointment!\nDoctor will be notified.");
+        Console.WriteLine("\nSuccessfully scheduled the appointment!\nDoctor will be notified.");
     }
 
     private void CancelAppointment()
@@ -399,7 +390,6 @@ public class ViewPatient : IView
             }
             catch (FormatException)
             {
-                parsed = false;
                 Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
                 Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
                 Console.WriteLine("Please try again :");
@@ -420,7 +410,6 @@ public class ViewPatient : IView
             }
             catch (FormatException)
             {
-                parsed = false;
                 Console.WriteLine("\nYou have entered an incorrect time. Use this as an example : 13:00");
                 Console.WriteLine("Please try again :");
                 daytimeString = Console.ReadLine()!;
@@ -429,8 +418,8 @@ public class ViewPatient : IView
 
         parsed = false;
         TimeSpan duration = new TimeSpan(0, 0, 0);
-        Console.WriteLine("\nAppointment must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
-        Console.WriteLine("Enter how long you want the appointment to be in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+        Console.WriteLine("\nAppointment length must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
+        Console.WriteLine("Enter how long the appointment is in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
         String minutesString = Console.ReadLine()!;
         int minutes = 0;
         while (!Int32.TryParse(minutesString, out minutes) || minutes < 30 || minutes > 120 || minutes % 5 != 0)
@@ -458,7 +447,7 @@ public class ViewPatient : IView
 
         _userAppointmentCommandService.Delete(patientAppointment);
         _appointmentCommandService.DeleteById(patientAppointment.GetAppointmentId());
-        Console.WriteLine("successfully canceled your appointment!");
+        Console.WriteLine("Successfully canceled your appointment!");
     }
     
     private void UpdateEmail()
