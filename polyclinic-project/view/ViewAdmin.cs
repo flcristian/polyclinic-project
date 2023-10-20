@@ -102,21 +102,30 @@ namespace polyclinic_project.view
                         ViewAllDoctors();
                         break;
                     case "4":
-                        ViewUserDetails();
+                        ViewAllAdmins();
                         break;
                     case "5":
-                        EditUserName();
+                        ViewUserDetails();
                         break;
                     case "6":
-                        EditUserEmail();
+                        EditUserName();
                         break;
                     case "7":
-                        EditUserPhone();
+                        EditUserEmail();
                         break;
                     case "8":
-                        AssignDoctor();
+                        EditUserPhone();
                         break;
                     case "9":
+                        AssignDoctor();
+                        break;
+                    case "10":
+                        MakePatient();
+                        break;
+                    case "11":
+                        AssignAdmin();
+                        break;
+                    case "12":
                         DeleteUser();
                         break;
                     default:
@@ -209,47 +218,530 @@ namespace polyclinic_project.view
 
         private void ViewAllUsers()
         {
+            List<User> users;
+            try
+            {
+                users = _userQueryService.GetList();
+            }
+            catch (ItemsDoNotExist)
+            {
+                Console.WriteLine("There are no users.");
+                return;
+            }
 
+            foreach(User user in users)
+            {
+                Console.WriteLine(user.ToStringAdmin());
+            }
         }
 
         private void ViewAllPatients()
         {
+            List<User> patients;
+            try
+            {
+                patients = _userQueryService.GetPatientList();
+            }
+            catch (ItemsDoNotExist)
+            {
+                Console.WriteLine("There are no patients.");
+                return;
+            }
 
+            foreach (User patient in patients)
+            {
+                Console.WriteLine(patient.ToStringAdminNoRole());
+            }
         }
 
         private void ViewAllDoctors()
         {
+            List<User> doctors;
+            try
+            {
+                doctors = _userQueryService.GetDoctorList();
+            }
+            catch (ItemsDoNotExist)
+            {
+                Console.WriteLine("There are no doctors.");
+                return;
+            }
 
+            foreach (User doctor in doctors)
+            {
+                Console.WriteLine(doctor.ToStringAdminNoRole());
+            }
+        }
+
+        private void ViewAllAdmins()
+        {
+            List<User> admins;
+            try
+            {
+                admins = _userQueryService.GetAdminList();
+            }
+            catch (ItemsDoNotExist)
+            {
+                Console.WriteLine("There are no admins.");
+                return;
+            }
+
+            foreach (User admin in admins)
+            {
+                Console.WriteLine(admin.ToStringAdminNoRole());
+            }
         }
 
         private void ViewUserDetails()
         {
+            Console.WriteLine("Enter the ID or email of the user you want to see the details of.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    return;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        return;
+                    }
+                }
+            }
 
+            Console.WriteLine("\n" + user);
         }
 
         private void EditUserName()
         {
+            Console.WriteLine("Enter the ID or email of the user you want to modify.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    return;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        return;
+                    }
+                }
+            }
 
+            Console.WriteLine("\nEnter the user's new name :");
+            string name = Console.ReadLine()!;
+            while (!IsValidName(name))
+            {
+                Console.WriteLine("\nPlease enter a valid name (only letters) :");
+                name = Console.ReadLine()!;
+            }
+
+            user.SetName(name);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully edited user!");
         }
 
         private void EditUserEmail()
         {
+            Console.WriteLine("Enter the ID or email of the user you want to modify.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    return;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        return;
+                    }
+                }
+            }
 
+            Console.WriteLine("\nEnter the user's new email :");
+            string email = Console.ReadLine()!;
+            bool unique = false;
+            while (!unique)
+            {
+                if (!IsValidEmailAddress(email))
+                {
+                    Console.WriteLine("\nInvalid email address.");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                else if (email == user.GetEmail())
+                {
+                    Console.WriteLine("\nYou can't change the email to the same one as before!");
+                    Console.WriteLine("Please try again :");
+                    email = Console.ReadLine()!;
+                }
+                else
+                {
+                    try
+                    {
+                        _userQueryService.FindByEmail(email);
+                        unique = false;
+                        Console.WriteLine("\nThis email is already used.");
+                        Console.WriteLine("Please try again :");
+                        email = Console.ReadLine()!;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        unique = true;
+                    }
+                }
+            }
+
+            user.SetEmail(email);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully edited user!");
         }
 
         private void EditUserPhone()
         {
+            Console.WriteLine("Enter the ID or email of the user you want to modify.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    return;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        return;
+                    }
+                }
+            }
 
+            Console.WriteLine("\nEnter the user's new phone :");
+            string phone = Console.ReadLine()!;
+            bool unique = false;
+            while (!unique)
+            {
+                if (!IsValidPhoneNumber(phone))
+                {
+                    Console.WriteLine("\nInvalid phone number.");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                else if (phone == _user.GetPhone())
+                {
+                    Console.WriteLine("\nYou can't change the phone number to the same one as before!");
+                    Console.WriteLine("Please try again :");
+                    phone = Console.ReadLine()!;
+                }
+                else
+                {
+                    try
+                    {
+                        _userQueryService.FindByPhone(phone);
+                        unique = false;
+                        Console.WriteLine("\nThis phone number is already used.");
+                        Console.WriteLine("Please try again :");
+                        phone = Console.ReadLine()!;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        unique = true;
+                    }
+                }
+            }
+
+            user.SetPhone(phone);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully edited user!");
         }
 
         private void AssignDoctor()
         {
+            Console.WriteLine("Enter the ID or email of the user you want to make a doctor.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    Console.WriteLine("Please try again :");
+                    identifier = Console.ReadLine()!;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        Console.WriteLine("Please try again :");
+                        identifier = Console.ReadLine()!;
+                    }
+                }
+            }
 
+            if (user.GetType() == UserType.DOCTOR)
+            {
+                Console.WriteLine("\nThis user is already a doctor!");
+                return;
+            }
+
+            user.SetType(UserType.DOCTOR);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully assigned doctor role to user!");
+        }
+
+        private void MakePatient()
+        {
+            Console.WriteLine("Enter the ID or email of the user you want to make a patient.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    Console.WriteLine("Please try again :");
+                    identifier = Console.ReadLine()!;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        Console.WriteLine("Please try again :");
+                        identifier = Console.ReadLine()!;
+                    }
+                }
+            }
+
+            if (user.GetType() == UserType.PATIENT)
+            {
+                Console.WriteLine("\nThis user is already a patient!");
+                return;
+            }
+
+            user.SetType(UserType.PATIENT);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully made user a patient!");
+        }
+
+        private void AssignAdmin()
+        {
+            Console.WriteLine("Enter the ID or email of the user you want to make an admin.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    Console.WriteLine("Please try again :");
+                    identifier = Console.ReadLine()!;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        Console.WriteLine("Please try again :");
+                        identifier = Console.ReadLine()!;
+                    }
+                }
+            }
+
+            if (user.GetType() == UserType.ADMIN)
+            {
+                Console.WriteLine("\nThis user is already an admin!");
+                return;
+            }
+
+            user.SetType(UserType.ADMIN);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully assigned admin role to user!");
         }
 
         private void DeleteUser()
         {
+            Console.WriteLine("Enter the ID or email of the user you want to delete.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    Console.WriteLine("Please try again :");
+                    identifier = Console.ReadLine()!;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        Console.WriteLine("Please try again :");
+                        identifier = Console.ReadLine()!;
+                    }
+                }
+            }
 
+            if(user.GetType() == UserType.ADMIN)
+            {
+                Console.WriteLine("\nCan't delete an admin!");
+                return;
+            }
+
+            Console.WriteLine("\nThis will delete all the user's appointments too!");
+            Console.WriteLine("Do you want to continue? Enter \"YES\" to continue.");
+            string choice = Console.ReadLine()!;
+            if (choice.ToLower().Equals("yes"))
+            {
+                List<UserAppointment> userAppointments = new List<UserAppointment>();
+
+                if(user.GetType() == UserType.PATIENT)
+                {
+                    try
+                    {
+                        userAppointments = _userAppointmentQueryService.FindByPatientId(user.GetId());
+                    }
+                    catch (ItemsDoNotExist) { }
+                }
+                else
+                {
+                    try
+                    {
+                        userAppointments = _userAppointmentQueryService.FindByDoctorId(user.GetId());
+                    }
+                    catch (ItemsDoNotExist) { }
+                }
+
+                while(userAppointments.Count > 0)
+                {
+                    Appointment appointment = _userAppointmentQueryService.FindAppointmentByUserAppointmentId(userAppointments[0].GetId());
+                    _userAppointmentCommandService.Delete(userAppointments[0]);
+                    _appointmentCommandService.Delete(appointment);
+                    userAppointments.RemoveAt(0);
+                }
+                _userCommandService.Delete(user);
+                Console.WriteLine("\nUser was successfully deleted!");
+                return;
+            }
+
+            Console.WriteLine("\nNo users were deleted.");
         }
 
         private void ViewAllAppointments()
@@ -1041,12 +1533,15 @@ namespace polyclinic_project.view
             options += "1. View all users\n";
             options += "2. View all patients\n";
             options += "3. View all doctors\n";
-            options += "4. View user details\n";
-            options += "5. Edit user name\n";
-            options += "6. Edit user email\n";
-            options += "7. Edit user phone\n";
-            options += "8. Assign doctor type to user\n";
-            options += "9. Delete user\n";
+            options += "4. View all admins\n";
+            options += "5. View user details\n";
+            options += "6. Edit user name\n";
+            options += "7. Edit user email\n";
+            options += "8. Edit user phone\n";
+            options += "9. Assign doctor role to user\n";
+            options += "10. Make user a patient\n";
+            options += "11. Assign admin role to user\n";
+            options += "12. Delete user\n";
             options += "Anything else to exit the meu";
             Console.WriteLine(options);
         }
@@ -1086,6 +1581,14 @@ namespace polyclinic_project.view
 
         // Logistics
 
+        private bool IsValidName(string name)
+        {
+            return name.All(character =>
+            {
+                return char.IsLetter(character);
+            });
+        }
+        
         private bool IsValidEmailAddress(string email)
         {
             string pattern = @"^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";

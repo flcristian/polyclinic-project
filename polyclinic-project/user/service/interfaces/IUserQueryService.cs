@@ -20,6 +20,14 @@ namespace polyclinic_project.user.service.interfaces
 
         int GetCount();
 
+        List<User> GetList();
+
+        List<User> GetPatientList();
+
+        List<User> GetDoctorList();
+
+        List<User> GetAdminList();
+
         PatientViewAllDoctorsResponse ObtainAllDoctorDetails();
     }
 }

@@ -20,6 +20,10 @@ namespace polyclinic_project.system.constants
         public static readonly string ID_ALREADY_USED = "This id is already used.";
 
         // USER
+        public static readonly string NO_USERS_EXIST = "There are no users.";
+        public static readonly string NO_PATIENTS_EXIST = "There are no patients.";
+        public static readonly string NO_DOCTORS_EXIST = "There are no doctors.";
+        public static readonly string NO_ADMINS_EXIST = "There are no admins.";
         public static readonly string USER_DOES_NOT_EXIST = "This user does not exist.";
         public static readonly string PATIENT_DOES_NOT_EXIST = "This patient does not exist.";
         public static readonly string DOCTOR_DOES_NOT_EXIST = "This doctor does not exist.";
