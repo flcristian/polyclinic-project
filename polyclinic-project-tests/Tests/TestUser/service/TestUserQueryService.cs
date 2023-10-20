@@ -296,4 +296,216 @@ public class TestUserQueryService
         // Cleaning up
         _repository.Clear();
     }
+
+    [Fact]
+    public void TestGetList_ReturnsCorrectList()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.PATIENT);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        List<User> list = _service.GetList();
+
+        // Assert
+        Assert.Equal(new List<User> { user, another }, list, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetList_NoUsersExist_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.PATIENT);
+
+        // Assert
+        Assert.Throws<ItemsDoNotExist>(() => _service.GetList());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetPatientList_ReturnsCorrectList()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        List<User> list = _service.GetPatientList();
+
+        // Assert
+        Assert.Equal(new List<User> { user }, list, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetPatientList_NoPatientsExist_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.PATIENT);
+
+        // Assert
+        Assert.Throws<ItemsDoNotExist>(() => _service.GetPatientList());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetDoctorList_ReturnsCorrectList()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        List<User> list = _service.GetDoctorList();
+
+        // Assert
+        Assert.Equal(new List<User> { another }, list, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetDoctorList_NoDoctorsExist_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.PATIENT);
+
+        // Assert
+        Assert.Throws<ItemsDoNotExist>(() => _service.GetDoctorList());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetAdminList_ReturnsCorrectList()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.ADMIN);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.DOCTOR);
+        _repository.Add(user);
+        _repository.Add(another);
+
+        // Act
+        List<User> list = _service.GetAdminList();
+
+        // Assert
+        Assert.Equal(new List<User> { user }, list, new UserEqualityComparer());
+
+        // Cleaning up
+        _repository.Clear();
+    }
+
+    [Fact]
+    public void TestGetAdminList_NoAdminsExist_ThrowsItemsDoNotExistException()
+    {
+        // Arrange
+        User user = IUserBuilder.BuildUser()
+            .Id(1)
+            .Name("Andrei")
+            .Email("andrei@email.com")
+            .Phone("+12174633909")
+            .Type(UserType.PATIENT);
+        User another = IUserBuilder.BuildUser()
+            .Id(2)
+            .Name("Marian")
+            .Email("marian@email.com")
+            .Phone("+989133909")
+            .Type(UserType.PATIENT);
+
+        // Assert
+        Assert.Throws<ItemsDoNotExist>(() => _service.GetAdminList());
+
+        // Cleaning up
+        _repository.Clear();
+    }
 }

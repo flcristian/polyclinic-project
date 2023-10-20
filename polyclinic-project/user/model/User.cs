@@ -134,6 +134,17 @@ namespace polyclinic_project.user.model
             desc += $"Name : {this.name}\n";
             desc += $"Email : {this.email}\n";
             desc += $"Phone : {this.phone}\n";
+            desc += $"Role : {this.type}\n";
+            return desc;
+        }
+
+        public String ToStringAdminNoRole()
+        {
+            String desc = "";
+            desc += $"Id : {this.id}\n";
+            desc += $"Name : {this.name}\n";
+            desc += $"Email : {this.email}\n";
+            desc += $"Phone : {this.phone}\n";
             return desc;
         }
 
