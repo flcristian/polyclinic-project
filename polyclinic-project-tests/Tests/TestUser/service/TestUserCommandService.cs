@@ -131,34 +131,7 @@ public class TestUserCommandService
     }
     
     [Fact]
-    public void TestUpdate_UserNotModified_ThrowsItemNotModifiedException_DoesNotUpdateUser()
-    {
-        // Arrange
-        User user = IUserBuilder.BuildUser()
-            .Id(1)
-            .Name("Andrei")
-            .Email("andrei@email.com")
-            .Phone("+12174633909")
-            .Type(UserType.PATIENT);
-        User update = IUserBuilder.BuildUser()
-            .Id(1)
-            .Name("Andrei")
-            .Email("andrei@email.com")
-            .Phone("+12174633909")
-            .Type(UserType.PATIENT);
-        _repository.Add(user);
-        user = _repository.FindByEmail(user.GetEmail())[0];
-        update.SetId(user.GetId());
-
-        // Assert
-        Assert.Throws<ItemNotModified>(() => _service.Update(update));
-        
-        // Cleaning up
-        _repository.Clear();
-    }
-    
-    [Fact]
-    public void TestUpdate_UserModified_UpdatesUser()
+    public void TestUpdate_UpdatesUser()
     {
         // Arrange
         User user = IUserBuilder.BuildUser()

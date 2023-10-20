@@ -33,9 +33,9 @@ namespace polyclinic_project.user.repository
 
         public void Add(User user)
         {
-            string sql = "insert into user(name,email,phone,type) values(@name,@email,@phone,@type)";
+            string sql = "insert into user(name,email,password,phone,type) values(@name,@email,@password,@phone,@type)";
 
-            _dataAccess.SaveData(sql, new { name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
+            _dataAccess.SaveData(sql, new { name = user.GetName(), email = user.GetEmail(), password = user.GetPassword(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
         }
 
         public void Delete(int id)
@@ -47,9 +47,9 @@ namespace polyclinic_project.user.repository
 
         public void Update(User user)
         {
-            string sql = "update user set name = @name,email = @email,phone = @phone,type = @type where id = @id";
+            string sql = "update user set name = @name,email = @email, password = @password,phone = @phone,type = @type where id = @id";
 
-            _dataAccess.SaveData(sql, new { id = user.GetId(), name = user.GetName(), email = user.GetEmail(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
+            _dataAccess.SaveData(sql, new { id = user.GetId(), name = user.GetName(), email = user.GetEmail(), password = user.GetPassword(), phone = user.GetPhone(), type = user.GetType().ToString() }, _connectionString);
         }
 
         public List<User> FindById(int id)

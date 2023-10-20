@@ -66,8 +66,6 @@ namespace polyclinic_project.user.service
             List<User> check = _repository.FindById(user.GetId());
             if (check.Count == 0)
                 throw new ItemDoesNotExist(Constants.USER_DOES_NOT_EXIST);
-            if (check[0].Equals(user))
-                throw new ItemNotModified(Constants.USER_NOT_MODIFIED);
             _repository.Update(user);
         }
         

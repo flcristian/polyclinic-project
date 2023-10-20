@@ -76,6 +76,70 @@ namespace polyclinic_project.user.service
             return doctors[0];
         }
 
+        public List<User> GetList()
+        {
+            List<User> result = _repository.GetList();
+            if(result.Count == 0)
+            {
+                throw new ItemsDoNotExist(Constants.NO_USERS_EXIST);
+            }
+            return result;
+        }
+
+        public List<User> GetPatientList()
+        {
+            List<User> users = _repository.GetList();
+            if (users.Count == 0)
+            {
+                throw new ItemsDoNotExist(Constants.NO_PATIENTS_EXIST);
+            }
+            List<User> result = new List<User>();
+            foreach(User user in users)
+            {
+                if(user.GetType() == UserType.PATIENT)
+                {
+                    result.Add(user);
+                }
+            }
+            return result;
+        }
+
+        public List<User> GetDoctorList()
+        {
+            List<User> users = _repository.GetList();
+            if (users.Count == 0)
+            {
+                throw new ItemsDoNotExist(Constants.NO_DOCTORS_EXIST);
+            }
+            List<User> result = new List<User>();
+            foreach (User user in users)
+            {
+                if (user.GetType() == UserType.DOCTOR)
+                {
+                    result.Add(user);
+                }
+            }
+            return result;
+        }
+
+        public List<User> GetAdminList()
+        {
+            List<User> users = _repository.GetList();
+            if (users.Count == 0)
+            {
+                throw new ItemsDoNotExist(Constants.NO_ADMINS_EXIST);
+            }
+            List<User> result = new List<User>();
+            foreach (User user in users)
+            {
+                if (user.GetType() == UserType.ADMIN)
+                {
+                    result.Add(user);
+                }
+            }
+            return result;
+        }
+
         #endregion
     }
 }

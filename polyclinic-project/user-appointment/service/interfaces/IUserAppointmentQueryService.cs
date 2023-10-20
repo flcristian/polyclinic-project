@@ -23,7 +23,13 @@ public interface IUserAppointmentQueryService
 
     List<DoctorViewAppointmentsResponse> ObtainAppointmentDetailsByDoctorId(int doctorId);
 
+    List<AdminViewAllAppointmentsResponse> ObtainAllAppointmentDetails();
+
     PatientGetDoctorFreeTimeResponse GetDoctorFreeTime(int doctorId, DateTime date, TimeSpan duration);
 
-    UserAppointment FindByPatientIdAndDates(int patientId, DateTime startDate, DateTime endDate);
+    UserAppointment FindByPatientIdAndDates(int doctorId, DateTime startDate, DateTime endDate);
+
+    UserAppointment FindByDoctorIdAndDates(int patientId, DateTime startDate, DateTime endDate);
+
+    Appointment FindAppointmentByUserAppointmentId(int id);
 }

@@ -1,6 +1,4 @@
-﻿using polyclinic_project.system.interfaces.exceptions;
-using polyclinic_project.user.model;
-using polyclinic_project.user.model.interfaces;
+﻿using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.view;
@@ -12,21 +10,16 @@ internal class Program
     {
         IUserQueryService query = new UserQueryService();
         User user = null!;
-        try
-        {
-            user = query.FindById(3);
-        }
-        catch (ItemDoesNotExist)
-        {
-            user = IUserBuilder.BuildUser()
-                .Id(3)
-                .Name("Marius")
-                .Email("andrei@email.com")
-                .Phone("+9127431")
-                .Type(UserType.PATIENT);
-        }
+        user = query.FindById(5);
 
-        IView view = new ViewDoctor(user);
-        view.RunMenu();
+        if(user.GetType() == UserType.ADMIN)
+        {
+            IView view = new ViewAdmin(user);
+            view.RunMenu();
+        }
+        else
+        {
+            Console.WriteLine("No");
+        }
     }
 }

@@ -20,6 +20,10 @@ namespace polyclinic_project.system.constants
         public static readonly string ID_ALREADY_USED = "This id is already used.";
 
         // USER
+        public static readonly string NO_USERS_EXIST = "There are no users.";
+        public static readonly string NO_PATIENTS_EXIST = "There are no patients.";
+        public static readonly string NO_DOCTORS_EXIST = "There are no doctors.";
+        public static readonly string NO_ADMINS_EXIST = "There are no admins.";
         public static readonly string USER_DOES_NOT_EXIST = "This user does not exist.";
         public static readonly string PATIENT_DOES_NOT_EXIST = "This patient does not exist.";
         public static readonly string DOCTOR_DOES_NOT_EXIST = "This doctor does not exist.";
@@ -27,6 +31,7 @@ namespace polyclinic_project.system.constants
         public static readonly string EMAIL_ALREADY_USED = "This email is already used.";
         public static readonly string PHONE_ALREADY_USED = "This phone number is already used.";
         public static readonly string USER_NOT_DOCTOR = "This user is not a doctor.";
+        public static readonly string USER_NOT_PATIENT = "This user is not a doctor.";
         public static readonly string NO_DOCTORS_AVAILABLE = "There are no doctors available.";
         public static readonly string NO_DOCTORS_WITH_THAT_NAME = "There are no doctors with that name.";
         public static readonly string MULTIPLE_DOCTORS_WITH_THAT_NAME = "There are multiple doctors with that name.";
@@ -39,6 +44,7 @@ namespace polyclinic_project.system.constants
         public static readonly string APPOINTMENT_NOT_MODIFIED = "Appointment was not modified, it doesn't require to be updated.";
 
         // USER APPOINTMENT
+        public static readonly string USER_APPOINTMENTS_DO_NOT_EXIST = "No user appointments exist.";
         public static readonly string USER_APPOINTMENT_DOES_NOT_EXIST = "This user appointment does not exist.";
         public static readonly string USER_APPOINTMENT_NOT_MODIFIED = "User appointment was not modified, it doesn't require to be updated.";
         public static readonly string PATIENT_HAS_NO_APPOINTMENTS = "This patient has no appointments.";
