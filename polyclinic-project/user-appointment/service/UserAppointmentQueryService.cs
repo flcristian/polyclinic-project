@@ -326,6 +326,13 @@ public class UserAppointmentQueryService : IUserAppointmentQueryService
         });
         return response;
     }
+
+    public Appointment FindAppointmentByUserAppointmentId(int id)
+    {
+        UserAppointment userAppointment = FindById(id);
+        Appointment result = _appointmentQueryService.FindById(userAppointment.GetAppointmentId());
+        return result;
+    }
                     
     #endregion
 }

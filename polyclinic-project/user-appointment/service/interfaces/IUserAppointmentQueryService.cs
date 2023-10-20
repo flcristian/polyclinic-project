@@ -30,4 +30,6 @@ public interface IUserAppointmentQueryService
     UserAppointment FindByPatientIdAndDates(int doctorId, DateTime startDate, DateTime endDate);
 
     UserAppointment FindByDoctorIdAndDates(int patientId, DateTime startDate, DateTime endDate);
+
+    Appointment FindAppointmentByUserAppointmentId(int id);
 }

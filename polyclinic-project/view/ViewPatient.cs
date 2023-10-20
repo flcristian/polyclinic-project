@@ -212,8 +212,8 @@ public class ViewPatient : IView
             try
             {
                 date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
-                parsed = true;
                 if (date < DateTime.Now) throw new FormatException();
+                parsed = true;
             }
             catch (FormatException)
             {
@@ -312,8 +312,8 @@ public class ViewPatient : IView
             try
             {
                 date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
-                parsed = true;
                 if (date < DateTime.Now) throw new FormatException();
+                parsed = true;
             }
             catch (FormatException)
             {
@@ -362,6 +362,13 @@ public class ViewPatient : IView
             return;
         }
         catch (ItemDoesNotExist) { }
+        try
+        {
+            patientAppointment = _userAppointmentQueryService.FindByDoctorIdAndDates(doctor.GetId(), appointment.GetStartDate(), appointment.GetEndDate());
+            Console.WriteLine("\nThat doctor already has an appointment scheduled at that date and time.");
+            return;
+        }
+        catch (ItemDoesNotExist) { }
 
         _appointmentCommandService.Add(appointment);
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
@@ -385,8 +392,8 @@ public class ViewPatient : IView
             try
             {
                 date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
-                parsed = true;
                 if (date < DateTime.Now) throw new FormatException();
+                parsed = true;
             }
             catch (FormatException)
             {

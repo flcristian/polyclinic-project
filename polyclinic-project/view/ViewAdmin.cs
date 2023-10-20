@@ -336,8 +336,8 @@ namespace polyclinic_project.view
                 try
                 {
                     date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
-                    parsed = true;
                     if (date < DateTime.Now) throw new FormatException();
+                    parsed = true;
                 }
                 catch (FormatException)
                 {
@@ -448,7 +448,7 @@ namespace polyclinic_project.view
             catch (ItemDoesNotExist) { }
 
             _userAppointmentCommandService.Update(update);
-            Console.WriteLine("Successfully modified your appointment!");
+            Console.WriteLine("\nSuccessfully modified your appointment!");
         }
 
         private void ChangeAppointmentDoctor()
@@ -505,8 +505,8 @@ namespace polyclinic_project.view
                 try
                 {
                     date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
-                    parsed = true;
                     if (date < DateTime.Now) throw new FormatException();
+                    parsed = true;
                 }
                 catch (FormatException)
                 {
@@ -617,12 +617,204 @@ namespace polyclinic_project.view
             catch (ItemDoesNotExist) { }
 
             _userAppointmentCommandService.Update(update);
-            Console.WriteLine("Successfully modified your appointment!");
+            Console.WriteLine("\nSuccessfully modified your appointment!");
         }
 
         private void ChangeAppointmentDates()
         {
+            Console.WriteLine("Enter the ID or email of the patient who's appointment you want to modify.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier1 = Console.ReadLine()!;
+            User patient = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    patient = _userQueryService.FindById(Int32.Parse(identifier1));
+                    if (patient.GetType() != UserType.PATIENT)
+                    {
+                        throw new ItemDoesNotExist(Constants.USER_NOT_PATIENT);
+                    }
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo patient has that id.");
+                    Console.WriteLine("Please try again :");
+                    identifier1 = Console.ReadLine()!;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        patient = _userQueryService.FindByEmail(identifier1);
+                        if (patient.GetType() != UserType.PATIENT)
+                        {
+                            throw new ItemDoesNotExist(Constants.USER_NOT_PATIENT);
+                        }
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo patient has that email.");
+                        Console.WriteLine("Please try again :");
+                        identifier1 = Console.ReadLine()!;
+                    }
+                }
+            }
 
+            Console.WriteLine("\nEnter the date of the appointment you want to cancel (Example : 21.03.2022)");
+            Console.WriteLine("Please enter a date starting from today :");
+            String dateString = Console.ReadLine()!;
+            DateTime date = DateTime.MinValue;
+            parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
+                    if (date < DateTime.Now) throw new FormatException();
+                    parsed = true;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
+                    Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
+                    Console.WriteLine("Please try again :");
+                    dateString = Console.ReadLine()!;
+                }
+            }
+
+            Console.WriteLine("\nEnter the hour and minute of the appointment you want to cancel (Example : 08:00)");
+            String daytimeString = Console.ReadLine()!;
+            parsed = false;
+            DateTime daytime = DateTime.MinValue;
+            while (!parsed)
+            {
+                try
+                {
+                    daytime = DateTime.ParseExact(daytimeString, Constants.STANDARD_DATE_DAYTIME_ONLY, CultureInfo.InvariantCulture);
+                    parsed = true;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("\nYou have entered an incorrect time. Use this as an example : 13:00");
+                    Console.WriteLine("Please try again :");
+                    daytimeString = Console.ReadLine()!;
+                }
+            }
+
+            parsed = false;
+            TimeSpan duration = new TimeSpan(0, 0, 0);
+            Console.WriteLine("\nAppointment length must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
+            Console.WriteLine("Enter how long the appointment is in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+            String minutesString = Console.ReadLine()!;
+            int minutes = 0;
+            while (!Int32.TryParse(minutesString, out minutes) || minutes < 30 || minutes > 120 || minutes % 5 != 0)
+            {
+                Console.WriteLine("\nYou have entered an incorrect.");
+                Console.WriteLine("Reminder, your number needs to be between 30 and 120 minutes and in multiples of 5!");
+                Console.WriteLine("Examples : 30, 35, 55, etc.");
+                Console.WriteLine("Please try again :");
+                minutesString = Console.ReadLine()!;
+            }
+            duration = new TimeSpan(0, minutes, 0);
+
+            DateTime start = date + new TimeSpan(daytime.Hour, daytime.Minute, 0);
+
+            UserAppointment update = null!;
+            try
+            {
+                update = _userAppointmentQueryService.FindByPatientIdAndDates(patient.GetId(), start, start + duration);
+            }
+            catch (ItemDoesNotExist)
+            {
+                Console.WriteLine("\nThat patient has no appointments scheduled at that date and time.");
+                return;
+            }
+
+            Console.WriteLine("\nEnter the new date of the appointment (Example : 21.03.2022)");
+            Console.WriteLine("Please enter a date starting from today :");
+            String newDateString = Console.ReadLine()!;
+            DateTime newDate = DateTime.MinValue;
+            parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    newDate = DateTime.ParseExact(newDateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
+                    if (newDate < DateTime.Now) throw new FormatException();
+                    parsed = true;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("\nYou have entered an incorrect date. Use this as an example : 21.03.2022");
+                    Console.WriteLine("Reminder, you must enter a date starting from the current one onward.");
+                    Console.WriteLine("Please try again :");
+                    newDateString = Console.ReadLine()!;
+                }
+            }
+
+            Console.WriteLine("\nEnter the new hour and minute of the appointment (Example : 08:00)");
+            String newDaytimeString = Console.ReadLine()!;
+            parsed = false;
+            DateTime newDaytime = DateTime.MinValue;
+            while (!parsed)
+            {
+                try
+                {
+                    newDaytime = DateTime.ParseExact(newDaytimeString, Constants.STANDARD_DATE_DAYTIME_ONLY, CultureInfo.InvariantCulture);
+                    parsed = true;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("\nYou have entered an incorrect time. Use this as an example : 13:00");
+                    Console.WriteLine("Please try again :");
+                    newDaytimeString = Console.ReadLine()!;
+                }
+            }
+
+            parsed = false;
+            TimeSpan newDuration = new TimeSpan(0, 0, 0);
+            Console.WriteLine("\nAppointment length must be minimum 30 minutes and maximum 120 minutes! (2 hours)");
+            Console.WriteLine("Enter the new appoinment duration in minutes and in multiples of 5.\nExample: 60 => 1 hour, 90 => 1 hour and 30 minutes");
+            String newMinutesString = Console.ReadLine()!;
+            int newMinutes = 0;
+            while (!Int32.TryParse(newMinutesString, out newMinutes) || newMinutes < 30 || newMinutes > 120 || newMinutes % 5 != 0)
+            {
+                Console.WriteLine("\nYou have entered an incorrect.");
+                Console.WriteLine("Reminder, your number needs to be between 30 and 120 minutes and in multiples of 5!");
+                Console.WriteLine("Examples : 30, 35, 55, etc.");
+                Console.WriteLine("Please try again :");
+                newMinutesString = Console.ReadLine()!;
+            }
+            newDuration = new TimeSpan(0, newMinutes, 0);
+
+            DateTime newStart = newDate + new TimeSpan(newDaytime.Hour, newDaytime.Minute, 0);
+
+
+            try
+            {
+                update = _userAppointmentQueryService.FindByPatientIdAndDates(patient.GetId(), newStart, newStart + newDuration);
+                Console.WriteLine("\nThat patient already has an appointment scheduled at that date and time.");
+                return;
+            }
+            catch (ItemDoesNotExist) { }
+
+            try
+            {
+                update = _userAppointmentQueryService.FindByDoctorIdAndDates(update.GetDoctorId(), newStart, newStart + newDuration);
+                Console.WriteLine("\nThat doctor already has an appointment scheduled at that date and time.");
+                return;
+            }
+            catch (ItemDoesNotExist) { }
+
+            Appointment appointment = _userAppointmentQueryService.FindAppointmentByUserAppointmentId(update.GetId());
+            appointment.SetStartDate(newStart);
+            appointment.SetEndDate(newStart + newDuration);
+            _appointmentCommandService.Update(appointment);
+            Console.WriteLine("\nSuccessfully modified your appointment!");
         }
 
         private void CancelAppointment()
@@ -679,8 +871,8 @@ namespace polyclinic_project.view
                 try
                 {
                     date = DateTime.ParseExact(dateString, Constants.STANDARD_DATE_CALENDAR_DATE_ONLY, CultureInfo.InvariantCulture);
-                    parsed = true;
                     if (date < DateTime.Now) throw new FormatException();
+                    parsed = true;
                 }
                 catch (FormatException)
                 {
@@ -741,7 +933,7 @@ namespace polyclinic_project.view
 
             _userAppointmentCommandService.Delete(delete);
             _appointmentCommandService.DeleteById(delete.GetAppointmentId());
-            Console.WriteLine("Successfully canceled your appointment!");
+            Console.WriteLine("\nSuccessfully canceled your appointment!");
         }
 
         private void ViewPersonalDetails()
