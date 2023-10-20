@@ -10,11 +10,11 @@ internal class Program
     {
         IUserQueryService query = new UserQueryService();
         User user = null!;
-        user = query.FindById(5);
+        user = query.FindById(2);
 
-        if(user.GetType() == UserType.ADMIN)
+        if(user.GetType() == UserType.PATIENT)
         {
-            IView view = new ViewAdmin(user);
+            IView view = new ViewPatient(user);
             view.RunMenu();
         }
         else
