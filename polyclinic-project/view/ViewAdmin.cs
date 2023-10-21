@@ -14,6 +14,7 @@ using polyclinic_project.view.interfaces;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace polyclinic_project.view
 {
@@ -114,18 +115,21 @@ namespace polyclinic_project.view
                         EditUserEmail();
                         break;
                     case "8":
-                        EditUserPhone();
+                        EditUserPassword();
                         break;
                     case "9":
-                        AssignDoctor();
+                        EditUserPhone();
                         break;
                     case "10":
-                        MakePatient();
+                        AssignDoctor();
                         break;
                     case "11":
-                        AssignAdmin();
+                        MakePatient();
                         break;
                     case "12":
+                        AssignAdmin();
+                        break;
+                    case "13":
                         DeleteUser();
                         break;
                     default:
@@ -197,9 +201,15 @@ namespace polyclinic_project.view
                         ViewPersonalDetails();
                         break;
                     case "2":
-                        UpdateEmail();
+                        UpdateName();
                         break;
                     case "3":
+                        UpdateEmail();
+                        break;
+                    case "4":
+                        UpdatePassword();
+                        break;
+                    case "5":
                         UpdatePhone();
                         break;
                     default:
@@ -445,6 +455,53 @@ namespace polyclinic_project.view
             }
 
             user.SetEmail(email);
+            _userCommandService.Update(user);
+            Console.WriteLine("\nSuccessfully edited user!");
+        }
+
+        private void EditUserPassword()
+        {
+            Console.WriteLine("Enter the ID or email of the user you want to modify.");
+            Console.WriteLine("Please enter a valid number or email address :");
+            String identifier = Console.ReadLine()!;
+            User user = null!;
+            bool parsed = false;
+            while (!parsed)
+            {
+                try
+                {
+                    user = _userQueryService.FindById(Int32.Parse(identifier));
+                    parsed = true;
+                }
+                catch (ItemDoesNotExist)
+                {
+                    Console.WriteLine("\nNo user has that id.");
+                    return;
+                }
+                catch (FormatException)
+                {
+                    try
+                    {
+                        user = _userQueryService.FindByEmail(identifier);
+                        parsed = true;
+                    }
+                    catch (ItemDoesNotExist)
+                    {
+                        Console.WriteLine("\nNo user has that email.");
+                        return;
+                    }
+                }
+            }
+
+            Console.WriteLine("\nEnter the user's new password :");
+            string password = Console.ReadLine()!;
+            while (!IsValidPassword(password))
+            {
+                Console.WriteLine("\nPlease enter a valid password (must be at least 4 characters) :");
+                password = Console.ReadLine()!;
+            }
+
+            user.SetPassword(password);
             _userCommandService.Update(user);
             Console.WriteLine("\nSuccessfully edited user!");
         }
@@ -1434,6 +1491,21 @@ namespace polyclinic_project.view
             Console.WriteLine(_user);
         }
 
+        private void UpdateName()
+        {
+            Console.WriteLine("\nEnter your new name :");
+            string name = Console.ReadLine()!;
+            while (!IsValidName(name))
+            {
+                Console.WriteLine("\nPlease enter a valid name (only letters) :");
+                name = Console.ReadLine()!;
+            }
+
+            _user.SetName(name);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour name was successfully updated!");
+        }
+
         private void UpdateEmail()
         {
             Console.WriteLine("Enter your new email :");
@@ -1472,6 +1544,21 @@ namespace polyclinic_project.view
             _user.SetEmail(email);
             _userCommandService.Update(_user);
             Console.WriteLine("\nYour email has been successfully updated!");
+        }
+
+        private void UpdatePassword()
+        {
+            Console.WriteLine("\nEnter your new password (must be at least 4 characters) :");
+            string password = Console.ReadLine()!;
+            while (!IsValidPassword(password))
+            {
+                Console.WriteLine("\nPlease enter a valid password (must be at least 4 characters) :");
+                password = Console.ReadLine()!;
+            }
+
+            _user.SetPassword(password);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour password was successfully updated!");
         }
 
         private void UpdatePhone()
@@ -1537,11 +1624,12 @@ namespace polyclinic_project.view
             options += "5. View user details\n";
             options += "6. Edit user name\n";
             options += "7. Edit user email\n";
-            options += "8. Edit user phone\n";
-            options += "9. Assign doctor role to user\n";
-            options += "10. Make user a patient\n";
-            options += "11. Assign admin role to user\n";
-            options += "12. Delete user\n";
+            options += "8. Edit user password\n";
+            options += "9. Edit user phone\n";
+            options += "10. Assign doctor role to user\n";
+            options += "11. Make user a patient\n";
+            options += "12. Assign admin role to user\n";
+            options += "13. Delete user\n";
             options += "Anything else to exit the meu";
             Console.WriteLine(options);
         }
@@ -1562,8 +1650,10 @@ namespace polyclinic_project.view
         {
             string options = "";
             options += "1. View personal details\n";
-            options += "2. Update your email\n";
-            options += "3. Update your phone\n";
+            options += "2. Update your name\n";
+            options += "3. Update your email\n";
+            options += "4. Update your password\n";
+            options += "5. Update your phone\n";
             options += "Anything else to exit the menu";
             Console.WriteLine(options);
         }
@@ -1583,12 +1673,25 @@ namespace polyclinic_project.view
 
         private bool IsValidName(string name)
         {
+            if (name.Length == 0) return false;
+
+            bool found = false;
             return name.All(character =>
             {
-                return char.IsLetter(character);
+                if (found && char.IsWhiteSpace(character))
+                {
+                    found = false;
+                    return true;
+                }
+                if (char.IsLetter(character))
+                {
+                    found = true;
+                    return true;
+                }
+                return false;
             });
         }
-        
+
         private bool IsValidEmailAddress(string email)
         {
             string pattern = @"^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
@@ -1598,6 +1701,8 @@ namespace polyclinic_project.view
 
         private bool IsValidPhoneNumber(string phone)
         {
+            if (phone.Length < 3) return false;
+
             return phone.All(character =>
             {
                 return char.IsDigit(character) || character == '-' ||
@@ -1605,6 +1710,10 @@ namespace polyclinic_project.view
             });
         }
 
+        private bool IsValidPassword(string password)
+        {
+            return password.Length > 4;
+        }
 
         #endregion
     }

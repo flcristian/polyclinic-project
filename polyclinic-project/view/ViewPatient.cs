@@ -607,9 +607,24 @@ public class ViewPatient : IView
 
     private bool IsValidName(string name)
     {
+        if (name.Length == 0) return false;
+
         return name.All(character =>
         {
-            return char.IsLetter(character);
+            bool found = false;
+            if (!char.IsLetter(character) || (character == ' ' && !found))
+            {
+                return false;
+            }
+            if (char.IsLetter(character))
+            {
+                found = true;
+            }
+            if (character == ' ')
+            {
+                found = false;
+            }
+            return true;
         });
     }
 
@@ -619,9 +634,11 @@ public class ViewPatient : IView
 
         return Regex.IsMatch(email, pattern);
     }
-        
+
     private bool IsValidPhoneNumber(string phone)
     {
+        if (phone.Length < 3) return false;
+
         return phone.All(character =>
         {
             return char.IsDigit(character) || character == '-' ||
@@ -633,7 +650,6 @@ public class ViewPatient : IView
     {
         return password.Length > 4;
     }
-
 
     #endregion
 }
