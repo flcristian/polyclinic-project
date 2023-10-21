@@ -53,9 +53,15 @@ namespace polyclinic_project.view
                         ViewAppointments();
                         break;
                     case "3":
-                        UpdateEmail();
+                        UpdateName();
                         break;
                     case "4":
+                        UpdateEmail();
+                        break;
+                    case "5":
+                        UpdatePassword();
+                        break;
+                    case "6":
                         UpdatePhone();
                         break;
                     default:
@@ -107,7 +113,22 @@ namespace polyclinic_project.view
                 Console.WriteLine(message);
             }
         }
-        
+
+        private void UpdateName()
+        {
+            Console.WriteLine("\nEnter your new name :");
+            string name = Console.ReadLine()!;
+            while (!IsValidName(name))
+            {
+                Console.WriteLine("\nPlease enter a valid name (only letters) :");
+                name = Console.ReadLine()!;
+            }
+
+            _user.SetName(name);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour name was successfully updated!");
+        }
+
         private void UpdateEmail()
         {
             Console.WriteLine("Enter your new email :");
@@ -147,7 +168,22 @@ namespace polyclinic_project.view
             _userCommandService.Update(_user);
             Console.WriteLine("\nYour email has been successfully updated!");
         }
-        
+
+        private void UpdatePassword()
+        {
+            Console.WriteLine("\nEnter your new password (must be at least 4 characters) :");
+            string password = Console.ReadLine()!;
+            while (!IsValidPassword(password))
+            {
+                Console.WriteLine("\nPlease enter a valid password (must be at least 4 characters) :");
+                password = Console.ReadLine()!;
+            }
+
+            _user.SetPassword(password);
+            _userCommandService.Update(_user);
+            Console.WriteLine("\nYour password was successfully updated!");
+        }
+
         private void UpdatePhone()
         {
             Console.WriteLine("Enter your new phone number :");
@@ -187,7 +223,7 @@ namespace polyclinic_project.view
             _userCommandService.Update(_user);
             Console.WriteLine("\nYour phone number has been successfully updated!");
         }
-        
+
         // Menu Methods
 
         private void DisplayOptions()
@@ -195,8 +231,10 @@ namespace polyclinic_project.view
             string options = "";
             options += "1. View personal details\n";
             options += "2. View appointments\n";
-            options += "3. Update your email\n";
-            options += "4. Updated your phone number\n";
+            options += "3. Update your name\n";
+            options += "4. Update your email\n";
+            options += "5. Update your password\n";
+            options += "6. Updated your phone number\n";
             options += "Anything else to log out";
             Console.WriteLine(options);
         }
@@ -211,23 +249,51 @@ namespace polyclinic_project.view
             Console.Write("Enter anything to continue");
             Console.ReadLine();
         }
-        
+
         // Logistics
-    
+
+        private bool IsValidName(string name)
+        {
+            if (name.Length == 0) return false;
+
+            bool found = false;
+            return name.All(character =>
+            {
+                if (found && char.IsWhiteSpace(character))
+                {
+                    found = false;
+                    return true;
+                }
+                if (char.IsLetter(character))
+                {
+                    found = true;
+                    return true;
+                }
+                return false;
+            });
+        }
+
         private bool IsValidEmailAddress(string email)
         {
             string pattern = @"^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
 
             return Regex.IsMatch(email, pattern);
         }
-        
+
         private bool IsValidPhoneNumber(string phone)
         {
+            if (phone.Length < 3) return false;
+
             return phone.All(character =>
             {
                 return char.IsDigit(character) || character == '-' ||
                        (character == '+' && phone.IndexOf(character) == 0);
             });
+        }
+
+        private bool IsValidPassword(string password)
+        {
+            return password.Length > 4;
         }
 
         #endregion

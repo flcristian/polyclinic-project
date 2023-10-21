@@ -10,16 +10,23 @@ internal class Program
     {
         IUserQueryService query = new UserQueryService();
         User user = null!;
-        user = query.FindById(5);
+        user = query.FindById(3);
 
-        if(user.GetType() == UserType.ADMIN)
+        IView view = null!;
+        switch (user.GetType())
         {
-            IView view = new ViewAdmin(user);
-            view.RunMenu();
+            case UserType.PATIENT:
+                view = new ViewPatient(user);
+                break;
+            case UserType.DOCTOR:
+                view = new ViewDoctor(user);
+                break;
+            case UserType.ADMIN:
+                view = new ViewAdmin(user);
+                break;
+            default:
+                break;
         }
-        else
-        {
-            Console.WriteLine("No");
-        }
+        view.RunMenu();
     }
 }
