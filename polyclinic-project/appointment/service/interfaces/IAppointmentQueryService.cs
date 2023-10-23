@@ -9,5 +9,7 @@ namespace polyclinic_project.appointment.service.interfaces
         bool CanAddAppointment(Appointment appointment);
 
         int GetCount();
+
+        int GetLastId();
     }
 }

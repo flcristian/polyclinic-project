@@ -54,6 +54,12 @@ namespace polyclinic_project.appointment.service
             return true;
         }
         
+        public int GetLastId()
+        {
+            List<Appointment> list = _repository.GetList();
+            return list.Last().GetId();
+        }
+
         #endregion
     }
 }

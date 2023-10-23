@@ -185,7 +185,7 @@ namespace polyclinic_project.view
 
             Console.Write("\nEnter your password : ");
             string password = Console.ReadLine()!;
-            if(!IsValidPassword(password) || !password.Equals(user.GetPassword()))
+            if(!password.Equals(user.GetPassword()))
             {
                 Console.WriteLine("\nWrong password!");
                 return;
