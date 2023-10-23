@@ -27,6 +27,7 @@ public class ViewPatient : IView
     private IUserCommandService _userCommandService;
     private IUserQueryService _userQueryService;
     private IAppointmentCommandService _appointmentCommandService;
+    private IAppointmentQueryService _appointmentQueryService;
     private IUserAppointmentCommandService _userAppointmentCommandService;
     private IUserAppointmentQueryService _userAppointmentQueryService;
 
@@ -40,6 +41,7 @@ public class ViewPatient : IView
         _userAppointmentCommandService = UserAppointmentCommandServiceSingleton.Instance;
         _userAppointmentQueryService = UserAppointmentQueryServiceSingleton.Instance;
         _appointmentCommandService = AppointmentCommandServiceSingleton.Instance;
+        _appointmentQueryService = AppointmentQueryServiceSingleton.Instance;
     }
 
     #endregion
@@ -329,7 +331,28 @@ public class ViewPatient : IView
                 dateString = Console.ReadLine()!;
             }
         }
-        date += new TimeSpan(8, 0, 0);
+        DateTime maxDate = date + new TimeSpan(16, 0, 0);
+
+        Console.WriteLine("\nEnter the hour and minute of the appointment (Example : 12:30) : ");
+        Console.WriteLine("Must be between 08:00 - 16:00!");
+        String daytimeString = Console.ReadLine()!;
+        parsed = false;
+        DateTime daytime = DateTime.MinValue;
+        while (!parsed)
+        {
+            try
+            {
+                daytime = DateTime.ParseExact(daytimeString, Constants.STANDARD_DATE_DAYTIME_ONLY, CultureInfo.InvariantCulture);
+                parsed = true;
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("\nYou have entered an incorrect time. Use this as an example : 13:00");
+                Console.WriteLine("Please try again :");
+                daytimeString = Console.ReadLine()!;
+            }
+        }
+        date += new TimeSpan(daytime.Hour, daytime.Minute, 0);
 
         parsed = false;
         TimeSpan duration = new TimeSpan(0, 0, 0);
@@ -346,6 +369,11 @@ public class ViewPatient : IView
             minutesString = Console.ReadLine()!;
         }
         duration = new TimeSpan(0, minutes, 0);
+        if(date + duration > maxDate)
+        {
+            Console.WriteLine("Appointment would exceed the doctor's working time!");
+            return;
+        }
 
         Appointment appointment = IAppointmentBuilder.BuildAppointment()
             .Id(0)
@@ -377,11 +405,12 @@ public class ViewPatient : IView
         catch (ItemDoesNotExist) { }
 
         _appointmentCommandService.Add(appointment);
+        int appointmentId = _appointmentQueryService.GetLastId();
         UserAppointment userAppointment = IUserAppointmentBuilder.BuildUserAppointment()
             .Id(0)
             .PatientId(_user.GetId())
             .DoctorId(doctor.GetId())
-            .AppointmentId(appointment.GetId());
+            .AppointmentId(appointmentId);
         _userAppointmentCommandService.Add(userAppointment);
         Console.WriteLine("\nSuccessfully scheduled the appointment!\nDoctor will be notified.");
     }
