@@ -8,6 +8,8 @@
 
         User Email(string email);
 
+        User Password(string password);
+
         User Phone(string phone);
 
         User Type(UserType type);

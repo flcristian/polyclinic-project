@@ -1,32 +1,32 @@
-﻿using polyclinic_project.appointment.service;
-using polyclinic_project.system.constants;
-using polyclinic_project.system.interfaces.exceptions;
+﻿using polyclinic_project.system.interfaces.exceptions;
 using polyclinic_project.user.model;
-using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
+using polyclinic_project.user.service;
 using polyclinic_project.user_appointment.dtos;
-using polyclinic_project.user_appointment.service;
 using polyclinic_project.user_appointment.service.interfaces;
+using polyclinic_project.user_appointment.service;
 using polyclinic_project.view.interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using polyclinic_project.user.model.interfaces;
 
 namespace polyclinic_project.view
 {
-    public class ViewDoctor : IView
+    public class ViewLogin : IView
     {
-        private User _user;
         private IUserCommandService _userCommandService;
         private IUserQueryService _userQueryService;
-        private IUserAppointmentQueryService _userAppointmentQueryService;
 
         #region CONSTRUCTORS
 
-        public ViewDoctor(User user)
+        public ViewLogin()
         {
-            _user = user;
             _userCommandService = UserCommandServiceSingleton.Instance;
             _userQueryService = UserQueryServiceSingleton.Instance;
-            _userAppointmentQueryService = UserAppointmentQueryServiceSingleton.Instance;
         }
 
         #endregion
@@ -47,22 +47,10 @@ namespace polyclinic_project.view
                 switch (input)
                 {
                     case "1":
-                        ViewPersonalDetails();
+                        Register();
                         break;
                     case "2":
-                        ViewAppointments();
-                        break;
-                    case "3":
-                        UpdateName();
-                        break;
-                    case "4":
-                        UpdateEmail();
-                        break;
-                    case "5":
-                        UpdatePassword();
-                        break;
-                    case "6":
-                        UpdatePhone();
+                        Login();
                         break;
                     default:
                         running = false;
@@ -81,42 +69,9 @@ namespace polyclinic_project.view
 
         #region PRIVATE_METHODS
 
-        public void ViewPersonalDetails()
+        private void Register()
         {
-            Console.WriteLine("Here are your personal details :");
-            Console.WriteLine(_user);
-        }
-        
-        public void ViewAppointments()
-        {
-            List<DoctorViewAppointmentsResponse> responses = null!;
-            try { responses = _userAppointmentQueryService.ObtainAppointmentDetailsByDoctorId(_user.GetId()); }
-            catch (ItemsDoNotExist)
-            {
-                Console.WriteLine("You have no appointments!\n");
-                return;
-            }
-
-            Console.WriteLine("Your appointments are :\n");
-            for (int i = 0; i < responses.Count; i++)
-            {
-                DoctorViewAppointmentsResponse response = responses[i];
-                string message = $"{i + 1}. ";
-
-                if (response.StartDate.DayOfYear == response.EndDate.DayOfYear)
-                    message += response.StartDate.ToString(Constants.STANDARD_DATE_FORMAT) + " - " + response.EndDate.ToString(Constants.STANDARD_DATE_DAYTIME_ONLY);
-                else message += response.StartDate.ToString(Constants.STANDARD_DATE_FORMAT) + " - " + response.EndDate.ToString(Constants.STANDARD_DATE_FORMAT);
-                message += $"\nPatient {response.PatientName}\n";
-                message += $"Patient email : {response.PatientEmail}\n";
-                message += $"Patient phone number : {response.PatientPhone}\n";
-
-                Console.WriteLine(message);
-            }
-        }
-
-        private void UpdateName()
-        {
-            Console.WriteLine("\nEnter your new name :");
+            Console.Write("Enter your name : ");
             string name = Console.ReadLine()!;
             while (!IsValidName(name))
             {
@@ -124,14 +79,7 @@ namespace polyclinic_project.view
                 name = Console.ReadLine()!;
             }
 
-            _user.SetName(name);
-            _userCommandService.Update(_user);
-            Console.WriteLine("\nYour name was successfully updated!");
-        }
-
-        private void UpdateEmail()
-        {
-            Console.WriteLine("Enter your new email :");
+            Console.Write("\nEnter your email address : ");
             string email = Console.ReadLine()!;
             bool unique = false;
             while (!unique)
@@ -142,12 +90,6 @@ namespace polyclinic_project.view
                     Console.WriteLine("Please try again :");
                     email = Console.ReadLine()!;
                 }
-                else if (email == _user.GetEmail())
-                {
-                    Console.WriteLine("\nYou can't change the email to the same one as before!");
-                    Console.WriteLine("Please try again :");
-                    email = Console.ReadLine()!;
-                }
                 else
                 {
                     try
@@ -155,8 +97,7 @@ namespace polyclinic_project.view
                         _userQueryService.FindByEmail(email);
                         unique = false;
                         Console.WriteLine("\nThis email is already used.");
-                        Console.WriteLine("Please try again :");
-                        email = Console.ReadLine()!;
+                        return;
                     }
                     catch (ItemDoesNotExist)
                     {
@@ -164,14 +105,8 @@ namespace polyclinic_project.view
                     }
                 }
             }
-            _user.SetEmail(email);
-            _userCommandService.Update(_user);
-            Console.WriteLine("\nYour email has been successfully updated!");
-        }
 
-        private void UpdatePassword()
-        {
-            Console.WriteLine("\nEnter your new password (must be at least 4 characters) :");
+            Console.Write("\nEnter your password : ");
             string password = Console.ReadLine()!;
             while (!IsValidPassword(password))
             {
@@ -179,27 +114,14 @@ namespace polyclinic_project.view
                 password = Console.ReadLine()!;
             }
 
-            _user.SetPassword(password);
-            _userCommandService.Update(_user);
-            Console.WriteLine("\nYour password was successfully updated!");
-        }
-
-        private void UpdatePhone()
-        {
-            Console.WriteLine("Enter your new phone number :");
+            Console.Write("\nEnter your phone number : ");
             string phone = Console.ReadLine()!;
-            bool unique = false;
+            unique = false;
             while (!unique)
             {
                 if (!IsValidPhoneNumber(phone))
                 {
                     Console.WriteLine("\nInvalid phone number.");
-                    Console.WriteLine("Please try again :");
-                    phone = Console.ReadLine()!;
-                }
-                else if (phone == _user.GetPhone())
-                {
-                    Console.WriteLine("\nYou can't change the phone number to the same one as before!");
                     Console.WriteLine("Please try again :");
                     phone = Console.ReadLine()!;
                 }
@@ -219,9 +141,77 @@ namespace polyclinic_project.view
                     }
                 }
             }
-            _user.SetPhone(phone);
-            _userCommandService.Update(_user);
-            Console.WriteLine("\nYour phone number has been successfully updated!");
+
+            User create = IUserBuilder.BuildUser()
+                .Name(name)
+                .Email(email)
+                .Password(password)
+                .Phone(phone)
+                .Type(UserType.PATIENT);
+
+            try
+            {
+                _userCommandService.Add(create);
+                Console.WriteLine("Your account has been created successfully!");
+                Console.WriteLine("You can now log in.");
+            }
+            catch (ItemAlreadyExists ex)
+            {
+                Console.WriteLine("Something went wrong, please contact an administrator.");
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void Login()
+        {
+            Console.Write("Enter your email address : ");
+            string email = Console.ReadLine()!;
+            while (!IsValidEmailAddress(email))
+            {
+                Console.WriteLine("\nPlease enter a valid email :");
+                email = Console.ReadLine()!;
+            }
+
+            User user = null!;
+            try
+            {
+                user = _userQueryService.FindByEmail(email);
+            }
+            catch (ItemDoesNotExist)
+            {
+                Console.WriteLine("\nNo user with that email address!");
+                return;
+            }
+
+            Console.Write("\nEnter your password : ");
+            string password = Console.ReadLine()!;
+            if(!IsValidPassword(password) || !password.Equals(user.GetPassword()))
+            {
+                Console.WriteLine("\nWrong password!");
+                return;
+            }
+
+            ChooseMenu(user);
+        }
+
+        private void ChooseMenu(User user)
+        {
+            IView view = null!;
+            switch (user.GetType())
+            {
+                case UserType.PATIENT:
+                    view = new ViewPatient(user);
+                    break;
+                case UserType.DOCTOR:
+                    view = new ViewDoctor(user);
+                    break;
+                case UserType.ADMIN:
+                    view = new ViewAdmin(user);
+                    break;
+                default:
+                    break;
+            }
+            view.RunMenu();
         }
 
         // Menu Methods
@@ -229,12 +219,8 @@ namespace polyclinic_project.view
         private void DisplayOptions()
         {
             string options = "";
-            options += "1. View personal details\n";
-            options += "2. View appointments\n";
-            options += "3. Update your name\n";
-            options += "4. Update your email\n";
-            options += "5. Update your password\n";
-            options += "6. Updated your phone number\n";
+            options += "1. Register a new account\n";
+            options += "2. Log into your account\n";
             options += "Anything else to log out";
             Console.WriteLine(options);
         }

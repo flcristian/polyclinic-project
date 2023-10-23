@@ -96,6 +96,12 @@ namespace polyclinic_project.user.model
             return this;
         }
 
+        public User Password(string password)
+        {
+            this.password = password;
+            return this;
+        }
+
         public User Phone(String phone)
         {
             this.phone = phone;

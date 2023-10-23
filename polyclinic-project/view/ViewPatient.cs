@@ -78,9 +78,15 @@ public class ViewPatient : IView
                     CancelAppointment();
                     break;
                 case "7":
-                    UpdateEmail();
+                    UpdateName();
                     break;
                 case "8":
+                    UpdateEmail();
+                    break;
+                case "9":
+                    UpdatePassword();
+                    break;
+                case "10":
                     UpdatePhone();
                     break;
                 default:
@@ -456,7 +462,22 @@ public class ViewPatient : IView
         _appointmentCommandService.DeleteById(patientAppointment.GetAppointmentId());
         Console.WriteLine("Successfully canceled your appointment!");
     }
-    
+
+    private void UpdateName()
+    {
+        Console.WriteLine("\nEnter your new name :");
+        string name = Console.ReadLine()!;
+        while (!IsValidName(name))
+        {
+            Console.WriteLine("\nPlease enter a valid name (only letters) :");
+            name = Console.ReadLine()!;
+        }
+
+        _user.SetName(name);
+        _userCommandService.Update(_user);
+        Console.WriteLine("\nYour name was successfully updated!");
+    }
+
     private void UpdateEmail()
     {
         Console.WriteLine("Enter your new email :");
@@ -495,6 +516,21 @@ public class ViewPatient : IView
         _user.SetEmail(email);
         _userCommandService.Update(_user);
         Console.WriteLine("\nYour email has been successfully updated!");
+    }
+
+    private void UpdatePassword()
+    {
+        Console.WriteLine("\nEnter your new password (must be at least 4 characters) :");
+        string password = Console.ReadLine()!;
+        while (!IsValidPassword(password))
+        {
+            Console.WriteLine("\nPlease enter a valid password (must be at least 4 characters) :");
+            password = Console.ReadLine()!;
+        }
+
+        _user.SetPassword(password);
+        _userCommandService.Update(_user);
+        Console.WriteLine("\nYour password was successfully updated!");
     }
     
     private void UpdatePhone()
@@ -548,8 +584,10 @@ public class ViewPatient : IView
         options += "4. Check a doctor's availability in a certain day\n";
         options += "5. Make an appointment\n";
         options += "6. Cancel an appointment\n";
-        options += "7. Update your email\n";
-        options += "8. Updated your phone number\n";
+        options += "7. Update your name\n";
+        options += "8. Update your email\n";
+        options += "9. Update your password\n";
+        options += "10. Updated your phone number\n";
         options += "Anything else to log out";
         Console.WriteLine(options);
     }
@@ -566,16 +604,41 @@ public class ViewPatient : IView
     }
 
     // Logistics
-    
+
+    private bool IsValidName(string name)
+    {
+        if (name.Length == 0) return false;
+
+        return name.All(character =>
+        {
+            bool found = false;
+            if (!char.IsLetter(character) || (character == ' ' && !found))
+            {
+                return false;
+            }
+            if (char.IsLetter(character))
+            {
+                found = true;
+            }
+            if (character == ' ')
+            {
+                found = false;
+            }
+            return true;
+        });
+    }
+
     private bool IsValidEmailAddress(string email)
     {
         string pattern = @"^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
 
         return Regex.IsMatch(email, pattern);
     }
-        
+
     private bool IsValidPhoneNumber(string phone)
     {
+        if (phone.Length < 3) return false;
+
         return phone.All(character =>
         {
             return char.IsDigit(character) || character == '-' ||
@@ -583,6 +646,10 @@ public class ViewPatient : IView
         });
     }
 
+    private bool IsValidPassword(string password)
+    {
+        return password.Length > 4;
+    }
 
     #endregion
 }
