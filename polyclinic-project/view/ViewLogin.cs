@@ -164,12 +164,54 @@ namespace polyclinic_project.view
 
         private void Login()
         {
+            Console.Write("Enter your email address : ");
+            string email = Console.ReadLine()!;
+            while (!IsValidEmailAddress(email))
+            {
+                Console.WriteLine("\nPlease enter a valid email :");
+                email = Console.ReadLine()!;
+            }
 
+            User user = null!;
+            try
+            {
+                user = _userQueryService.FindByEmail(email);
+            }
+            catch (ItemDoesNotExist)
+            {
+                Console.WriteLine("\nNo user with that email address!");
+                return;
+            }
+
+            Console.Write("\nEnter your password : ");
+            string password = Console.ReadLine()!;
+            if(!IsValidPassword(password) || !password.Equals(user.GetPassword()))
+            {
+                Console.WriteLine("\nWrong password!");
+                return;
+            }
+
+            ChooseMenu(user);
         }
 
         private void ChooseMenu(User user)
         {
-
+            IView view = null!;
+            switch (user.GetType())
+            {
+                case UserType.PATIENT:
+                    view = new ViewPatient(user);
+                    break;
+                case UserType.DOCTOR:
+                    view = new ViewDoctor(user);
+                    break;
+                case UserType.ADMIN:
+                    view = new ViewAdmin(user);
+                    break;
+                default:
+                    break;
+            }
+            view.RunMenu();
         }
 
         // Menu Methods
