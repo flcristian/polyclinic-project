@@ -1,4 +1,5 @@
-﻿using polyclinic_project.user.model;
+﻿using polyclinic_project.system.interfaces.exceptions;
+using polyclinic_project.user.model;
 using polyclinic_project.user.service;
 using polyclinic_project.user.service.interfaces;
 using polyclinic_project.view;
@@ -10,22 +11,29 @@ internal class Program
     {
         IUserQueryService query = new UserQueryService();
         User user = null!;
-        user = query.FindById(3);
-
         IView view = null!;
-        switch (user.GetType())
+        try
         {
-            case UserType.PATIENT:
-                view = new ViewPatient(user);
-                break;
-            case UserType.DOCTOR:
-                view = new ViewDoctor(user);
-                break;
-            case UserType.ADMIN:
-                view = new ViewAdmin(user);
-                break;
-            default:
-                break;
+            user = query.FindById(10);
+
+            switch (user.GetType())
+            {
+                case UserType.PATIENT:
+                    view = new ViewPatient(user);
+                    break;
+                case UserType.DOCTOR:
+                    view = new ViewDoctor(user);
+                    break;
+                case UserType.ADMIN:
+                    view = new ViewAdmin(user);
+                    break;
+                default:
+                    break;
+            }
+        }
+        catch (ItemDoesNotExist)
+        {
+            view = new ViewLogin();
         }
         view.RunMenu();
     }
